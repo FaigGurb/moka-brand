@@ -74,13 +74,13 @@ export function Store() {
           {
             clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
-            scrollTrigger: { trigger: ".s-frame", start: "top 85%", end: "top 25%", scrub: 0.5 },
+            scrollTrigger: { trigger: ".s-frame", start: "top 85%", end: "top 25%", scrub: 1 },
           },
         );
         gsap.from(".s-led", {
           scaleX: 0,
           ease: "none",
-          scrollTrigger: { trigger: ".s-frame", start: "top 55%", end: "top 15%", scrub: 0.5 },
+          scrollTrigger: { trigger: ".s-frame", start: "top 55%", end: "top 15%", scrub: 1 },
         });
         gsap.from(".s-cup-fill", {
           scaleY: 0,

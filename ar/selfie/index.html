@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOKA AR · Qəhvə selfisi</title>
+<meta name="theme-color" content="#1B1714">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../shared/ui.css">
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+<style>
+  html,body{height:100%;overflow:hidden}
+  a-scene{position:fixed;inset:0}
+  .top{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;pointer-events:none}
+  .top>*{pointer-events:auto}
+  .pill{background:rgba(27,23,20,.8);border:1.5px solid var(--paper);padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;background:linear-gradient(to top,rgba(27,23,20,.85),transparent)}
+  .filters{display:flex;gap:14px}
+  .filters button{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:var(--paper);font:700 11px Mulish,sans-serif;letter-spacing:.08em;cursor:pointer;min-width:64px}
+  .filters .dot{width:52px;height:52px;border-radius:50%;border:2px solid rgba(245,241,234,.35);display:flex;align-items:center;justify-content:center;background:rgba(27,23,20,.6)}
+  .filters button[aria-pressed="true"] .dot{border-color:var(--glow);box-shadow:0 0 0 3px rgba(255,226,166,.25)}
+  .shutter{width:76px;height:76px;border-radius:50%;border:4px solid var(--paper);background:transparent;padding:6px;cursor:pointer}
+  .shutter span{display:block;width:100%;height:100%;border-radius:50%;background:var(--paper);transition:transform .15s}
+  .shutter:active span{transform:scale(.88)}
+  .flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:30;transition:opacity .35s}
+  .flash.on{opacity:.8;transition:none}
+  .intro,.result{position:fixed;inset:0;z-index:20;background:var(--esp);overflow-y:auto}
+  .in{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto}
+  .in .bar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .in h1{font-size:clamp(32px,8vw,46px);line-height:1.06}
+  .in p{margin:0;color:var(--muted);line-height:1.55}
+  .in .line{height:4px;background:var(--paper)}
+  .result img{width:100%;height:auto;display:block;border:1.5px solid rgba(245,241,234,.2)}
+  .result .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tip{position:fixed;left:16px;right:16px;top:calc(76px + env(safe-area-inset-top,0px));z-index:10;background:rgba(27,23,20,.9);border-left:4px solid var(--bamboo);padding:12px 14px;font-size:14px;line-height:1.45;opacity:0;transition:opacity .4s;pointer-events:none}
+  .tip.show{opacity:1}
+  .qr{display:none;gap:14px;align-items:center;font-size:13px;color:var(--muted)}
+  .qr img{width:88px;height:88px;background:#fff;padding:5px}
+  @media(hover:hover) and (pointer:fine){.qr{display:flex}}
+</style>
+</head>
+<body>
+<div class="intro" id="intro">
+  <div class="in">
+    <div class="bar">
+      <a class="back" data-hub="../" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
+      <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+    </div>
+    <span id="wm" style="width:150px"></span>
+    <div class="line"></div>
+    <p class="eyebrow" data-t="eyebrow"></p>
+    <h1 data-t="title"></h1>
+    <p data-t="lead"></p>
+    <button class="btn" id="start" type="button" data-t="start"></button>
+    <div class="qr"><img src="../qr-selfie.png" alt="" width="88" height="88"><span data-t="qr"></span></div>
+    <small style="color:var(--muted)" data-t="privacy"></small>
+  </div>
+</div>
+
+<div class="result hidden" id="result" role="dialog" aria-modal="true" aria-labelledby="rt">
+  <div class="in">
+    <h1 id="rt" data-t="resultT" style="font-size:30px"></h1>
+    <img id="shot" alt="">
+    <div class="acts">
+      <button class="btn" id="share" type="button" data-t="share"></button>
+      <a class="btn ghost" id="save" download="moka-selfie.jpg" data-t="save"></a>
+    </div>
+    <button class="btn ghost" id="again" type="button" data-t="again"></button>
+  </div>
+</div>
+
+<div class="top">
+  <a class="back" data-hub="../" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
+  <span class="pill" id="status" aria-live="polite"></span>
+</div>
+<div class="tip" id="tip" role="status"></div>
+<div class="flash" id="flash"></div>
+
+<div class="dock">
+  <div class="filters" id="filters" role="group"></div>
+  <button class="shutter" id="shutter" type="button" data-t-aria="shoot"><span></span></button>
+</div>
+
+<a-scene id="scene" mindar-face="autoStart: false; uiLoading: no; uiScanning: no; uiError: no"
+  color-space="sRGB" renderer="colorManagement: true; alpha: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-camera active="false" position="0 0 0"></a-camera>
+  <a-light type="ambient" intensity="1"></a-light>
+  <a-light type="directional" intensity="1.2" position="0 1 1"></a-light>
+  <!-- 0: foam moustache (upper lip) -->
+  <a-entity class="fx fx0" mindar-face-target="anchorIndex: 0">
+    <a-plane id="stache" position="0 0.13 0.06" width="0.85" height="0.32" material="transparent: true; shader: flat; alphaTest: 0.05"></a-plane>
+  </a-entity>
+  <!-- 1: the signature line across the eyes + wordmark above the head -->
+  <a-entity class="fx fx1" mindar-face-target="anchorIndex: 168" visible="false">
+    <a-plane id="lineGlow" position="0 0 0.08" width="2.6" height="0.34" material="transparent: true; shader: flat; blending: additive; depthWrite: false"></a-plane>
+    <a-plane position="0 0 0.1" width="2.3" height="0.035" material="color: #FFE2A6; shader: flat"
+      animation="property: scale; from: 0.6 1 1; to: 1 1 1; dir: alternate; loop: true; dur: 1400; easing: easeInOutSine"></a-plane>
+  </a-entity>
+  <a-entity class="fx fx1" mindar-face-target="anchorIndex: 10" visible="false">
+    <a-plane id="wmPlane" position="0 0.42 -0.1" width="1.1" height="0.25" material="transparent: true; shader: flat"></a-plane>
+  </a-entity>
+  <!-- 2: crown of the four letters, orbiting -->
+  <a-entity class="fx fx2" mindar-face-target="anchorIndex: 10" visible="false">
+    <a-entity id="crown" position="0 0.55 -0.45" animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 9000; easing: linear"></a-entity>
+  </a-entity>
+</a-scene>
+
+<script type="module">
+import { initLang, WORDMARK_SVG } from '../shared/lang.js';
+import { drawWordmark, drawLetter, DAY } from '../shared/moka-art.js';
+
+document.getElementById('wm').innerHTML = WORDMARK_SVG;
+const T = {
+  az: { back: 'AR menyusu', eyebrow: 'AR · Ön kamera', title: 'Qəhvə selfisi', lead: 'Üç MOKA filtri: köpük bığ, üzündən keçən imza xətti və başının üstündə fırlanan dörd hərf. Şəkil çək, birbaşa paylaş.',
+    start: 'Kameranı aç', qr: 'Ön kameralı telefonda daha yaxşıdır: QR-ı skan et.', privacy: 'Görüntü cihazından çıxmır: hər şey brauzerdə işlənir, heç nə yüklənmir.',
+    searching: 'Üz axtarılır…', found: 'Hazır', camErr: 'Kamera açılmadı', tip: 'Üzünü kadrın ortasına gətir və işıqlı yerdə dur.', camTip: 'Brauzer parametrlərində bu sayta kamera icazəsi ver və səhifəni yenilə.',
+    f: ['Köpük', 'Xətt', 'Tac'], shoot: 'Şəkil çək', resultT: 'Bu fincan sənindir', share: 'Paylaş', save: 'Yadda saxla', again: 'Yenidən çək',
+    frame: '4 hərf · 4 dəmləmə · 1 xətt', tag: '#mokacoffeebaku' },
+  en: { back: 'AR menu', eyebrow: 'AR · Front camera', title: 'Coffee selfie', lead: 'Three MOKA filters: a foam moustache, the signature line across your face and four letters circling your head. Take a photo and share it right away.',
+    start: 'Open camera', qr: 'Best on a phone with a front camera: scan the QR code.', privacy: 'The image never leaves your device: everything runs in the browser, nothing is uploaded.',
+    searching: 'Looking for a face…', found: 'Ready', camErr: 'Camera unavailable', tip: 'Bring your face to the centre and stay in good light.', camTip: 'Allow camera access for this site in your browser settings, then reload.',
+    f: ['Foam', 'Line', 'Crown'], shoot: 'Take photo', resultT: 'This cup is yours', share: 'Share', save: 'Save', again: 'Take another',
+    frame: '4 letters · 4 brews · 1 line', tag: '#mokacoffeebaku' },
+  ru: { back: 'Меню AR', eyebrow: 'AR · Фронтальная камера', title: 'Кофейное селфи', lead: 'Три фильтра MOKA: усы из пенки, фирменная линия через лицо и четыре буквы над головой. Сделайте фото и сразу поделитесь.',
+    start: 'Открыть камеру', qr: 'Лучше на телефоне с фронтальной камерой: отсканируйте QR.', privacy: 'Изображение не покидает устройство: всё работает в браузере, ничего не загружается.',
+    searching: 'Ищу лицо…', found: 'Готово', camErr: 'Камера недоступна', tip: 'Держите лицо в центре кадра и при хорошем свете.', camTip: 'Разрешите сайту доступ к камере в настройках браузера и обновите страницу.',
+    f: ['Пенка', 'Линия', 'Корона'], shoot: 'Сделать фото', resultT: 'Эта чашка — ваша', share: 'Поделиться', save: 'Сохранить', again: 'Ещё раз',
+    frame: '4 буквы · 4 способа · 1 линия', tag: '#mokacoffeebaku' },
+};
+
+// ---------- textures drawn in the browser ----------
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+function stacheTex() {
+  const c = mk(512, 192), g = c.getContext('2d');
+  // milk-foam moustache: two curled lobes with a crema edge
+  const lobe = (dir) => {
+    g.save(); g.translate(256, 70); g.scale(dir, 1);
+    g.beginPath();
+    g.moveTo(0, 0);
+    g.bezierCurveTo(40, -40, 120, -30, 170, 10);
+    g.bezierCurveTo(205, 40, 235, 30, 240, 0);
+    g.bezierCurveTo(258, 40, 230, 95, 175, 90);
+    g.bezierCurveTo(120, 88, 60, 70, 0, 52);
+    g.closePath(); g.restore();
+  };
+  g.shadowColor = 'rgba(94,59,38,0.55)'; g.shadowBlur = 18; g.shadowOffsetY = 6;
+  [1, -1].forEach((d) => { lobe(d); g.fillStyle = '#F5F1EA'; g.fill(); });
+  g.shadowColor = 'transparent';
+  // foam bubbles
+  for (let i = 0; i < 70; i++) {
+    const x = 40 + Math.random() * 432, y = 50 + Math.random() * 80;
+    g.beginPath(); g.arc(x, y, 2 + Math.random() * 5, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(232,220,204,0.7)'; g.fill();
+  }
+  g.globalCompositeOperation = 'destination-in';
+  [1, -1].forEach((d) => { lobe(d); g.fill(); });
+  return c.toDataURL();
+}
+function glowTex() {
+  const c = mk(512, 128), g = c.getContext('2d');
+  const grad = g.createRadialGradient(256, 64, 0, 256, 64, 256);
+  grad.addColorStop(0, 'rgba(255,226,166,0.9)'); grad.addColorStop(0.4, 'rgba(242,199,110,0.25)'); grad.addColorStop(1, 'rgba(242,199,110,0)');
+  g.fillStyle = grad; g.save(); g.scale(1, 0.25); g.fillRect(0, 0, 512, 512); g.restore();
+  return c.toDataURL();
+}
+function wmTex() {
+  const c = mk(1024, 232), g = c.getContext('2d');
+  g.shadowColor = 'rgba(0,0,0,0.45)'; g.shadowBlur = 16;
+  drawWordmark(g, 12, 12, 1000, '#F5F1EA');
+  return c.toDataURL();
+}
+function letterTex(id, color) {
+  const c = mk(256, 256), g = c.getContext('2d');
+  g.shadowColor = 'rgba(0,0,0,0.4)'; g.shadowBlur = 12;
+  drawLetter(g, id, 128, 128, 200, color);
+  return c.toDataURL();
+}
+document.getElementById('stache').setAttribute('material', `src: url(${stacheTex()}); transparent: true; shader: flat; alphaTest: 0.05`);
+document.getElementById('lineGlow').setAttribute('material', `src: url(${glowTex()}); transparent: true; shader: flat; blending: additive; depthWrite: false`);
+document.getElementById('wmPlane').setAttribute('material', `src: url(${wmTex()}); transparent: true; shader: flat`);
+const crown = document.getElementById('crown');
+['M', 'O', 'K', 'A'].forEach((id, i) => {
+  const a = (i / 4) * Math.PI * 2, r = 0.62;
+  const e = document.createElement('a-plane');
+  e.setAttribute('width', '0.36'); e.setAttribute('height', '0.36');
+  e.setAttribute('position', `${Math.sin(a) * r} 0 ${Math.cos(a) * r}`);
+  e.setAttribute('rotation', `0 ${(a * 180) / Math.PI} 0`);
+  e.setAttribute('material', `src: url(${letterTex(id, DAY[i + 1].bg)}); transparent: true; shader: flat; side: double`);
+  crown.appendChild(e);
+});
+
+// ---------- UI ----------
+let state = 'searching', filter = 0;
+const statusEl = document.getElementById('status'), tip = document.getElementById('tip');
+let tt = T.az;
+function setStatus(s) { state = s; statusEl.textContent = tt[s]; }
+const filtersEl = document.getElementById('filters');
+const ICONS = [
+  '<svg viewBox="0 0 40 40" width="30"><path d="M20 22c-4-6-12-6-15-1 4 0 7 4 15 3 8 1 11-3 15-3-3-5-11-5-15 1z" fill="#F5F1EA"/></svg>',
+  '<svg viewBox="0 0 40 40" width="30"><rect x="4" y="18.5" width="32" height="3" fill="#FFE2A6"/></svg>',
+  '<svg viewBox="0 0 40 40" width="30"><path d="M6 28l4-14 6 7 4-10 4 10 6-7 4 14z" fill="#D9B56A"/></svg>',
+];
+function renderFilters() {
+  if (!filtersEl) return;
+  filtersEl.innerHTML = '';
+  tt.f.forEach((name, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.setAttribute('aria-pressed', i === filter ? 'true' : 'false');
+    b.innerHTML = `<span class="dot" aria-hidden="true">${ICONS[i]}</span><span>${name}</span>`;
+    b.addEventListener('click', () => setFilter(i));
+    filtersEl.appendChild(b);
+  });
+}
+function setFilter(i) {
+  filter = i;
+  document.querySelectorAll('.fx').forEach((e) => e.setAttribute('visible', e.classList.contains('fx' + i)));
+  renderFilters();
+  try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
+}
+initLang(T, { home: '../../', onChange: (t) => { tt = t; statusEl.textContent = t[state]; renderFilters(); } });
+
+const scene = document.getElementById('scene');
+let tipTimer;
+document.getElementById('start').addEventListener('click', () => {
+  document.getElementById('intro').classList.add('hidden');
+  setStatus('searching');
+  const go = () => { scene.systems['mindar-face-system'].start(); tipTimer = setTimeout(() => { if (state === 'searching') { tip.textContent = tt.tip; tip.classList.add('show'); } }, 7000); };
+  if (scene.hasLoaded) go(); else scene.addEventListener('loaded', go);
+});
+scene.addEventListener('arReady', () => setStatus('searching'));
+scene.addEventListener('arError', () => { setStatus('camErr'); tip.textContent = tt.camTip; tip.classList.add('show'); });
+document.querySelectorAll('[mindar-face-target]').forEach((el) => {
+  el.addEventListener('targetFound', () => { setStatus('found'); tip.classList.remove('show'); clearTimeout(tipTimer); });
+  el.addEventListener('targetLost', () => setStatus('searching'));
+});
+
+// ---------- photo: camera frame + 3D layer + brand strip ----------
+let lastBlob = null;
+async function capture() {
+  const video = document.querySelector('video');
+  if (!video || !video.videoWidth) return;
+  const W = window.innerWidth, H = window.innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  const strip = Math.round(W * 0.2);
+  const c = mk(Math.round(W * dpr), Math.round((H + strip) * dpr)), g = c.getContext('2d');
+  g.scale(dpr, dpr);
+  // video exactly as displayed (MindAR mirrors the front camera with CSS)
+  const r = video.getBoundingClientRect();
+  const mirrored = (getComputedStyle(video).transform || '').startsWith('matrix(-1');
+  g.save();
+  if (mirrored) { g.translate(r.left * 2 + r.width, 0); g.scale(-1, 1); }
+  g.drawImage(video, r.left, r.top, r.width, r.height);
+  g.restore();
+  // render the 3D layer now so its drawing buffer is fresh
+  scene.renderer.render(scene.object3D, scene.camera);
+  const cr = scene.canvas.getBoundingClientRect();
+  g.drawImage(scene.canvas, cr.left, cr.top, cr.width, cr.height);
+  // brand strip with the signature line
+  g.fillStyle = '#1B1714'; g.fillRect(0, H, W, strip);
+  g.fillStyle = '#FFE2A6'; g.fillRect(0, H, W, Math.max(3, W * 0.008));
+  drawWordmark(g, W * 0.06, H + strip * 0.3, W * 0.32, '#F5F1EA');
+  g.fillStyle = '#B8B0A6'; g.textAlign = 'right';
+  g.font = `700 ${Math.round(W * 0.03)}px Mulish, Arial, sans-serif`;
+  g.fillText(tt.frame, W * 0.94, H + strip * 0.45);
+  g.fillStyle = '#C89B6D'; g.fillText(tt.tag, W * 0.94, H + strip * 0.72);
+  return new Promise((res) => c.toBlob(res, 'image/jpeg', 0.9));
+}
+document.getElementById('shutter').addEventListener('click', async () => {
+  const f = document.getElementById('flash');
+  f.classList.add('on'); requestAnimationFrame(() => requestAnimationFrame(() => f.classList.remove('on')));
+  try { navigator.vibrate && navigator.vibrate(20); } catch (e) {}
+  lastBlob = await capture();
+  if (!lastBlob) return;
+  const url = URL.createObjectURL(lastBlob);
+  document.getElementById('shot').src = url;
+  document.getElementById('shot').alt = tt.resultT;
+  document.getElementById('save').href = url;
+  document.getElementById('result').classList.remove('hidden');
+  const file = new File([lastBlob], 'moka-selfie.jpg', { type: 'image/jpeg' });
+  document.getElementById('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
+});
+document.getElementById('share').addEventListener('click', async () => {
+  if (!lastBlob) return;
+  const file = new File([lastBlob], 'moka-selfie.jpg', { type: 'image/jpeg' });
+  try { await navigator.share({ files: [file], text: `${tt.frame} ${tt.tag}` }); } catch (e) {}
+});
+document.getElementById('again').addEventListener('click', () => document.getElementById('result').classList.add('hidden'));
+</script>
+</body>
+</html>

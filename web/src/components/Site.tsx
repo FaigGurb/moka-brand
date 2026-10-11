@@ -3,12 +3,16 @@ import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/hero/Hero";
 import { Concept } from "@/components/sections/Concept";
 import { BeanStory } from "@/components/sections/BeanStory";
+import { BrewGuide } from "@/components/sections/BrewGuide";
+import { Apps } from "@/components/sections/Apps";
 import { DayPalette } from "@/components/sections/DayPalette";
 import { Roast } from "@/components/sections/Roast";
 import { Tiers } from "@/components/sections/Tiers";
 import { Store } from "@/components/sections/Store";
 import { Experience, FinalCta } from "@/components/sections/Experience";
 import { ScrollRefresh } from "@/components/ScrollRefresh";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import { BeanField } from "@/components/beans/BeanField";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
 
@@ -29,13 +33,17 @@ export function Site({ locale }: { locale: Locale }) {
         <BeanStory />
         <DayPalette />
         <Roast />
+        <BrewGuide />
         <Tiers />
         <Store />
+        <Apps />
         <Experience />
         <FinalCta />
       </main>
       <Footer />
       <ScrollRefresh />
+      <SmoothScroll />
+      <BeanField />
     </LocaleProvider>
   );
 }

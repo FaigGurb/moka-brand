@@ -23,7 +23,7 @@ export function Concept() {
         gsap.set(panels, { autoAlpha: 0, y: 30 });
         const tl = gsap.timeline({
           defaults: { ease: "power2.inOut" },
-          scrollTrigger: { trigger: ".c-pin", start: "top top", end: "+=260%", pin: true, scrub: 0.6, anticipatePin: 1 },
+          scrollTrigger: { trigger: ".c-pin", start: "top top", end: "+=260%", pin: true, scrub: 1, anticipatePin: 1 },
         });
         tl.to(".c-line", { scaleX: 1, duration: 4, ease: "none" }, 0);
         STEPS.forEach((_, i) => {

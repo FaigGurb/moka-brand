@@ -30,7 +30,7 @@ export function Experience() {
   );
 
   return (
-    <section id="tecrube" ref={root} className="bg-paper text-espresso">
+    <section id="tecrube" ref={root} className="bg-paper-2 text-espresso">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-axsam-ink">{t.exp.eyebrow}</p>
@@ -40,27 +40,37 @@ export function Experience() {
         </div>
 
         <div className="x-grid mt-14 grid gap-6 md:grid-cols-2">
-          <a href={LINKS.ar} className="x-card group flex flex-col overflow-hidden bg-espresso text-paper">
-            <div className="relative aspect-[2/1] overflow-hidden bg-espresso-2">
+          <div className="x-card group flex flex-col overflow-hidden bg-espresso text-paper">
+            <a href={LINKS.ar} className="relative block aspect-[2/1] overflow-hidden bg-espresso-2" tabIndex={-1} aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={LINKS.arCard}
-                alt={t.exp.arAlt}
+                alt=""
                 className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]"
                 loading="lazy"
               />
-            </div>
+            </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
               <p className="eyebrow text-gunorta">{t.exp.arEyebrow}</p>
               <h3 className="text-[30px] leading-tight font-medium">{t.exp.arTitle}</h3>
-              <p className="max-w-[44ch] text-[15px] leading-relaxed text-muted-dark">
-                {t.exp.arText}
-              </p>
-              <span className="mt-auto inline-flex items-center gap-3 text-[13px] font-bold tracking-[0.14em] uppercase">
+              <p className="max-w-[44ch] text-[15px] leading-relaxed text-muted-dark">{t.exp.arText}</p>
+              <ul className="grid gap-2 sm:grid-cols-3">
+                {[LINKS.arScan, LINKS.arTable, LINKS.arSelfie].map((href, i) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      className="flex h-full min-h-12 items-center justify-between gap-2 border border-paper/20 px-3 py-2.5 text-[13px] font-bold transition-colors hover:border-glow hover:text-glow"
+                    >
+                      {t.exp.arModes[i]} <span aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a href={LINKS.ar} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-bold tracking-[0.14em] uppercase">
                 {t.exp.arCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
-              </span>
+              </a>
             </div>
-          </a>
+          </div>
 
           <a href={LINKS.game} className="x-card group flex flex-col overflow-hidden bg-seher text-espresso">
             <div className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#BE8F60]">

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOKA AR · Kart</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+  :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
+  a-scene{position:fixed;inset:0}
+  .ui{position:fixed;left:0;right:0;z-index:10;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+  .ui.top{top:env(safe-area-inset-top,0px)}
+  .ui > *{pointer-events:auto}
+  .wm{height:18px;width:auto;color:var(--paper)}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--paper);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 12px 0 8px;background:rgba(27,23,20,.78);border:1.5px solid rgba(245,241,234,.4)}
+  .back .ar{width:16px;height:16px}
+  .pill{background:rgba(27,23,20,.8);border:1.5px solid var(--paper);padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .tip{position:fixed;left:16px;right:16px;top:calc(76px + env(safe-area-inset-top,0px));z-index:10;background:rgba(27,23,20,.9);border-left:4px solid var(--bamboo);padding:12px 14px;font-size:14px;line-height:1.45;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s;pointer-events:none}
+  .tip.show{opacity:1;transform:none}
+  .card{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;background:var(--paper);color:var(--esp);padding:16px 18px;display:flex;flex-direction:column;gap:4px;transform:translateY(150%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .card.show{transform:none}
+  .card .eb{font-size:11px;font-weight:700;letter-spacing:.2em;color:#5E5852;text-transform:uppercase}
+  .card .o{font-family:var(--display);font-size:28px;line-height:1.1}
+  .card .n{font-size:14px;color:#5E5852}
+  .card .bar{height:6px;background:#E9E4DC;margin-top:8px;position:relative}
+  .card .bar i{position:absolute;left:0;top:0;bottom:0;width:42%;background:#8A5A3B}
+  .card .acts{display:flex;gap:8px;margin-top:10px}
+  .card button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 14px;border:0;cursor:pointer;background:var(--esp);color:var(--paper)}
+  .card button.ghost{background:transparent;color:var(--esp);border:1.5px solid rgba(27,23,20,.35)}
+  .intro{position:fixed;inset:0;z-index:20;background:var(--esp);overflow-y:auto}
+  .intro .in{min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto}
+  .intro .bar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .intro h1{font-family:var(--display);font-weight:500;font-size:clamp(32px,8vw,46px);line-height:1.08;margin:0}
+  .intro p{margin:0;color:var(--muted);line-height:1.55}
+  .intro ol{margin:0;padding-left:20px;color:#D6D2CB;line-height:1.6}
+  .intro .start{font:inherit;font-weight:700;letter-spacing:.12em;font-size:15px;text-transform:uppercase;background:var(--paper);color:var(--esp);border:0;padding:16px;cursor:pointer;min-height:52px}
+  .intro a{color:var(--oak)}
+  .intro .line{height:4px;background:var(--paper)}
+  .intro small{color:var(--muted)}
+  .langs{display:flex;gap:6px}
+  .langs button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;background:transparent;color:var(--muted);border:1.5px solid #3A3530;min-width:44px;min-height:40px;cursor:pointer}
+  .langs button[aria-pressed="true"]{color:var(--esp);background:var(--paper);border-color:var(--paper)}
+  button:focus-visible,a:focus-visible{outline:3px solid var(--bamboo);outline-offset:3px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <div class="in">
+    <div class="bar">
+      <a class="back" data-hub href="../"><svg viewBox="0 0 16 16" aria-hidden="true" class="ar"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back">Sayta qayıt</span></a>
+      <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+    </div>
+    <svg viewBox="0 0 675 155" aria-hidden="true" class="wm" style="height:auto;width:180px"><defs><clipPath id="s"><rect x="0" y="0" width="675" height="74.5"/><rect x="0" y="79.5" width="675" height="75.5"/></clipPath></defs><g fill="currentColor"><g clip-path="url(#s)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g><path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/></g></svg>
+    <div class="line"></div>
+    <h1 data-t="title">Stəkanı skan et, qəhvə tökülsün</h1>
+    <ol>
+      <li data-t="s1"></li>
+      <li><span data-t="s2a"></span> <a href="../target.png" target="_blank" rel="noopener" data-t="s2b"></a><span data-t="s2c"></span></li>
+      <li data-t="s3"></li>
+    </ol>
+    <button class="start" id="start" type="button" data-t="start">Kameranı aç</button>
+    <small data-t="note"></small>
+  </div>
+</div>
+
+<div class="ui top">
+  <a class="back" data-hub href="../"><svg viewBox="0 0 16 16" aria-hidden="true" class="ar"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back">Sayta qayıt</span></a>
+  <span class="pill" id="status" aria-live="polite"></span>
+</div>
+<div class="tip" id="tip" role="status"></div>
+
+<div class="card" id="card" aria-live="polite">
+  <span class="eb" data-t="cupEb">Bu fincanda</span>
+  <span class="o" data-t="origin">Kolumbiya</span>
+  <span class="n" data-t="notes"></span>
+  <div class="bar" aria-hidden="true"><i></i></div>
+  <div class="acts"><button type="button" id="replay" data-t="replay">Yenidən tök</button><a class="back" style="background:transparent;color:#1B1714;border-color:rgba(27,23,20,.35)" data-home href="../../" data-t="site">Sayt</a></div>
+</div>
+
+<a-scene id="scene" mindar-image="imageTargetSrc: ../target.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001"
+  color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-assets></a-assets>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-light type="ambient" intensity="1.2"></a-light>
+  <a-light type="directional" intensity="2" position="0.5 1 1"></a-light>
+
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
+    <!-- the four letters (brewing tools) rise from the card -->
+    <a-entity id="letters" position="0.1 0.34 0"></a-entity>
+    <!-- Chemex stands over the oak panel of the card (left 40%) -->
+    <a-entity id="chemex" position="-0.3 0.02 0.12" scale="0.001 0.001 0.001"
+      animation__in="property: scale; to: 1 1 1; dur: 700; easing: easeOutBack; startEvents: show"
+      animation__out="property: scale; to: 0.001 0.001 0.001; dur: 250; startEvents: hide">
+      <!-- glass -->
+      <a-cone position="0 0.14 0" radius-bottom="0.025" radius-top="0.15" height="0.28" open-ended="true" segments-radial="40"
+        material="color: #F5F1EA; opacity: 0.28; transparent: true; side: double; metalness: 0.1; roughness: 0.05"></a-cone>
+      <a-cone position="0 -0.15 0" radius-bottom="0.16" radius-top="0.025" height="0.3" open-ended="true" segments-radial="40"
+        material="color: #F5F1EA; opacity: 0.28; transparent: true; side: double; metalness: 0.1; roughness: 0.05"></a-cone>
+      <!-- wooden collar -->
+      <a-cylinder position="0 0.01 0" radius="0.06" height="0.07" segments-radial="32" material="color: #C89B6D; roughness: 0.8"></a-cylinder>
+      <a-torus position="0 0.01 0.045" radius="0.012" radius-tubular="0.003" rotation="0 90 0" material="color: #1B1714"></a-torus>
+      <!-- coffee fills from the bottom up to the brand line (70%) -->
+      <a-entity id="fill" position="0 -0.298 0" scale="1 0.001 1"
+        animation__pour="property: scale; from: 1 0.001 1; to: 1 0.7 1; dur: 2600; delay: 600; easing: easeInOutSine; startEvents: pour">
+        <a-cone position="0 0.148 0" radius-bottom="0.152" radius-top="0.02" height="0.296" segments-radial="40"
+          material="color: #3B2416; roughness: 0.35; metalness: 0"></a-cone>
+      </a-entity>
+      <!-- the brand line: a paper ring at the fill level -->
+      <a-torus id="ring" position="0 -0.09 0" rotation="90 0 0" radius="0.064" radius-tubular="0.004" segments-radial="8" segments-tubular="48"
+        material="color: #F5F1EA; emissive: #F5F1EA; emissiveIntensity: 0.6; opacity: 0; transparent: true"
+        animation__ring="property: material.opacity; from: 0; to: 1; dur: 400; delay: 3200; startEvents: pour"></a-torus>
+      <!-- stream -->
+      <a-cylinder id="stream" position="0 0.17 0" radius="0.007" height="0.62" material="color: #3B2416; opacity: 0; transparent: true"
+        animation__on="property: material.opacity; from: 0; to: 1; dur: 250; delay: 400; startEvents: pour"
+        animation__off="property: material.opacity; from: 1; to: 0; dur: 300; delay: 3100; startEvents: pour"></a-cylinder>
+    </a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+(function(){
+  var T={
+    az:{back:'AR menyusu',site:'Sayt',title:'Stəkanı skan et, qəhvə tökülsün',s1:'Kameraya icazə ver.',s2a:'Telefonu stəkan qoluna və ya',s2b:'AR kartına',s2c:' tut.',s3:'Dörd hərf kartdan qalxır, Chemex peyda olur və qəhvə imza xəttinə qədər dolur.',start:'Kameranı aç',note:'Kartı başqa ekranda açıb ona da tuta bilərsən. Konsept / test işi.',
+      searching:'Kart axtarılır…',found:'Tapıldı',camErr:'Kamera açılmadı',tip:'Kartı tam kadra sal, işıqlı yerdə saxla və telefonu 20–40 sm məsafədə tut.',camTip:'Brauzerin parametrlərində bu sayta kamera icazəsi ver və səhifəni yenilə.',
+      cupEb:'Bu fincanda',origin:'Kolumbiya',notes:'Orta qovurma · karamel · qırmızı alma (nümunə)',replay:'Yenidən tök'},
+    en:{back:'AR menu',site:'Site',title:'Scan the cup, watch the coffee pour',s1:'Allow camera access.',s2a:'Point your phone at the cup sleeve or the',s2b:'AR card',s2c:'.',s3:'Four letters rise from the card, a Chemex appears and fills to the signature line.',start:'Open camera',note:'You can open the card on another screen and point at it. Concept / test project.',
+      searching:'Looking for the card…',found:'Found',camErr:'Camera unavailable',tip:'Fit the whole card in the frame, keep it well lit and hold the phone 20–40 cm away.',camTip:'Allow camera access for this site in your browser settings, then reload the page.',
+      cupEb:'In this cup',origin:'Colombia',notes:'Medium roast · caramel · red apple (sample)',replay:'Pour again'},
+    ru:{back:'Меню AR',site:'Сайт',title:'Наведите на стакан — кофе нальётся',s1:'Разрешите доступ к камере.',s2a:'Наведите телефон на рукав стакана или на',s2b:'AR-карточку',s2c:'.',s3:'С карточки поднимаются четыре буквы, появляется Chemex, и кофе наполняет его до фирменной линии.',start:'Открыть камеру',note:'Карточку можно открыть на другом экране и навести на неё. Концепт / тестовый проект.',
+      searching:'Ищу карточку…',found:'Найдено',camErr:'Камера недоступна',tip:'Поместите карточку в кадр целиком, держите её на свету, телефон — на расстоянии 20–40 см.',camTip:'Разрешите сайту доступ к камере в настройках браузера и обновите страницу.',
+      cupEb:'В этой чашке',origin:'Колумбия',notes:'Средняя обжарка · карамель · красное яблоко (пример)',replay:'Налить ещё раз'}
+  };
+  var LANGS=['az','en','ru'];
+  var q=new URLSearchParams(location.search).get('lang'),saved=null;
+  try{saved=localStorage.getItem('moka-lang')}catch(e){}
+  var lang=LANGS.indexOf(q)>-1?q:LANGS.indexOf(saved)>-1?saved:'az',t=T[lang],state='searching';
+  var status=document.getElementById('status'),tip=document.getElementById('tip');
+  function setStatus(s){state=s;status.textContent=t[s]}
+  function applyLang(l){
+    lang=l;t=T[l];try{localStorage.setItem('moka-lang',l)}catch(e){}
+    document.documentElement.lang=l;
+    document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t[el.getAttribute('data-t')]});
+    document.querySelectorAll('.langs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false')});
+    document.querySelectorAll('[data-home]').forEach(function(a){a.href=l==='az'?'../../':'../../'+l+'/'});
+    document.querySelectorAll('[data-hub]').forEach(function(a){a.href='../'+(l==='az'?'':'?lang='+l)});
+    window.__mokaLang=l;if(window.__mokaLetters)window.__mokaLetters(l);
+    setStatus(state);
+  }
+  document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
+  applyLang(lang);
+
+  var scene=document.getElementById('scene'),intro=document.getElementById('intro'),card=document.getElementById('card');
+  var target=document.getElementById('target'),chemex=document.getElementById('chemex');
+  var parts=['fill','ring','stream'].map(function(id){return document.getElementById(id)});
+  var tipTimer=null;
+  function showTip(text){tip.textContent=text;tip.classList.add('show')}
+  function hideTip(){tip.classList.remove('show')}
+  function armTip(){clearTimeout(tipTimer);tipTimer=setTimeout(function(){if(state==='searching')showTip(t.tip)},8000)}
+  function pour(){parts.forEach(function(p){p.emit('pour')})}
+
+  document.getElementById('start').addEventListener('click',function(){
+    intro.classList.add('hidden');
+    var go=function(){scene.systems['mindar-image-system'].start();armTip()};
+    if(scene.hasLoaded)go();else scene.addEventListener('loaded',go);
+  });
+  document.getElementById('replay').addEventListener('click',pour);
+  scene.addEventListener('arError',function(){setStatus('camErr');showTip(t.camTip)});
+  target.addEventListener('targetFound',function(){
+    setStatus('found');hideTip();clearTimeout(tipTimer);
+    card.classList.add('show');document.querySelectorAll('.lt').forEach(function(e){e.emit('show')});setTimeout(function(){chemex.emit('show');pour()},650);
+    try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}
+  });
+  target.addEventListener('targetLost',function(){
+    setStatus('searching');card.classList.remove('show');chemex.emit('hide');document.querySelectorAll('.lt').forEach(function(e){e.emit('hide')});armTip();
+  });
+})();
+</script>
+<script type="module">
+import { drawLetter } from '../shared/moka-art.js';
+const TOOLS = { az: ['Moka pot', 'Fincan', 'Chemex', 'V60'], en: ['Moka pot', 'Cup', 'Chemex', 'V60'], ru: ['Moka pot', 'Чашка', 'Chemex', 'V60'] };
+const COLORS = ['#C89B6D', '#D9B56A', '#A8643A', '#F5F1EA'];
+function tex(id, label, color) {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 320;
+  const g = c.getContext('2d');
+  g.fillStyle = 'rgba(27,23,20,0.82)'; g.fillRect(0, 0, 256, 320);
+  g.fillStyle = color; g.fillRect(0, 312, 256, 8);
+  drawLetter(g, id, 128, 130, 170, '#F5F1EA');
+  g.fillStyle = '#F5F1EA'; g.font = '700 30px Mulish, Arial, sans-serif'; g.textAlign = 'center'; g.fillText(label, 128, 278);
+  return c.toDataURL();
+}
+const root = document.getElementById('letters');
+const ids = ['M', 'O', 'K', 'A'];
+function build(l) {
+  root.innerHTML = '';
+  ids.forEach((id, i) => {
+    const e = document.createElement('a-plane');
+    e.classList.add('lt');
+    e.setAttribute('width', '0.1'); e.setAttribute('height', '0.125');
+    e.setAttribute('position', `${i * 0.115} -0.05 0`);
+    e.setAttribute('scale', '0.001 0.001 0.001');
+    e.setAttribute('material', `src: url(${tex(id, TOOLS[l][i], COLORS[i])}); transparent: true; shader: flat; side: double`);
+    e.setAttribute('animation__in', `property: scale; to: 1 1 1; dur: 600; delay: ${i * 150}; easing: easeOutBack; startEvents: show`);
+    e.setAttribute('animation__rise', `property: position; from: ${i * 0.115} -0.05 0; to: ${i * 0.115} 0 0.08; dur: 700; delay: ${i * 150}; easing: easeOutCubic; startEvents: show`);
+    e.setAttribute('animation__bob', `property: rotation; from: 0 -8 0; to: 0 8 0; dir: alternate; loop: true; dur: ${1800 + i * 200}; easing: easeInOutSine`);
+    e.setAttribute('animation__out', 'property: scale; to: 0.001 0.001 0.001; dur: 200; startEvents: hide');
+    root.appendChild(e);
+  });
+}
+window.__mokaLetters = build;
+build(window.__mokaLang || 'az');
+</script>
+</body>
+</html>

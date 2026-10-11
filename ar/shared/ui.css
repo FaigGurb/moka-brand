@@ -1,0 +1,17 @@
+/* Shared look of the MOKA AR pages (mirrors the site tokens). */
+:root{--esp:#1B1714;--esp2:#26211D;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--copper:#A8643A;--rust:#8E2F22;--glow:#FFE2A6;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--esp);color:var(--paper);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--paper);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 12px 0 8px;background:rgba(27,23,20,.78);border:1.5px solid rgba(245,241,234,.4)}
+.back svg{width:16px;height:16px}
+.langs{display:flex;gap:6px}
+.langs button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;background:transparent;color:var(--muted);border:1.5px solid #3A3530;min-width:44px;min-height:40px;cursor:pointer}
+.langs button[aria-pressed="true"]{color:var(--esp);background:var(--paper);border-color:var(--paper)}
+.btn{font:inherit;font-weight:700;letter-spacing:.12em;font-size:14px;text-transform:uppercase;background:var(--paper);color:var(--esp);border:0;padding:15px 18px;cursor:pointer;min-height:50px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.ghost{background:transparent;color:var(--paper);border:1.5px solid rgba(245,241,234,.4)}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--oak)}
+h1,h2{font-family:var(--display);font-weight:500;margin:0;text-wrap:balance}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--bamboo);outline-offset:3px}
+.hidden{display:none!important}
+.wm{display:block;color:var(--paper)}

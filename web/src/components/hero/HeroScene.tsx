@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
 import { CUT_BOTTOM, CUT_TOP, LETTERS, VIEW_W, halves, type Pt } from "@/lib/logo";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
+import { BeanPush } from "@/lib/beanPhysics";
+import { installPointer, pointer, pointerNDC } from "@/lib/pointer";
 
 // 1 SVG unit = 0.01 world units; the wordmark is ~6.75 units wide, centred on the cut line.
 const S = 0.01;
@@ -205,8 +207,10 @@ function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
 /** Roasted beans drifting behind the wordmark; they scatter outwards as the page scrolls. */
 function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
   const mesh = useRef<THREE.InstancedMesh>(null);
-  const { viewport } = useThree();
+  const { viewport, gl } = useThree();
   const COUNT = touch ? 9 : 16;
+  const push = useMemo(() => new BeanPush(COUNT), [COUNT]);
+  useEffect(() => installPointer(), []);
   const geo = useMemo(() => createBeanGeometry("low"), []);
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ roughness: 0.4, metalness: 0.05 }), []);
   const beans = useMemo(() => {
@@ -241,9 +245,16 @@ function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">
   const v = useMemo(() => new THREE.Vector3(), []);
   const sc = useMemo(() => new THREE.Vector3(), []);
 
-  useFrame((state) => {
+  const pp = useMemo(() => new THREE.Vector3(), []);
+  const pv = useMemo(() => new THREE.Vector3(), []);
+  const off = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame((state, delta) => {
     if (!mesh.current) return;
     const t = reducedMotion ? 0 : state.clock.elapsedTime;
+    const dt = Math.min(delta, 1 / 20);
+    const ndc = reducedMotion ? null : pointerNDC(gl.domElement);
+    const burst = push.tapped(pointer.tapped);
     const p = progress.current;
     const intro = reducedMotion ? 1 : THREE.MathUtils.clamp(t / 2.2, 0, 1);
     const k = 1 - Math.pow(1 - intro, 3);
@@ -257,7 +268,14 @@ function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">
         b.y * hh * 0.85 * out + Math.sin(t * 0.45 + b.ph * 1.3) * 0.2 - p * 0.6,
         b.z + p * 1.5,
       );
-      e.set(b.rot[0] + t * b.spin[0], b.rot[1] + t * b.spin[1], b.rot[2] + p * 2);
+      // pointer / finger pushes the beans (projected to the bean's depth)
+      if (ndc) {
+        pp.set(ndc.x * hw, ndc.y * hh, v.z);
+        pv.set(ndc.vx * hw, ndc.vy * hh, 0);
+      }
+      push.apply(i, v, ndc ? pp : null, ndc ? pv : null, 1.3, dt, burst);
+      v.add(push.offset(i, off));
+      e.set(b.rot[0] + t * b.spin[0] + push.spin[i], b.rot[1] + t * b.spin[1], b.rot[2] + p * 2 + push.off[i * 3 + 2]);
       q.setFromEuler(e);
       sc.setScalar(b.s * k);
       mesh.current!.setMatrixAt(i, m4.compose(v, q, sc));

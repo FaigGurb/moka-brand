@@ -8,7 +8,10 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 | Yol | Nədir |
 | --- | --- |
 | `/` · `/en/` · `/ru/` | Yeni sayt (v2) üç dildə: 3D hero, scroll hekayəsi, interaktiv qovurma xətti — `web/` qovluğundan build olunur |
-| `/ar/` | WebAR demo (A-Frame + MindAR): AR kartını skan edəndə Chemex-ə qəhvə tökülür; `?lang=en|ru` |
+| `/ar/` | AR mərkəzi: üç WebAR təcrübəsinə keçid (`?lang=en|ru`) |
+| `/ar/card/` | Kartı skan et (A-Frame + MindAR image): dörd hərf kartdan qalxır, Chemex peyda olur və qəhvə imza xəttinə qədər dolur |
+| `/ar/table/` | Masana qoy (model-viewer): stəkan, Chemex, paket və 3D loqo real ölçüdə; iPhone-da Quick Look, Android-də Scene Viewer |
+| `/ar/selfie/` | Qəhvə selfisi (MindAR face): köpük bığ, imza xətti, hərflərdən tac; şəkil çəkmə və paylaşma |
 | `/ar/target.png` | AR kartı (stəkan qolu dizaynı) |
 | `/game/` | "Xətti tut" mini oyunu (seriya bonusu, vibrasiya, nəticəni paylaşma); `?lang=en|ru` |
 | `/v1/` | Saytın əvvəlki, tək fayllı versiyası |
@@ -20,11 +23,14 @@ web/                      Next.js layihəsi (mənbə kodu)
   src/app/                layout, səhifə, qlobal stillər və dizayn tokenləri (globals.css)
   src/components/hero/    Hero və 3D səhnə (HeroScene.tsx)
   src/components/sections Konsepsiya, Dəndən fincana, Bakıda bir gün, Qovurma, Paket ailəsi, Kafedə, Təcrübə
-  src/components/beans/   "Dəndən fincana" 3D səhnəsi (BeanStoryScene.tsx) və mərhələ sərhədləri (phases.ts)
+  src/components/beans/   "Dəndən fincana" səhnəsi, bütün saytda üzən dənlər (BeanField)
+  src/components/apps/    3D stəkan (CupScene.tsx)
+  public/brand/           dizayn lövhələrinin WebP şəkilləri (Tətbiqlər bölməsi)
   src/components/ui/      MagneticButton
   src/lib/                loqo həndəsəsi (logo.ts), GSAP qeydiyyatı, hook-lar, linklər
   scripts/deploy.mjs      statik exportu repo kökünə köçürür
-ar/  game/  v1/           ayrıca statik səhifələr (build onlara toxunmur)
+ar/                       AR mərkəzi: card/, table/, selfie/, shared/ (rəsm və dil köməkçiləri), models/ (.glb + generator)
+game/  v1/                ayrıca statik səhifələr (build onlara toxunmur)
 index.html, _next/, 404*  web/-dən generasiya olunan fayllar — əllə redaktə etməyin
 ```
 
@@ -63,6 +69,19 @@ Sonra `git add -A && git commit && git push` — GitHub Pages `main` budağını
 ### Dəndən fincana (`sections/BeanStory.tsx`)
 
 Pinned 3D hekayə, bir scroll dəyəri (0–1) ilə idarə olunur: yaşıl dənlər üzür → qovrulur (rəng yaşıldan tünd qəhvəyiyə, `lib/bean.ts`) → spiral ilə Chemex-ə düşüb üyüdülür (hissəciklər filtrdə yığılır) → su tökülür, qəhvə aşağı kameraya damcılayır və imza xəttinə çatanda xətt işıqlanır. Dənlər `InstancedMesh`, üyüdülmüş qəhvə `Points`, maye isə clipping plane ilə dolur. Telefonda dən və hissəcik sayı azdır; səhnə yalnız ekranda görünəndə render olunur. Reduced-motion rejimində son kadr statik göstərilir, WebGL yoxdursa SVG "K" hərfi.
+
+### Bütün saytda dənlər
+
+`beans/BeanField.tsx` səhifənin üstündə yüngül, şəffaf bir 3D qat açır: dənlər kənarlarda üzür, scroll ilə dərinliyə görə hərəkət edir, siçana doğru azca əyilir və siçan/barmaq toxunanda itələnir (klik/toxunuş dənləri dağıdır). Hero və "Dəndən fincana" ekrandaykən bu qat gizlənir (onların öz dənləri var, eyni itələmə fizikası `lib/beanPhysics.ts` ilə). Göstərici `lib/pointer.ts`-dədir: telefonda `touchmove` scroll zamanı da işləyir.
+
+### Tətbiqlər və Dəmləmə bələdçisi
+
+- **Tətbiqlər** (`sections/Apps.tsx`): 3D götür stəkanı (sürüşdürüb fırlatmaq, S/M/L ölçü, günün rəngləri ilə qol) və Instagram profili kimi qurulmuş qalereya. Lövhələr dizayn kanvasından render olunub (`public/brand/*.webp`); şəkilə basanda böyüdülür.
+- **Dəmləmə bələdçisi** (`sections/BrewGuide.tsx`): M/O/K/A = Moka pot, Espresso, Chemex, V60. Porsiyaya görə qəhvə və su hesablanır, taymer addımları göstərir və hərf qəhvə ilə imza xəttinə qədər dolur. Rəqəmlər ümumi tövsiyədir.
+
+### Hamar scroll
+
+`SmoothScroll.tsx` — Lenis (təkərlə scroll üçün inertsiya), GSAP ticker-i ilə sinxron. Telefonda təbii scroll qalır; reduced-motion rejimində söndürülür.
 
 ## Animasiyalar
 

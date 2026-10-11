@@ -1,0 +1,144 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- Regenerates ar/models/*.glb. Serve the repo root (e.g. `npx serve .`), open /ar/models/source/generate.html,
+     then run `saveAll()` in the console to download the four .glb files. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Mulish:wght@400;700&display=swap">
+<script type="importmap">
+{ "imports": {
+  "three": "../../../web/node_modules/three/build/three.module.js",
+  "three/addons/": "../../../web/node_modules/three/examples/jsm/"
+} }
+</script>
+</head><body>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { LETTERS, HANDLE_PATH, halves, CUT_TOP, CUT_BOTTOM, paintSleeve, paintCupBody, drawWordmark, DAY } from '../../shared/moka-art.js';
+
+const canvasTex = (c) => { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
+const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+const std = (name, o) => { const m = new THREE.MeshStandardMaterial(o); m.name = name; return m; };
+
+// ---------- cup (M, 350 ml): metres ----------
+function cup() {
+  const g = new THREE.Group(); g.name = 'MOKA cup';
+  const H = 0.12, R0 = 0.029, R1 = 0.045;
+  const r = (y) => R0 + (R1 - R0) * (y / H);
+  const body = new THREE.Mesh(
+    new THREE.LatheGeometry([new THREE.Vector2(R0, 0), new THREE.Vector2(R1, H)], 64),
+    std('Paper', { map: canvasTex(paintCupBody(mk(1024, 512))), roughness: 0.75, side: THREE.DoubleSide }));
+  const y0 = H * 0.36, y1 = H * 0.7;
+  const sleeve = new THREE.Mesh(
+    new THREE.LatheGeometry([new THREE.Vector2(r(y0) + 0.0009, y0), new THREE.Vector2(r(y1) + 0.0009, y1)], 64),
+    std('Sleeve', { map: canvasTex(paintSleeve(mk(1024, 256), DAY[0])), roughness: 0.6 }));
+  sleeve.name = 'Sleeve';
+  const bottom = new THREE.Mesh(new THREE.CircleGeometry(R0, 48).rotateX(Math.PI / 2), std('PaperPlain', { color: '#efe9df', roughness: 0.8 }));
+  bottom.position.y = 0.001;
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(R1, 0.0016, 10, 64).rotateX(Math.PI / 2), std('Rim', { color: '#efe9df', roughness: 0.6 }));
+  rim.position.y = H;
+  const lidProfile = [[0, 0.009], [0.027, 0.009], [0.033, 0.0068], [0.0375, 0.0055], [0.04, 0.0032], [0.0458, 0.0026], [0.0478, 0.001], [0.0478, -0.002], [0.045, -0.0032]];
+  const lid = new THREE.Mesh(new THREE.LatheGeometry(lidProfile.map(([a, b]) => new THREE.Vector2(a, b)), 64),
+    std('Lid', { color: '#1B1714', roughness: 0.35 }));
+  lid.position.y = H;
+  g.add(body, sleeve, bottom, rim, lid);
+  return g;
+}
+
+// ---------- chemex with coffee to the line ----------
+const PROFILE = [[0,0],[0.78,0],[0.9,0.04],[0.95,0.14],[0.93,0.3],[0.76,0.62],[0.52,0.98],[0.31,1.26],[0.25,1.36],[0.3,1.46],[0.55,1.78],[0.84,2.16],[1.0,2.42],[1.05,2.5]];
+const radiusAt = (y) => { for (let i = 1; i < PROFILE.length; i++) { const [r1,y1]=PROFILE[i],[r0,y0]=PROFILE[i-1]; if (y<=y1) return r0+(r1-r0)*(y-y0)/Math.max(1e-6,y1-y0);} return 1.05; };
+function chemex() {
+  const s = 0.092; const g = new THREE.Group(); g.name = 'MOKA Chemex';
+  const glass = new THREE.Mesh(new THREE.LatheGeometry(PROFILE.map(([r, y]) => new THREE.Vector2(r * s, y * s)), 64),
+    std('Glass', { color: '#ffffff', roughness: 0.05, metalness: 0, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false }));
+  const LINE = 0.82;
+  const coffeePts = [[0, 0.03]];
+  PROFILE.filter(([, y]) => y > 0.03 && y < LINE).forEach(([r, y]) => coffeePts.push([r * 0.94, y]));
+  coffeePts.push([radiusAt(LINE) * 0.94, LINE], [0, LINE]);
+  const coffee = new THREE.Mesh(new THREE.LatheGeometry(coffeePts.map(([r, y]) => new THREE.Vector2(r * s, y * s)), 64),
+    std('Coffee', { color: '#2e180c', roughness: 0.15 }));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry((radiusAt(LINE) + 0.015) * s, 0.0012, 8, 64).rotateX(Math.PI / 2),
+    std('Line', { color: '#FFE2A6', emissive: '#FFE2A6', emissiveIntensity: 1.2 }));
+  ring.position.y = LINE * s;
+  const wood = std('Wood', { color: '#A8643A', roughness: 0.65, side: THREE.DoubleSide });
+  const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.36 * s, 0.31 * s, 0.34 * s, 40, 1, true), wood);
+  collar.position.y = 1.36 * s;
+  const tie = new THREE.Mesh(new THREE.TorusGeometry(0.345 * s, 0.012 * s, 8, 48).rotateX(Math.PI / 2), std('Leather', { color: '#C9A882', roughness: 0.8 }));
+  tie.position.y = 1.36 * s;
+  const bead = new THREE.Mesh(new THREE.SphereGeometry(0.05 * s, 16, 12), wood);
+  bead.position.set(0.37 * s, 1.24 * s, 0.05 * s);
+  const filter = new THREE.Mesh(new THREE.LatheGeometry([[0.001, 1.42], [0.46, 1.82], [0.92, 2.22], [0.98, 2.62]].map(([r, y]) => new THREE.Vector2(r * s, y * s)), 48),
+    std('Filter', { color: '#F5F1EA', roughness: 0.9, side: THREE.DoubleSide }));
+  g.add(coffee, filter, collar, tie, bead, ring, glass);
+  return g;
+}
+
+// ---------- 3D wordmark sculpture ----------
+function wordmark() {
+  const S = 0.0006, D = 0.04, CX = 337.5, CY = 155;
+  const shape = (poly) => { const sh = new THREE.Shape(); poly.forEach(([x, y], i) => { const v = [(x - CX) * S, (CY - y) * S]; i ? sh.lineTo(...v) : sh.moveTo(...v); }); sh.closePath(); return sh; };
+  const ceramic = std('Ceramic', { color: '#efe8dc', roughness: 0.35 });
+  const g = new THREE.Group(); g.name = 'MOKA wordmark';
+  const opts = { depth: D, bevelEnabled: true, bevelThickness: 0.003, bevelSize: 0.002, bevelSegments: 3, curveSegments: 32 };
+  LETTERS.forEach((l) => { const h = halves(l.poly); [h.top, h.bottom].forEach((p) => g.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shape(p), opts), ceramic))); });
+  // Chemex handle
+  const p = (x, y) => new THREE.Vector3((x - CX) * S, (CY - y) * S, D / 2);
+  const path = new THREE.CurvePath();
+  path.add(new THREE.CubicBezierCurve3(p(384, 20), p(364, 20), p(352, 36), p(352, 54)));
+  path.add(new THREE.CubicBezierCurve3(p(352, 54), p(352, 74), p(368, 86), p(386, 86)));
+  path.add(new THREE.LineCurve3(p(386, 86), p(393, 94)));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(path, 60, 0.0025, 12, false), ceramic));
+  const line = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.0016, 0.006), std('Line', { color: '#FFE2A6', emissive: '#FFE2A6', emissiveIntensity: 1.4 }));
+  line.position.set(0, (CY - (CUT_TOP + CUT_BOTTOM) / 2) * S, D / 2);
+  g.add(line);
+  // a thin espresso plinth
+  const plinth = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.008, 0.08), std('Plinth', { color: '#1B1714', roughness: 0.5 }));
+  plinth.position.set(0, -0.004, D / 2);
+  g.add(plinth);
+  g.position.y = 0.008;
+  return g;
+}
+
+// ---------- coffee bag (Əsas tier, medium roast) ----------
+function bag() {
+  const W = 0.13, Hh = 0.2, Dd = 0.07;
+  const c = mk(780, 1200); const x = c.getContext('2d');
+  x.fillStyle = '#ffffff'; x.fillRect(0, 0, 780, 1200);
+  const roastTop = 1200 * 0.58;
+  x.fillStyle = '#8A5A3B'; x.fillRect(0, roastTop, 780, 1200 - roastTop);
+  drawWordmark(x, 60, 70, 300, '#1B1714');
+  x.fillStyle = '#1B1714';
+  x.font = '700 22px Mulish'; x.letterSpacing = '6px'; x.fillText('COFFEE ROASTERY', 62, 165);
+  x.font = '700 22px Mulish'; x.fillStyle = '#5E5852'; x.fillText('ƏSAS ÇEŞİD', 62, 260);
+  x.fillStyle = '#1B1714'; x.font = '500 64px "League Spartan"'; x.letterSpacing = '0px'; x.fillText('[Mənşə]', 60, 340);
+  x.font = '400 30px Mulish'; x.fillStyle = '#5E5852'; x.fillText('[dad notları] · nümunə', 62, 395);
+  x.font = '700 28px Mulish'; x.fillStyle = '#1B1714'; x.fillText('250 q', 62, 470);
+  x.fillStyle = '#F5F1EA'; x.font = '700 24px Mulish'; x.letterSpacing = '6px'; x.fillText('ORTA QOVURMA', 62, roastTop + 60);
+  for (let i = 0; i < 5; i++) { x.fillStyle = i < 3 ? '#F5F1EA' : 'rgba(245,241,234,0.3)'; x.fillRect(62 + i * 46, 1090, 34, 34); }
+  // the signature line where colour meets paper
+  x.fillStyle = '#1B1714'; x.fillRect(0, roastTop - 6, 780, 12);
+  const front = std('BagFront', { map: canvasTex(c), roughness: 0.85 });
+  const side = std('BagSide', { color: '#f3efe8', roughness: 0.9 });
+  const g = new THREE.Group(); g.name = 'MOKA bag';
+  const box = new THREE.Mesh(new THREE.BoxGeometry(W, Hh, Dd), [side, side, side, side, front, front]);
+  box.position.y = Hh / 2;
+  const crimp = new THREE.Mesh(new THREE.BoxGeometry(W * 1.02, 0.018, 0.012), std('Crimp', { color: '#1B1714', roughness: 0.6 }));
+  crimp.position.y = Hh + 0.009;
+  g.add(box, crimp);
+  return g;
+}
+
+async function exportGLB(obj) {
+  const scene = new THREE.Scene(); scene.add(obj);
+  const buf = await new GLTFExporter().parseAsync(scene, { binary: true, maxTextureSize: 2048 });
+  let s = ''; const b = new Uint8Array(buf); for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+  return btoa(s);
+}
+await document.fonts.ready;
+await document.fonts.load('500 64px "League Spartan"'); await document.fonts.load('700 22px Mulish');
+window.models = { cup: await exportGLB(cup()), chemex: await exportGLB(chemex()), wordmark: await exportGLB(wordmark()), bag: await exportGLB(bag()) };
+window.done = true;
+window.saveAll = () => Object.entries(window.models).forEach(([k, b64]) => {
+  const a = document.createElement('a'); a.href = 'data:model/gltf-binary;base64,' + b64; a.download = k + '.glb'; a.click();
+});
+</script></body></html>

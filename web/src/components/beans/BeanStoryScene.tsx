@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
 import { PHASES } from "./phases";
+import { BeanPush, ndcToPlane } from "@/lib/beanPhysics";
+import { installPointer, pointer as sharedPointer, pointerNDC } from "@/lib/pointer";
 
 /**
  * "From bean to cup": beans float, roast (green → dark), spiral into a Chemex and turn into
@@ -106,7 +108,8 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
   const smooth = useRef(reducedMotion ? 1 : 0);
   const lastGrind = useRef(-1);
   const lastRoast = useRef(-1);
-  const { viewport, camera, pointer } = useThree();
+  const { viewport, camera, pointer, gl } = useThree();
+  useEffect(() => installPointer(), []);
 
   const BEANS = touch ? 42 : 90;
   const GROUNDS = touch ? 700 : 1800;
@@ -230,11 +233,15 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
   const col = useMemo(() => new THREE.Color(), []);
   const tmp = useMemo(() => new THREE.Vector3(), []);
   const spiral = useMemo(() => new THREE.Vector3(), []);
+  const pw = useMemo(() => new THREE.Vector3(), []);
+  const pvel = useMemo(() => new THREE.Vector3(), []);
+  const poff = useMemo(() => new THREE.Vector3(), []);
+  const push = useMemo(() => new BeanPush(BEANS), [BEANS]);
 
   useFrame((state, delta) => {
     const t = reducedMotion ? 0 : state.clock.elapsedTime;
     const target = reducedMotion ? 1 : progress.current;
-    smooth.current += (target - smooth.current) * (1 - Math.pow(0.002, delta));
+    smooth.current += (target - smooth.current) * (1 - Math.pow(0.03, delta));
     const p = smooth.current;
 
     // ---- layout: landscape puts the Chemex in the right column, portrait below the captions
@@ -262,6 +269,10 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
 
     // ---- beans
     const mesh = beans.current;
+    const dt = Math.min(delta, 1 / 20);
+    const ndc = reducedMotion ? null : pointerNDC(gl.domElement);
+    const burst = push.tapped(sharedPointer.tapped);
+    const rp = root.current;
     if (mesh) {
       const roastChanged = Math.abs(roast - lastRoast.current) > 0.002;
       const topY = TOP + 0.15 - 1.3; // rim height in the root group's space (Chemex sits at y -1.3)
@@ -281,8 +292,19 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
           spiral.set(Math.cos(a) * r, topY + 0.7 * (1 - gi) * (1 - gi), Math.sin(a) * r);
           v.lerp(spiral, sstep(0, 0.45, gi));
         }
+        // pointer / finger pushes floating beans; beans already spiralling into the grinder ignore it
+        let hit = false;
+        if (ndc && rp && gi < 0.25) {
+          const sc0 = rp.scale.x;
+          ndcToPlane(ndc, camera, rp.position.z + v.z * sc0, pw);
+          pw.sub(rp.position).divideScalar(sc0);
+          pvel.set((ndc.vx * viewport.width) / 2 / sc0, (ndc.vy * viewport.height) / 2 / sc0, 0);
+          hit = true;
+        }
+        push.apply(i, v, hit ? pw : null, hit ? pvel : null, touch ? 1.1 : 0.9, dt, burst && hit);
+        v.addScaledVector(push.offset(i, poff), 1 - gi);
         const spinBoost = 1 + gi * 6;
-        e.set(b.rot.x + t * b.spin.x * spinBoost, b.rot.y + t * b.spin.y * spinBoost, b.rot.z + t * b.spin.z);
+        e.set(b.rot.x + t * b.spin.x * spinBoost + push.spin[i], b.rot.y + t * b.spin.y * spinBoost, b.rot.z + t * b.spin.z + push.off[i * 3 + 2]);
         q.setFromEuler(e);
         const sc = b.scale * (1 - sstep(0.72, 1, gi));
         s3.setScalar(Math.max(sc, 1e-4));

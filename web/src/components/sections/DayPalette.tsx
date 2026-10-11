@@ -28,7 +28,7 @@ export function DayPalette() {
         const slides = gsap.utils.toArray<HTMLElement>(".d-slide");
         gsap.set(slides.slice(1), { autoAlpha: 0 });
         const tl = gsap.timeline({
-          scrollTrigger: { trigger: ".d-pin", start: "top top", end: `+=${DAY.length * 70}%`, pin: true, scrub: 0.5, anticipatePin: 1 },
+          scrollTrigger: { trigger: ".d-pin", start: "top top", end: `+=${DAY.length * 70}%`, pin: true, scrub: 1, anticipatePin: 1 },
         });
         slides.forEach((s, i) => {
           if (i === 0) return;

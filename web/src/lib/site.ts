@@ -7,6 +7,9 @@ export function links(locale: Locale) {
   const q = locale === "az" ? "" : `?lang=${locale}`;
   return {
     ar: `${base}/ar/${q}`,
+    arScan: `${base}/ar/card/${q}`,
+    arTable: `${base}/ar/table/${q}`,
+    arSelfie: `${base}/ar/selfie/${q}`,
     arCard: `${base}/ar/target.png`,
     game: `${base}/game/${q}`,
     v1: `${base}/v1/`,
@@ -21,4 +24,4 @@ export const HOME: Record<Locale, string> = {
   ru: `${base}/ru/`,
 };
 
-export const NAV_IDS = ["#konsepsiya", "#reng", "#qovurma", "#paket", "#kafe", "#tecrube"] as const;
+export const NAV_IDS = ["#konsepsiya", "#reng", "#qovurma", "#demleme", "#paket", "#kafe", "#tetbiq", "#tecrube"] as const;

@@ -51,11 +51,12 @@ export function BeanStory() {
             start: "top top",
             end: "+=320%",
             pin: true,
-            scrub: 0.5,
+            scrub: 1,
             anticipatePin: 1,
-            onUpdate: (self) => {
-              progress.current = self.progress;
-            },
+          },
+          // The scrubbed (eased) timeline progress drives the 3D scene, so captions and scene move together.
+          onUpdate: () => {
+            progress.current = tl.progress();
           },
         });
         // A one-second timeline maps 1:1 to scroll progress, matching the scene's phases.
@@ -63,10 +64,10 @@ export function BeanStory() {
         tl.fromTo(".b-bar", { scaleX: 0 }, { scaleX: 1, duration: 1, ease: "none" }, 0);
         CAPTIONS.forEach(([from, to], i) => {
           if (i > 0) {
-            tl.fromTo(panels[i], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.035 }, from);
+            tl.fromTo(panels[i], { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.05 }, from);
             if (ticks[i]) tl.to(ticks[i], { opacity: 1, duration: 0.03 }, from);
           }
-          if (i < CAPTIONS.length - 1) tl.to(panels[i], { autoAlpha: 0, y: -24, duration: 0.035, ease: "power2.in" }, to - 0.035);
+          if (i < CAPTIONS.length - 1) tl.to(panels[i], { autoAlpha: 0, y: -24, duration: 0.05, ease: "power2.in" }, to - 0.05);
         });
         return () => tl.kill();
       });

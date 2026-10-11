@@ -70,10 +70,10 @@ export function Nav() {
         <a href="#top" className="text-paper" aria-label={t.logoHome}>
           <Logo className="h-[18px] w-auto" />
         </a>
-        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase xl:inline">
+        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase 2xl:inline">
           {t.nav.badge}
         </span>
-        <ul className="ml-auto hidden items-center gap-6 lg:flex">
+        <ul className="ml-auto hidden items-center gap-5 xl:flex">
           {NAV_IDS.map((id, i) => (
             <li key={id}>
               <a
@@ -92,16 +92,16 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <LangSwitch className="ml-auto hidden sm:flex lg:ml-0" />
+        <LangSwitch className="ml-auto hidden sm:flex xl:ml-0" />
         <a
           href={L.ar}
-          className="hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-espresso uppercase transition-colors hover:bg-glow lg:inline-block"
+          className="hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-espresso uppercase transition-colors hover:bg-glow xl:inline-block"
         >
           {t.nav.ar}
         </a>
         <button
           type="button"
-          className="ml-auto flex h-11 w-11 items-center justify-center text-paper sm:ml-0 lg:hidden"
+          className="ml-auto flex h-11 w-11 items-center justify-center text-paper sm:ml-0 xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? t.nav.close : t.nav.open}
@@ -113,11 +113,11 @@ export function Nav() {
           </span>
         </button>
       </nav>
-      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-espresso px-5 pb-10 lg:hidden">
+      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-espresso px-5 pb-10 xl:hidden">
         <ul className="flex flex-col border-t border-paper/15">
           {NAV_IDS.map((id, i) => (
             <li key={id} className="border-b border-paper/15">
-              <a href={id} onClick={() => setOpen(false)} className="flex items-baseline py-5 font-[family-name:var(--font-display)] text-3xl text-paper">
+              <a href={id} onClick={() => setOpen(false)} className="flex items-baseline py-4 font-[family-name:var(--font-display)] text-2xl text-paper sm:text-3xl">
                 {t.nav.items[i]}
               </a>
             </li>
