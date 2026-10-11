@@ -1,4 +1,10 @@
 import type { Metadata, Viewport } from "next";
+// Self-hosted fonts (no request to Google): League Spartan + Mulish cover the whole Azerbaijani
+// alphabet and ₼; Montserrat only supplies Cyrillic for Russian headings (unicode-range keeps
+// its Latin files from downloading).
+import "@fontsource-variable/league-spartan/wght.css";
+import "@fontsource-variable/mulish/wght.css";
+import "@fontsource-variable/montserrat/wght.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,16 +21,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="az">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* League Spartan + Mulish cover the full Azerbaijani alphabet; Montserrat supplies Cyrillic headings for Russian. */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Montserrat:wght@500;600&family=Mulish:wght@400;600;700&display=swap"
-        />
-      </head>
       <body>{children}</body>
     </html>
   );

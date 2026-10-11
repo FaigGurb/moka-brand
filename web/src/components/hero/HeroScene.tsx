@@ -69,10 +69,14 @@ type Props = {
   reducedMotion: boolean;
   /** Touch screens have no hover pointer: the wordmark sways on its own instead. */
   touch: boolean;
+  /** light path for phones and weak machines */
+  lite?: boolean;
+  /** false while the hero is off screen: no frames are rendered */
+  active?: boolean;
   onReady?: () => void;
 };
 
-function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
+function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady" | "active">) {
   const group = useRef<THREE.Group>(null);
   const tops = useRef<(THREE.Object3D | null)[]>([]);
   const bottoms = useRef<(THREE.Object3D | null)[]>([]);
@@ -96,17 +100,20 @@ function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
   );
   const handleGeo = useMemo(() => new THREE.TubeGeometry(handleCurve(), 80, 0.04, 16, false), []);
 
+  // Phones get a standard material (cheaper shader); desktops the clear-coated ceramic.
   const ceramic = useMemo(
     () =>
-      new THREE.MeshPhysicalMaterial({
-        color: "#efe8dc",
-        roughness: 0.38,
-        metalness: 0,
-        clearcoat: 0.55,
-        clearcoatRoughness: 0.28,
-        sheen: 0.2,
-      }),
-    [],
+      lite
+        ? new THREE.MeshStandardMaterial({ color: "#efe8dc", roughness: 0.36, metalness: 0 })
+        : new THREE.MeshPhysicalMaterial({
+            color: "#efe8dc",
+            roughness: 0.38,
+            metalness: 0,
+            clearcoat: 0.55,
+            clearcoatRoughness: 0.28,
+            sheen: 0.2,
+          }),
+    [lite],
   );
 
   // Free GPU memory when the hero unmounts.
@@ -205,10 +212,10 @@ function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
 }
 
 /** Roasted beans drifting behind the wordmark; they scatter outwards as the page scrolls. */
-function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
+function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady" | "active" | "lite">) {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const { viewport, gl } = useThree();
-  const COUNT = touch ? 9 : 16;
+  const COUNT = touch ? 7 : 16;
   const push = useMemo(() => new BeanPush(COUNT), [COUNT]);
   useEffect(() => installPointer(), []);
   const geo = useMemo(() => createBeanGeometry("low"), []);
@@ -286,10 +293,11 @@ function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">
   return <instancedMesh ref={mesh} args={[geo, mat, COUNT]} frustumCulled={false} />;
 }
 
-export default function HeroScene({ progress, reducedMotion, touch, onReady }: Props) {
+export default function HeroScene({ progress, reducedMotion, touch, lite = false, active = true, onReady }: Props) {
   return (
     <Canvas
-      dpr={touch ? [1, 1.5] : [1, 1.75]}
+      frameloop={active ? "always" : "never"}
+      dpr={lite ? [1, 1.5] : [1, 1.75]}
       camera={{ position: [0, 0.15, 7.2], fov: 32 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={() => onReady?.()}
@@ -300,13 +308,13 @@ export default function HeroScene({ progress, reducedMotion, touch, onReady }: P
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#c89b6d" />
       <pointLight position={[0, 0, 2.2]} intensity={2.2} distance={6} color="#f2c76e" />
       {/* Studio reflections built from light panels: no external HDR files. */}
-      <Environment resolution={touch ? 64 : 128}>
+      <Environment resolution={lite ? 32 : 128}>
         <Lightformer intensity={2} position={[0, 3, 4]} scale={[8, 1.2, 1]} color="#fff6ea" />
         <Lightformer intensity={1.2} position={[-5, 0, 2]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} color="#c89b6d" />
         <Lightformer intensity={0.8} position={[5, -1, 2]} rotation-y={-Math.PI / 2} scale={[4, 2, 1]} color="#a8643a" />
       </Environment>
       <AmbientBeans progress={progress} reducedMotion={reducedMotion} touch={touch} />
-      <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} />
+      <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} />
     </Canvas>
   );
 }

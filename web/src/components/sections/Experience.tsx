@@ -85,7 +85,7 @@ export function Experience() {
               </svg>
             </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
-              <p className="eyebrow text-espresso/70">{t.exp.gameEyebrow}</p>
+              <p className="eyebrow text-espresso">{t.exp.gameEyebrow}</p>
               <h3 className="text-[30px] leading-tight font-medium">{t.exp.gameTitle}</h3>
               <p className="max-w-[44ch] text-[15px] leading-relaxed text-espresso/80">
                 {t.exp.gameText}

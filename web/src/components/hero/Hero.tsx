@@ -7,6 +7,7 @@ import { MagneticButton } from "../ui/MagneticButton";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import { links } from "@/lib/site";
+import { useIdle, useInView, usePerfTier } from "@/lib/perf";
 import { useI18n } from "@/i18n/context";
 
 // Three.js loads only in the browser and only for the hero.
@@ -21,6 +22,10 @@ export function Hero() {
   const reduced = useReducedMotion();
   const webgl = useWebGL();
   const touch = useTouch();
+  const tier = usePerfTier();
+  const idle = useIdle();
+  // render the 3D only while the hero is (nearly) on screen
+  const inView = useInView(root, "100px");
 
   useGSAP(
     () => {
@@ -44,7 +49,8 @@ export function Hero() {
     { scope: root },
   );
 
-  const show3D = webgl === true;
+  // the three.js chunk loads once the browser is idle, so first paint and input stay fast
+  const show3D = webgl === true && idle;
 
   return (
     <section
@@ -71,7 +77,7 @@ export function Hero() {
             />
             {show3D && (
               <div className="absolute inset-[-12%_-4%] sm:inset-[-12%_-8%]">
-                <HeroScene progress={progress} reducedMotion={reduced} touch={touch} onReady={() => setReady(true)} />
+                <HeroScene progress={progress} reducedMotion={reduced} touch={touch} lite={tier === "low"} active={inView} onReady={() => setReady(true)} />
               </div>
             )}
           </div>

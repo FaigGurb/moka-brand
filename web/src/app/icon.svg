@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#1B1714"/>
+  <!-- the Chemex letter K, cut by the signature line -->
+  <g transform="translate(-0.4 12.2) scale(0.2535)">
+    <defs><clipPath id="c"><rect x="300" y="0" width="300" height="74.5"/><rect x="300" y="79.5" width="300" height="80"/></clipPath></defs>
+    <polygon clip-path="url(#c)" fill="#F5F1EA" points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-300 0)"/>
+    <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="#F5F1EA" stroke-width="10" transform="translate(-300 0)"/>
+  </g>
+  <rect x="9" y="31" width="46" height="1.4" fill="#FFE2A6"/>
+</svg>

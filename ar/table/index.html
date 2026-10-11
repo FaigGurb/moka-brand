@@ -2,10 +2,14 @@
 <html lang="az">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-icon.png">
+<meta property="og:image" content="https://faiggurb.github.io/moka-brand/og-az.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MOKA AR · Masana qoy</title>
 <meta name="theme-color" content="#1B1714">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../../fonts/fonts.css">
 <link rel="stylesheet" href="../shared/ui.css">
 <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js"></script>
 <style>
@@ -38,13 +42,13 @@
 </style>
 </head>
 <body>
-<div class="bar">
+<header class="bar">
   <a class="back" data-hub="../" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
   <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
-</div>
+</header>
 <main>
   <model-viewer id="mv" src="../models/cup.glb" alt="MOKA"
-    ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor"
+    ar ar-modes="scene-viewer webxr quick-look" ar-scale="fixed" ar-placement="floor"
     camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="18deg"
     shadow-intensity="1.1" shadow-softness="0.8" exposure="1.05" environment-image="neutral"
     camera-orbit="25deg 75deg auto" interaction-prompt="auto">

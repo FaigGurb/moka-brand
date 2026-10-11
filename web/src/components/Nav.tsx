@@ -6,14 +6,14 @@ import { HOME, NAV_IDS, links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
 import { LOCALES } from "@/i18n/dict";
 
-function LangSwitch({ className = "" }: { className?: string }) {
+function LangSwitch({ className = "", sub = "" }: { className?: string; sub?: string }) {
   const { locale, t } = useI18n();
   return (
     <div role="group" aria-label={t.nav.lang} className={`flex ${className}`}>
       {LOCALES.map((l) => (
         <a
           key={l}
-          href={HOME[l]}
+          href={HOME[l] + sub}
           hrefLang={l}
           lang={l}
           aria-current={l === locale ? "true" : undefined}
@@ -26,9 +26,11 @@ function LangSwitch({ className = "" }: { className?: string }) {
   );
 }
 
-export function Nav() {
+/** `sub` is set on secondary pages (e.g. "menu/"): section links then point back to the home page. */
+export function Nav({ sub = "" }: { sub?: string }) {
   const { locale, t } = useI18n();
   const L = links(locale);
+  const home = sub ? HOME[locale] : "";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
@@ -62,12 +64,12 @@ export function Nav() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
-        scrolled || open ? "bg-espresso/92 backdrop-blur-md" : "bg-transparent"
+        scrolled || open ? "bg-espresso/95 [@media(hover:hover)]:bg-espresso/90 [@media(hover:hover)]:backdrop-blur-md" : "bg-transparent"
       }`}
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
       <nav aria-label={t.nav.label} className="mx-auto flex h-16 max-w-[1320px] items-center gap-5 px-5 md:px-10">
-        <a href="#top" className="text-paper" aria-label={t.logoHome}>
+        <a href={sub ? HOME[locale] : "#top"} className="text-paper" aria-label={t.logoHome}>
           <Logo className="h-[18px] w-auto" />
         </a>
         <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase 2xl:inline">
@@ -77,7 +79,7 @@ export function Nav() {
           {NAV_IDS.map((id, i) => (
             <li key={id}>
               <a
-                href={id}
+                href={home + id}
                 aria-current={active === id ? "true" : undefined}
                 className="relative py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper"
               >
@@ -92,7 +94,14 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <LangSwitch className="ml-auto hidden sm:flex xl:ml-0" />
+        <LangSwitch className="ml-auto hidden sm:flex xl:ml-0" sub={sub} />
+        <a
+          href={L.menu}
+          aria-current={sub === "menu/" ? "page" : undefined}
+          className="hidden border border-paper/40 px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-paper uppercase transition-colors hover:border-paper aria-[current]:border-glow aria-[current]:text-glow lg:inline-block"
+        >
+          {t.menu.nav}
+        </a>
         <a
           href={L.ar}
           className="hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-espresso uppercase transition-colors hover:bg-glow xl:inline-block"
@@ -117,14 +126,17 @@ export function Nav() {
         <ul className="flex flex-col border-t border-paper/15">
           {NAV_IDS.map((id, i) => (
             <li key={id} className="border-b border-paper/15">
-              <a href={id} onClick={() => setOpen(false)} className="flex items-baseline py-4 font-[family-name:var(--font-display)] text-2xl text-paper sm:text-3xl">
+              <a href={home + id} onClick={() => setOpen(false)} className="flex items-baseline py-4 font-[family-name:var(--font-display)] text-2xl text-paper sm:text-3xl">
                 {t.nav.items[i]}
               </a>
             </li>
           ))}
         </ul>
-        <LangSwitch className="mt-6 -ml-2 sm:hidden" />
+        <LangSwitch className="mt-6 -ml-2 sm:hidden" sub={sub} />
         <div className="mt-6 flex flex-col gap-3">
+          <a href={L.menu} className="border border-glow px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-glow uppercase">
+            {t.menu.nav}
+          </a>
           <a href={L.ar} className="bg-paper px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-espresso uppercase">
             {t.nav.mobileAr}
           </a>

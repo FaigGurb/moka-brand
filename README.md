@@ -7,6 +7,8 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 
 | Yol | Nədir |
 | --- | --- |
+| `/menu/` · `/en/menu/` · `/ru/menu/` | Menyu konsepti: espresso bar, dəmləmə, soyuq, dənlər, yemək, məkan (qiymət və ünvan yer tutucudur) |
+| `/privacy/` (+ en, ru) | Məxfilik: nə saxlanılır, kamera necə işlənir |
 | `/` · `/en/` · `/ru/` | Yeni sayt (v2) üç dildə: 3D hero, scroll hekayəsi, interaktiv qovurma xətti — `web/` qovluğundan build olunur |
 | `/ar/` | AR mərkəzi: üç WebAR təcrübəsinə keçid (`?lang=en|ru`) |
 | `/ar/card/` | Kartı skan et (A-Frame + MindAR image): dörd hərf kartdan qalxır, Chemex peyda olur və qəhvə imza xəttinə qədər dolur |
@@ -110,6 +112,19 @@ Hamısı GSAP + ScrollTrigger ilə, `useGSAP` və `gsap.matchMedia()` daxilində
 - Paket ailəsi: şaquli scroll ilə üfüqi qalereya.
 - Kafedə: clip-path ilə açılan vizual və çəkilən LED xətti.
 Bütün bu hekayələr telefonda da işləyir; yalnız reduced-motion rejimində pin və scrub söndürülür və məzmun adi siyahı kimi görünür. Telefonda 3D hero siçan əvəzinə özü yavaş-yavaş yellənir.
+
+## Performans
+
+- Ekrandan kənar 3D səhnələr kadr çəkmir (`frameloop`), three.js hero-da brauzer boş olanda yüklənir.
+- Telefon və zəif cihazlar (`lib/perf.ts` → `perfTier()`) yüngül yolla işləyir: aşağı DPR, sadə materiallar, az dən/hissəcik; bütün səhifəyə yayılan dən qatı, "grain" və bulanıq menyu fonu yalnız kompüterdədir.
+- Şriftlər lokaldır (`@fontsource-variable/*`; statik səhifələr üçün `fonts/`), Google-a sorğu yoxdur.
+- Ölçmə (telefon emulyasiyası, 4× zəif CPU, bütün səhifə scroll): ~1.5 fps → ~47 fps (3D proqram renderi ilə); 3D-siz ~59 fps.
+
+## Yayın
+
+- `web/src/lib/meta.ts`: `NEXT_PUBLIC_CONCEPT` (default `true` → `noindex`), `NEXT_PUBLIC_SITE_URL`.
+- Hər səhifədə canonical, hreflang, Open Graph şəkli (`public/og-*.png`), ikonlar, `manifest.webmanifest`, `sitemap.xml`, brendli 404.
+- Yoxlama siyahısı: [`docs/QA.md`](docs/QA.md).
 
 ## Problemlər
 

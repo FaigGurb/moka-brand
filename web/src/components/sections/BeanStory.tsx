@@ -7,6 +7,7 @@ import { CAPTIONS } from "../beans/phases";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import { useI18n } from "@/i18n/context";
+import { usePerfTier } from "@/lib/perf";
 
 // Three.js only in the browser; the chunk is shared with the hero scene.
 const BeanStoryScene = dynamic(() => import("../beans/BeanStoryScene"), { ssr: false });
@@ -19,6 +20,7 @@ export function BeanStory() {
   const reduced = useReducedMotion();
   const webgl = useWebGL();
   const touch = useTouch();
+  const tier = usePerfTier();
   const [near, setNear] = useState(false);
   const [active, setActive] = useState(false);
 
@@ -96,7 +98,7 @@ export function BeanStory() {
           className="motion-safe:absolute motion-safe:inset-0 motion-reduce:relative motion-reduce:order-2 motion-reduce:h-[70svh]"
         >
           {webgl === true && near && (
-            <BeanStoryScene progress={progress} reducedMotion={reduced} touch={touch} active={active || reduced} />
+            <BeanStoryScene progress={progress} reducedMotion={reduced} touch={touch} lite={tier === "low"} active={active || reduced} />
           )}
           {webgl === false && (
             <div className="flex h-full items-center justify-center lg:justify-end lg:pr-[14%]">

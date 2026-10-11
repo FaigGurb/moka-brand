@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
 import { Site } from "@/components/Site";
 import { DICTS } from "@/i18n/dict";
+import { pageMeta } from "@/lib/meta";
 
-export const metadata: Metadata = {
-  title: DICTS.az.meta.title,
-  description: DICTS.az.meta.description,
-  alternates: { languages: { az: "/moka-brand/", en: "/moka-brand/en/", ru: "/moka-brand/ru/" } },
-};
+export const metadata = pageMeta("az", DICTS.az.meta.title, DICTS.az.meta.description);
 
 export default function Page() {
   return <Site locale="az" />;

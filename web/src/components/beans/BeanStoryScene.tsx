@@ -20,6 +20,8 @@ type Props = {
   reducedMotion: boolean;
   touch: boolean;
   active: boolean;
+  /** light path for phones and weak machines */
+  lite?: boolean;
   onReady?: () => void;
 };
 
@@ -93,7 +95,7 @@ type Bean = {
   angle: number;
 };
 
-function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onReady">) {
+function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "active" | "onReady">) {
   const root = useRef<THREE.Group>(null);
   const beans = useRef<THREE.InstancedMesh>(null);
   const grounds = useRef<THREE.Points>(null);
@@ -111,10 +113,10 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
   const { viewport, camera, pointer, gl } = useThree();
   useEffect(() => installPointer(), []);
 
-  const BEANS = touch ? 42 : 90;
-  const GROUNDS = touch ? 700 : 1800;
+  const BEANS = lite ? 32 : 90;
+  const GROUNDS = lite ? 450 : 1800;
 
-  const beanGeo = useMemo(() => createBeanGeometry(touch ? "low" : "high"), [touch]);
+  const beanGeo = useMemo(() => createBeanGeometry(lite ? "low" : "high"), [lite]);
   const beanMat = useMemo(() => new THREE.MeshStandardMaterial({ roughness: 0.42, metalness: 0.05 }), []);
 
   const data = useMemo<Bean[]>(() => {
@@ -189,19 +191,23 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
 
   const mats = useMemo(
     () => ({
-      glass: new THREE.MeshPhysicalMaterial({
+      glass: new (lite ? THREE.MeshStandardMaterial : THREE.MeshPhysicalMaterial)({
         color: "#ffffff",
         roughness: 0.06,
         metalness: 0,
-        clearcoat: 1,
+        ...(lite ? {} : { clearcoat: 1 }),
         transparent: true,
         opacity: 0.13,
         side: THREE.DoubleSide,
         depthWrite: false,
         envMapIntensity: 1.6,
       }),
-      liquid: new THREE.MeshPhysicalMaterial({ color: "#2e180c", roughness: 0.18, clearcoat: 1, clippingPlanes: [clip] }),
-      surface: new THREE.MeshPhysicalMaterial({ color: "#4a2a17", roughness: 0.12, clearcoat: 1, emissive: "#3b1f10", emissiveIntensity: 0.3 }),
+      liquid: lite
+        ? new THREE.MeshStandardMaterial({ color: "#2e180c", roughness: 0.15, clippingPlanes: [clip] })
+        : new THREE.MeshPhysicalMaterial({ color: "#2e180c", roughness: 0.18, clearcoat: 1, clippingPlanes: [clip] }),
+      surface: lite
+        ? new THREE.MeshStandardMaterial({ color: "#4a2a17", roughness: 0.12, emissive: "#3b1f10", emissiveIntensity: 0.3 })
+        : new THREE.MeshPhysicalMaterial({ color: "#4a2a17", roughness: 0.12, clearcoat: 1, emissive: "#3b1f10", emissiveIntensity: 0.3 }),
       filter: new THREE.MeshStandardMaterial({ color: "#f5f1ea", roughness: 0.9, transparent: true, opacity: 0.42, side: THREE.DoubleSide, depthWrite: false }),
       wood: new THREE.MeshStandardMaterial({ color: "#a8643a", roughness: 0.62, side: THREE.DoubleSide }),
       tie: new THREE.MeshStandardMaterial({ color: "#c9a882", roughness: 0.8 }),
@@ -209,7 +215,7 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
       dripM: new THREE.MeshBasicMaterial({ color: "#3b2416", transparent: true, opacity: 0 }),
       ring: new THREE.MeshBasicMaterial({ color: "#ffe2a6", transparent: true, opacity: 0, toneMapped: false }),
     }),
-    [clip],
+    [clip, lite],
   );
 
   useEffect(
@@ -429,11 +435,11 @@ function Story({ progress, reducedMotion, touch }: Omit<Props, "active" | "onRea
   );
 }
 
-export default function BeanStoryScene({ progress, reducedMotion, touch, active, onReady }: Props) {
+export default function BeanStoryScene({ progress, reducedMotion, touch, active, lite = false, onReady }: Props) {
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
-      dpr={touch ? [1, 1.5] : [1, 1.75]}
+      dpr={lite ? [1, 1.25] : [1, 1.75]}
       camera={{ position: [0, 0.9, 7.6], fov: 35 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
@@ -446,12 +452,12 @@ export default function BeanStoryScene({ progress, reducedMotion, touch, active,
       <directionalLight position={[3, 5, 4]} intensity={1.8} color="#fff4e6" />
       <directionalLight position={[-4, 1, -2]} intensity={0.8} color="#c89b6d" />
       <pointLight position={[0, 2, 3]} intensity={1.4} distance={9} color="#f2c76e" />
-      <Environment resolution={touch ? 64 : 128}>
+      <Environment resolution={lite ? 32 : 128}>
         <Lightformer intensity={2.2} position={[0, 4, 3]} scale={[8, 1.5, 1]} color="#fff6ea" />
         <Lightformer intensity={1.4} position={[-5, 1, 1]} rotation-y={Math.PI / 2} scale={[1, 5, 1]} color="#ffe2a6" />
         <Lightformer intensity={0.9} position={[5, 0, 1]} rotation-y={-Math.PI / 2} scale={[1, 5, 1]} color="#a8643a" />
       </Environment>
-      <Story progress={progress} reducedMotion={reducedMotion} touch={touch} />
+      <Story progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} />
     </Canvas>
   );
 }

@@ -70,7 +70,7 @@ function bags(b: BagText) {
         <div className="h-[5%] bg-espresso-2" />
         <div className="flex flex-col gap-2 p-[9%]">
           <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em] text-nar-light">{b.limited}</span>
+          <span className="text-[10px] font-bold tracking-[0.3em] text-[#e07a62]">{b.limited}</span>
           <span className="mt-3 font-[family-name:var(--font-display)] text-[24px] leading-tight">{b.artist}</span>
         </div>
         <svg viewBox="0 0 300 200" className="mt-auto w-full" aria-hidden="true">
@@ -120,7 +120,7 @@ export function Tiers() {
   return (
     <section id="paket" ref={root} className="bg-paper-2 text-espresso">
       <div className="t-pin overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
-        <div className="t-track no-scrollbar flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
+        <div tabIndex={0} aria-label={t.tiers.title} className="t-track no-scrollbar focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-axsam-ink">{t.tiers.eyebrow}</p>
             <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">{t.tiers.title}</h2>

@@ -2,11 +2,15 @@
 <html lang="az">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-icon.png">
+<meta property="og:image" content="https://faiggurb.github.io/moka-brand/og-az.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MOKA AR</title>
 <meta name="description" content="MOKA Coffee Roastery WebAR: kartı skan et, stəkanı masana qoy, qəhvə selfisi çək. Tətbiq lazım deyil.">
 <meta name="theme-color" content="#1B1714">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../fonts/fonts.css">
 <link rel="stylesheet" href="./shared/ui.css">
 <style>
   body{min-height:100svh}
@@ -40,7 +44,7 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<main class="wrap">
   <div class="bar">
     <a class="back" data-home href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back">Sayta qayıt</span></a>
     <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
@@ -83,7 +87,7 @@
     <div class="qr"><img src="./qr.png" alt="" id="qr" width="96" height="96"><span data-t="qr"></span></div>
     <small data-t="note"></small>
   </div>
-</div>
+</main>
 <script src="../club/club.js"></script>
 <script type="module">
 import { initLang, WORDMARK_SVG } from './shared/lang.js';

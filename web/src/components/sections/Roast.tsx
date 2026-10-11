@@ -92,6 +92,7 @@ export function Roast() {
             <legend className="mb-3 text-sm font-bold tracking-[0.06em]">{t.roast.legend}</legend>
             <input
               id="roast-level"
+              aria-label={t.roast.legend}
               type="range"
               min={0}
               max={4}

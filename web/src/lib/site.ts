@@ -3,6 +3,8 @@ import type { Locale } from "@/i18n/dict";
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
+const HOME_OF = (l: Locale) => (l === "az" ? `${base}/` : `${base}/${l}/`);
+
 export function links(locale: Locale) {
   const q = locale === "az" ? "" : `?lang=${locale}`;
   return {
@@ -16,6 +18,8 @@ export function links(locale: Locale) {
     gameRain: `${base}/game/rain/${q}`,
     gameMemory: `${base}/game/memory/${q}`,
     club: `${base}/club/${q}`,
+    menu: `${HOME_OF(locale)}menu/`,
+    privacy: `${HOME_OF(locale)}privacy/`,
     v1: `${base}/v1/`,
     repo: "https://github.com/FaigGurb/moka-brand",
   };

@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { installPointer } from "@/lib/pointer";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
+import { usePerfTier } from "@/lib/perf";
 
 const BeanFieldScene = dynamic(() => import("./BeanFieldScene"), { ssr: false });
 
@@ -12,6 +13,7 @@ export function BeanField() {
   const reduced = useReducedMotion();
   const webgl = useWebGL();
   const touch = useTouch();
+  const tier = usePerfTier();
   const [show, setShow] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -35,7 +37,8 @@ export function BeanField() {
     };
   }, []);
 
-  if (reduced || webgl !== true || !ready) return null;
+  // A full-screen transparent canvas over a scrolling page is costly on phones: desktop only.
+  if (reduced || webgl !== true || !ready || touch || tier === "low") return null;
   return (
     <div
       aria-hidden="true"

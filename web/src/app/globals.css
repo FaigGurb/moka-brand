@@ -28,8 +28,8 @@
   --color-flavor-floral: #d9c7e6;
   --color-flavor-cocoa: #a88a78;
 
-  --font-display: "League Spartan", "Montserrat", "Futura", "Century Gothic", system-ui, sans-serif;
-  --font-sans: "Mulish", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-display: "League Spartan Variable", "League Spartan", "Montserrat Variable", "Montserrat", "Futura", "Century Gothic", system-ui, sans-serif;
+  --font-sans: "Mulish Variable", "Mulish", "Helvetica Neue", Arial, system-ui, sans-serif;
 
   --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -129,3 +129,5 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
 }
 @media (prefers-reduced-motion: reduce) { .grain { animation: none; } .preloader { display: none; } }
+/* phones: no full-screen animated layer over the scrolling page */
+@media (hover: none), (pointer: coarse) { .grain { display: none; } }

@@ -15,15 +15,18 @@ export function Footer() {
           <p className="max-w-[44ch] text-sm leading-relaxed">{t.footer.disclaimer}</p>
         </div>
         <nav aria-label={t.footer.links} className="flex flex-col gap-3 text-sm">
+          <a className="hover:text-paper" href={L.menu}>{t.footer.menu}</a>
           <a className="hover:text-paper" href={L.ar}>{t.footer.ar}</a>
           <a className="hover:text-paper" href={L.arCard}>{t.footer.card}</a>
           <a className="hover:text-paper" href={L.game}>{t.footer.game}</a>
+          <a className="hover:text-paper" href={L.club}>{t.footer.club}</a>
           <a className="hover:text-paper" href={L.v1}>{t.footer.v1}</a>
         </nav>
         <div className="flex flex-col gap-3 text-sm">
           <span>@mokacoffeebaku</span>
           <span>{t.footer.credit}</span>
           <a className="hover:text-paper" href={L.repo} target="_blank" rel="noopener">{t.footer.repo}</a>
+          <a className="hover:text-paper" href={L.privacy}>{t.footer.privacy}</a>
         </div>
       </div>
     </footer>

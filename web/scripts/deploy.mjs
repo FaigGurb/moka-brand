@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const web = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(web, "out");
 const root = join(web, "..");
-const PROTECTED = new Set(["ar", "game", "v1", "web", "README.md", "CLAUDE.md", ".git", ".gitattributes", ".nojekyll"]);
+const PROTECTED = new Set(["ar", "game", "club", "fonts", "docs", "v1", "web", "README.md", "CLAUDE.md", ".git", ".gitattributes", ".nojekyll"]);
 
 if (!existsSync(join(out, "index.html"))) {
   console.error("web/out/index.html not found — run `npm run build` first.");
@@ -25,6 +25,8 @@ for (const name of readdirSync(out)) {
     console.warn(`skipped protected path: ${name}`);
     continue;
   }
+  // replace each exported file/folder wholesale so renamed chunks or pages never linger
+  rmSync(join(root, name), { recursive: true, force: true });
   cpSync(join(out, name), join(root, name), { recursive: true });
   console.log(`copied ${name}`);
 }

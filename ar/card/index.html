@@ -2,9 +2,13 @@
 <html lang="az">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../../icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../apple-icon.png">
+<meta property="og:image" content="https://faiggurb.github.io/moka-brand/og-az.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MOKA AR · Kart</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../../fonts/fonts.css">
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 <style>
@@ -53,7 +57,7 @@
 <body>
 
 <div class="intro" id="intro">
-  <div class="in">
+  <main class="in">
     <div class="bar">
       <a class="back" data-hub href="../"><svg viewBox="0 0 16 16" aria-hidden="true" class="ar"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back">Sayta qayıt</span></a>
       <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
@@ -68,7 +72,7 @@
     </ol>
     <button class="start" id="start" type="button" data-t="start">Kameranı aç</button>
     <small data-t="note"></small>
-  </div>
+  </main>
 </div>
 
 <div class="ui top">
@@ -85,7 +89,7 @@
   <div class="acts"><button type="button" id="replay" data-t="replay">Yenidən tök</button><a class="back" style="background:transparent;color:#1B1714;border-color:rgba(27,23,20,.35)" data-home href="../../" data-t="site">Sayt</a></div>
 </div>
 
-<a-scene id="scene" mindar-image="imageTargetSrc: ../target.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001"
+<a-scene id="scene" mindar-image="imageTargetSrc: ../target.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 8"
   color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
   <a-assets></a-assets>
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>

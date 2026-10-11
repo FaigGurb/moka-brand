@@ -19,12 +19,14 @@ export function Marquee() {
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const rows = gsap.utils.toArray<HTMLElement>(".mq-track");
         const tweens = rows.map((r, i) =>
-          gsap.fromTo(r, { xPercent: i % 2 ? -50 : 0 }, { xPercent: i % 2 ? 0 : -50, duration: 38, ease: "none", repeat: -1 }),
+          gsap.fromTo(r, { xPercent: i % 2 ? -50 : 0 }, { xPercent: i % 2 ? 0 : -50, duration: 38, ease: "none", repeat: -1, paused: true }),
         );
         const st = ScrollTrigger.create({
           trigger: root.current,
           start: "top bottom",
           end: "bottom top",
+          // only animate while the band is on screen
+          onToggle: (self) => tweens.forEach((tw) => (self.isActive ? tw.resume() : tw.pause())),
           onUpdate: (self) => {
             const v = self.getVelocity() / 250;
             const dir = self.direction;

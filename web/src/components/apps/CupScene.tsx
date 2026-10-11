@@ -46,9 +46,9 @@ function Cup({ sleeve, ink, line, size, reducedMotion }: Omit<Props, "touch" | "
   }, []);
   const mats = useMemo(
     () => ({
-      paper: new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.62, sheen: 0.3, side: THREE.DoubleSide }),
+      paper: new THREE.MeshStandardMaterial({ map: tex, roughness: 0.62, side: THREE.DoubleSide }),
       plain: new THREE.MeshStandardMaterial({ color: "#efe9df", roughness: 0.7 }),
-      lid: new THREE.MeshPhysicalMaterial({ color: "#1b1714", roughness: 0.35, clearcoat: 0.6 }),
+      lid: new THREE.MeshStandardMaterial({ color: "#1b1714", roughness: 0.32 }),
       hole: new THREE.MeshBasicMaterial({ color: "#000000" }),
     }),
     [tex],
@@ -154,7 +154,8 @@ export default function CupScene(props: Props) {
         <Lightformer intensity={1} position={[-4, 0, 2]} rotation-y={Math.PI / 2} scale={[3, 3, 1]} color="#ffe2a6" />
       </Environment>
       <Cup {...props} />
-      <ContactShadows position={[0, -1.6, 0]} opacity={0.45} scale={6} blur={2.6} far={3} />
+      {/* the shadow is rotationally symmetric: render it for a moment after each size change, then freeze it */}
+      <ContactShadows key={props.size} frames={45} position={[0, -1.6, 0]} opacity={0.45} scale={6} blur={2.6} far={3} resolution={props.touch ? 256 : 512} />
     </Canvas>
   );
 }
