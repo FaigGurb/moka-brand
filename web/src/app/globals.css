@@ -153,9 +153,13 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   from { transform: translate3d(-4%, -3%, 0) scale(1); }
   to { transform: translate3d(4%, 3%, 0) scale(1.08); }
 }
-/* phones: keep the colour, skip the drifting layer */
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .day-glow::before, .day-wash::before { animation: none; }
+/* the drift is a compositor-only transform, cheap enough for phones too; reduced motion stops it */
+.day-glow::before, .day-wash::before { will-change: transform; }
+@media (hover: none), (pointer: coarse) {
+  .day-glow::before, .day-wash::before { animation-duration: 22s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .day-glow::before, .day-wash::before { animation: none; will-change: auto; }
 }
 
 /* ---------- brand book: motion principle demos ---------- */

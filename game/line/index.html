@@ -48,6 +48,7 @@
   <p class="hint" id="hint" data-t="hint"></p>
 </main>
 <script src="../../club/club.js"></script>
+<script src="../shared/sound.js"></script>
 <script>
 (function(){
   var T={
@@ -106,6 +107,8 @@
 
   document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
   applyLang(lang);
+  var SND=window.MokaSound||{};function snd(k,a){try{SND[k]&&SND[k](a)}catch(e){}}
+  if(SND.button)SND.button(document.querySelector('.hud'));
 
   function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
   function resize(){
@@ -136,11 +139,11 @@
   function down(e){
     if(e)e.preventDefault();
     if(st.phase==='ready'){st.phase='pouring'}
-    if(st.phase==='pouring'){st.pouring=true}
+    if(st.phase==='pouring'){st.pouring=true;snd('pourStart')}
   }
   function up(){
     if(st.phase==='pouring'&&st.pouring){
-      st.pouring=false;st.phase='settling';st.drip=.03+ROUNDS[st.r].speed*.06;
+      st.pouring=false;st.phase='settling';snd('pourStop');st.drip=.03+ROUNDS[st.r].speed*.06;
     }
   }
   stage.addEventListener('pointerdown',function(e){if(e.target===c||e.target===msg)down(e)});
@@ -151,11 +154,11 @@
   function finishRound(){
     st.phase='done';
     var diff=Math.abs(st.level-st.target)*100,pts,label,bonus=0;
-    if(st.level>1){pts=0;label=t.over;st.streak=0;buzz(150)}
+    if(st.level>1){pts=0;label=t.over;st.streak=0;buzz(150);snd('overflow')}
     else{
       pts=Math.max(0,Math.round(100-diff*6));
-      if(diff<1.5){label=t.perfect;st.streak++;st.flash=1;buzz([30,40,30]);if(st.streak>1)bonus=20*(st.streak-1)}
-      else{st.streak=0;label=diff<4?t.great:diff<8?t.ok:t.far}
+      if(diff<1.5){label=t.perfect;st.streak++;st.flash=1;buzz([30,40,30]);snd('tink');if(st.streak>1){bonus=20*(st.streak-1);setTimeout(function(){snd('step',st.streak)},260)}}
+      else{st.streak=0;label=diff<4?t.great:diff<8?t.ok:t.far;snd(diff<4?'good':diff<8?'pop':'bad')}
     }
     st.score+=pts+bonus;scoreEl.textContent=st.score;
     st.results.push({name:t.roasts[st.r],pts:pts,bonus:bonus});
@@ -166,7 +169,7 @@
     },1600);
   }
   function showEnd(){
-    st.phase='idle';
+    st.phase='idle';snd('logo');
     document.getElementById('total').textContent=st.score;
     var s=st.score,v=s>=450?t.v[0]:s>=350?t.v[1]:s>=200?t.v[2]:t.v[3];
     document.getElementById('verdict').textContent=v;
@@ -206,7 +209,7 @@
   function frame(now){
     var dt=Math.min((now-last)/1000,.05);last=now;
     var R=ROUNDS[st.r]||ROUNDS[ROUNDS.length-1];
-    if(st.phase==='pouring'&&st.pouring){st.level+=R.speed*dt;if(st.level>1.02)up()}
+    if(st.phase==='pouring'&&st.pouring){st.level+=R.speed*dt;snd('pourLevel',st.level);if(st.level>1.02)up()}
     if(st.phase==='settling'){
       var add=Math.min(st.drip,R.speed*dt*.5);st.level+=add;st.drip-=add;
       if(st.drip<=.0005)finishRound();

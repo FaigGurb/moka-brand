@@ -29,7 +29,7 @@ const ROAST = ["#8C9A5B", "#C08A55", "#8A5A3B", "#5E3B26", "#2B1D15"];
 
 function Section({ id, title, note, dark, children }: { id: string; title: string; note?: string; dark?: boolean; children: ReactNode }) {
   return (
-    <section id={`b-${id}`} aria-labelledby={`b-${id}-t`} className={`b-sec scroll-mt-24 border-t py-16 md:py-24 ${dark ? "border-paper/10" : "border-espresso/10"}`}>
+    <section id={`b-${id}`} aria-labelledby={`b-${id}-t`} className={`b-sec scroll-mt-32 border-t lg:scroll-mt-24 py-16 md:py-24 ${dark ? "border-paper/10" : "border-espresso/10"}`}>
       <div className="mb-10 flex flex-wrap items-baseline gap-x-4 gap-y-2">
         <span className="h-[3px] w-10 self-center bg-axsam" aria-hidden="true" />
         <h2 id={`b-${id}-t`} className="text-[clamp(30px,4.4vw,56px)] leading-none font-medium tracking-[-0.015em]">
@@ -171,6 +171,26 @@ export function BrandPage() {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<string>(IDS[0]);
   const video = useRef<HTMLVideoElement>(null);
+  const hero = useRef<HTMLElement>(null);
+  const toc = useRef<HTMLOListElement>(null);
+  // phones: the section bar appears once the hero has scrolled away
+  const [bar, setBar] = useState(false);
+
+  useEffect(() => {
+    const el = hero.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setBar(!e.isIntersecting), { rootMargin: "-64px 0px 0px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // keep the active chip visible in the horizontal bar
+  useEffect(() => {
+    const ol = toc.current;
+    if (!ol || ol.scrollWidth <= ol.clientWidth) return;
+    const li = ol.querySelector<HTMLElement>(`a[href="#b-${active}"]`)?.parentElement;
+    if (li) ol.scrollTo({ left: li.offsetLeft - 12, behavior: "smooth" });
+  }, [active]);
 
   useEffect(() => {
     const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && setActive(e.target.id.slice(2))), { rootMargin: "-35% 0px -60% 0px" });
@@ -206,7 +226,7 @@ export function BrandPage() {
   return (
     <div ref={root} className="brand-book">
       {/* hero */}
-      <header className="relative isolate overflow-hidden bg-espresso pt-28 pb-16 text-paper md:pt-36 md:pb-24">
+      <header ref={hero} className="relative isolate overflow-hidden bg-espresso pt-28 pb-16 text-paper md:pt-36 md:pb-24">
         <div className="mx-auto flex max-w-[1320px] flex-col gap-6 px-5 md:px-10">
           <p className="eyebrow text-seher">{b.hero.eyebrow}</p>
           <h1 className="max-w-[14ch] text-[clamp(44px,8vw,112px)] leading-[0.95] font-medium tracking-[-0.02em]">{b.hero.title}</h1>
@@ -225,10 +245,13 @@ export function BrandPage() {
       </header>
 
       <div className="bg-paper text-espresso">
-        <div className="mx-auto grid max-w-[1320px] gap-10 px-5 md:px-10 lg:grid-cols-[200px_1fr]">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-[minmax(0,1fr)] gap-10 px-5 md:px-10 lg:grid-cols-[200px_minmax(0,1fr)]">
           {/* table of contents */}
-          <nav aria-label={b.nav} className="no-print sticky top-16 z-20 -mx-5 border-b border-espresso/10 bg-paper/95 px-5 lg:top-24 lg:mx-0 lg:h-max lg:border-0 lg:bg-transparent lg:px-0 lg:pt-16">
-            <ol className="no-scrollbar flex gap-1 overflow-x-auto py-3 lg:flex-col lg:gap-0 lg:py-0">
+          <nav
+            aria-label={b.nav}
+            className={`no-print fixed inset-x-0 top-16 z-30 min-w-0 border-b border-espresso/10 bg-paper/95 px-3 text-espresso transition-transform duration-300 lg:sticky lg:top-24 lg:z-20 lg:h-max lg:translate-y-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pt-16 ${bar ? "translate-y-0" : "pointer-events-none -translate-y-[200%]"}`}
+          >
+            <ol ref={toc} className="no-scrollbar flex gap-1 overflow-x-auto py-3 lg:flex-col lg:gap-0 lg:py-0">
               {IDS.map((id, i) => (
                 <li key={id} className="shrink-0">
                   <a
@@ -499,8 +522,8 @@ export function BrandPage() {
                   ["text-[13px]", "13 / 1.5"],
                   ["text-[12px] font-bold tracking-[0.24em] uppercase", "12 · 0.24em"],
                 ].map(([cls, spec], i) => (
-                  <li key={spec} className="b-item flex items-baseline justify-between gap-6 border-b border-espresso/10 py-3">
-                    <span className={`min-w-0 truncate ${cls}`}>{i < 3 ? b.type.sample : b.type.scale[i]}</span>
+                  <li key={spec} className="b-item flex flex-col gap-1 border-b border-espresso/10 py-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+                    <span className={`min-w-0 break-words sm:truncate ${cls}`}>{i < 3 ? b.type.sample : b.type.scale[i]}</span>
                     <span className="shrink-0 text-[12px] text-muted tabular-nums">
                       {b.type.scale[i]} · {spec}
                     </span>
@@ -666,7 +689,7 @@ export function BrandPage() {
 
       {/* motion + sound on espresso */}
       <div className="bg-espresso text-paper">
-        <div className="mx-auto grid max-w-[1320px] gap-10 px-5 md:px-10 lg:grid-cols-[200px_1fr]">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-[minmax(0,1fr)] gap-10 px-5 md:px-10 lg:grid-cols-[200px_minmax(0,1fr)]">
           <div aria-hidden="true" className="hidden lg:block" />
           <div className="min-w-0">
             <Section id="motion" title={b.motion.title} dark>
@@ -702,8 +725,8 @@ export function BrandPage() {
                   <dl className="mt-4 grid gap-2 text-[15px]">
                     {b.motion.tokens.map(([k, v]) => (
                       <div key={k} className="flex justify-between gap-4 border-b border-paper/10 pb-2">
-                        <dt className="text-muted-dark">{k}</dt>
-                        <dd className="text-right font-mono text-[13px]">{v}</dd>
+                        <dt className="shrink-0 text-muted-dark">{k}</dt>
+                        <dd className="min-w-0 text-right font-mono text-[13px] break-words">{v}</dd>
                       </div>
                     ))}
                   </dl>

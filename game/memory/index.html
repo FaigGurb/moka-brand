@@ -67,6 +67,7 @@
   <p class="learn" id="learn" aria-live="polite"></p>
 </main>
 <script src="../../club/club.js"></script>
+<script src="../shared/sound.js"></script>
 <script>
 (function(){
   var T={
@@ -178,9 +179,10 @@
     intro.classList.add('hidden');end.classList.add('hidden');render();
   }
   function tick(){st.elapsed=(performance.now()-st.start)/1000;var s=Math.floor(st.elapsed);document.getElementById('time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  var SND=window.MokaSound||{};function snd(k,a){try{SND[k]&&SND[k](a)}catch(e){}}
   function flip(i){
     var c=st.cards[i];if(st.lock||c.open||c.done)return;
-    c.open=true;st.open.push(i);update();
+    c.open=true;st.open.push(i);update();snd('flip');
     if(st.open.length<2)return;
     st.moves++;document.getElementById('moves').textContent=st.moves;
     var a=st.cards[st.open[0]],b=st.cards[st.open[1]];
@@ -188,14 +190,15 @@
       a.done=b.done=true;a.open=b.open=false;st.open=[];st.found++;
       learn.textContent=t.learn[a.pair];
       try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}
+      setTimeout(function(){snd(st.found===8?'gold':'tink')},120);
       update();if(st.found===8)setTimeout(finish,700);
     }else{
-      st.lock=true;
+      st.lock=true;setTimeout(function(){snd('pop',.7)},250);
       setTimeout(function(){a.open=b.open=false;st.open=[];st.lock=false;update()},850);
     }
   }
   function finish(){
-    clearInterval(st.timer);tick();
+    clearInterval(st.timer);tick();snd('logo');
     var score=Math.max(100,Math.round(1000-Math.max(0,st.moves-8)*25-st.elapsed*4));
     document.getElementById('total').textContent=score;
     document.getElementById('verdict').textContent=score>=800?t.v[0]:score>=600?t.v[1]:score>=400?t.v[2]:t.v[3];
@@ -216,6 +219,7 @@
     (navigator.clipboard?navigator.clipboard.writeText(text+' '+url):Promise.reject()).then(function(){toast.textContent=t.copied},function(){toast.textContent=text+' '+url});
   });
   applyLang(lang);
+  if(SND.button)SND.button(document.querySelector('.hud'));
 })();
 </script>
 </body>

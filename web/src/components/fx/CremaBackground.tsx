@@ -10,10 +10,16 @@ import { perfTier } from "@/lib/perf";
  * resolution and frame rate (lower still on phones); reduced motion gets a single still frame.
  */
 const VERT = `attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}`;
-const FRAG = `precision mediump float;
+// Phones run "mediump" as real 16-bit floats: the sin-hash noise then breaks into blocks and
+// stripes (desktop GPUs silently use 32-bit). Ask for highp wherever the GPU has it.
+const FRAG = `#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
 uniform vec2 uRes;uniform float uTime;uniform vec2 uMouse;uniform float uStir;uniform vec3 uDay;uniform float uAmp;
 varying vec2 v;
-float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float h(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);
  return mix(mix(h(i),h(i+vec2(1.,0.)),u.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),u.x),u.y);}
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
@@ -54,8 +60,10 @@ export function CremaBackground({ amp = 0.7, className = "" }: { amp?: number; c
     installPointer();
     const lite = perfTier() === "low";
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const scale = lite ? 0.33 : 0.5;
-    const frameMs = 1000 / (lite ? 20 : 30);
+    // the surface is soft, so a low-res buffer scales up cleanly; phones get ½ with a pixel cap
+    const scale = 0.5;
+    const maxPx = lite ? 220_000 : 600_000;
+    const frameMs = 1000 / (lite ? 24 : 30);
 
     const sh = (type: number, src: string) => {
       const s = gl.createShader(type)!;
@@ -84,8 +92,13 @@ export function CremaBackground({ amp = 0.7, className = "" }: { amp?: number; c
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.round(r.width * scale));
-      canvas.height = Math.max(1, Math.round(r.height * scale));
+      const k = Math.min(scale, Math.sqrt(maxPx / Math.max(1, r.width * r.height)));
+      const w = Math.max(1, Math.round(r.width * k));
+      const h = Math.max(1, Math.round(r.height * k));
+      // phones fire resize when the URL bar slides; only touch the buffer when its size really changes
+      if (w === canvas.width && h === canvas.height) return;
+      canvas.width = w;
+      canvas.height = h;
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
     const ro = new ResizeObserver(() => {

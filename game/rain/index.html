@@ -61,6 +61,7 @@
   <p class="hint" data-t="hint"></p>
 </main>
 <script src="../../club/club.js"></script>
+<script src="../shared/sound.js"></script>
 <script>
 (function(){
   var T={
@@ -114,6 +115,8 @@
   }
   document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
   applyLang(lang);
+  var SND=window.MokaSound||{};function snd(k,a){try{SND[k]&&SND[k](a)}catch(e){}}
+  if(SND.button)SND.button(document.querySelector('.hud'));
 
   // the day palette: background moves through the day as the timer runs
   var DAY=[[200,155,109],[217,181,106],[168,100,58],[60,57,53]];
@@ -142,12 +145,12 @@
   }
   function cupRect(){var w=Math.min(W*.22,120),h=w*1.15;return {x:st.cupX*W-w/2,y:H-h-8,w:w,h:h}}
   function hit(b){
-    if(b.type==='green'){st.score=Math.max(0,st.score-15);st.combo=0;st.green++;buzz(120);pop(b,'−15','#8C9A5B');return}
+    if(b.type==='green'){st.score=Math.max(0,st.score-15);st.combo=0;st.green++;buzz(120);snd('bad');pop(b,'−15','#8C9A5B');return}
     st.combo++;st.best=Math.max(st.best,st.combo);
     var mult=st.combo>=12?3:st.combo>=6?2:1,base=b.type==='gold'?30:10,pts=base*mult;
-    st.score+=pts;st.caught++;if(b.type==='gold'){st.gold++;buzz([20,30,20])}else buzz(8);
+    st.score+=pts;st.caught++;if(b.type==='gold'){st.gold++;buzz([20,30,20]);snd('gold')}else{buzz(8);snd('pop',1+Math.min(st.combo,12)*.04)}
     pop(b,'+'+pts+(mult>1?' ×'+mult:''),b.type==='gold'?'#FFE2A6':'#F5F1EA');
-    if(st.combo===6||st.combo===12)say('×'+mult,'');
+    if(st.combo===6||st.combo===12){say('×'+mult,'');snd('step',mult)}
   }
   function pop(b,text,color){st.pops.push({x:b.x*W,y:H-cupRect().h-20,text:text,color:color,life:1})}
 
@@ -157,7 +160,7 @@
     say(t.day[0],'');
   }
   function finish(){
-    st.phase='idle';
+    st.phase='idle';snd('logo');
     document.getElementById('total').textContent=st.score;
     var s=st.score;document.getElementById('verdict').textContent=s>=700?t.v[0]:s>=450?t.v[1]:s>=250?t.v[2]:t.v[3];
     var rows=document.getElementById('rows');rows.innerHTML='';
@@ -209,7 +212,7 @@
       scoreEl.textContent=st.score;timeEl.textContent=Math.max(0,Math.ceil(st.time));
       tbar.style.width=Math.max(0,st.time/DUR*100)+'%';
       var seg=Math.min(3,Math.floor((1-st.time/DUR)*4));
-      if(seg!==st.seg){st.seg=seg;if(seg>0)say(t.day[seg],'')}
+      if(seg!==st.seg){st.seg=seg;if(seg>0){say(t.day[seg],'');snd('good')}}
       if(st.time<=0)finish();
     }
     st.pops.forEach(function(p){p.life-=dt*1.4;p.y-=dt*40});st.pops=st.pops.filter(function(p){return p.life>0});

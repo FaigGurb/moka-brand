@@ -37,7 +37,7 @@ web/                      Next.js layihəsi (mənbə kodu)
   src/lib/                loqo həndəsəsi (logo.ts), GSAP qeydiyyatı, hook-lar, linklər
   scripts/deploy.mjs      statik exportu repo kökünə köçürür
 ar/                       AR mərkəzi: card/, table/, selfie/, shared/ (rəsm və dil köməkçiləri), models/ (.glb + generator)
-game/                     oyun mərkəzi + line/, rain/, memory/; shared/game.css
+game/                     oyun mərkəzi + line/, rain/, memory/; shared/game.css, shared/sound.js (səslər)
 club/                     MOKA Club: club.js (ortaq xal modulu, localStorage), index.html, vendor/qrcode.js (MIT)
 v1/                       köhnə sayt (build bu qovluqlara toxunmur)
 index.html, _next/, 404*  web/-dən generasiya olunan fayllar — əllə redaktə etməyin

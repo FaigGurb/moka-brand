@@ -3,7 +3,9 @@ from playwright.async_api import async_playwright
 async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch(args=["--use-gl=swiftshader","--enable-unsafe-swiftshader","--ignore-gpu-blocklist"])
-        for lang in ["","en/","ru/","menu/","en/menu/","ru/menu/","brand/","ru/brand/","privacy/"]:
+        import sys
+        pages = sys.argv[1:] or ["","en/","ru/","menu/","en/menu/","ru/menu/","brand/","en/brand/","ru/brand/","privacy/"]
+        for lang in pages:
             for name,vw,vh,mob,rm in [("desk",1440,900,False,"no-preference"),("tab",1024,768,True,"no-preference"),("mob",375,740,True,"no-preference"),("rm",390,800,True,"reduce")]:
                 ctx = await b.new_context(viewport={"width":vw,"height":vh}, is_mobile=mob, has_touch=mob, reduced_motion=rm)
                 pg = await ctx.new_page()
@@ -20,8 +22,9 @@ async def main():
                     maxov=max(maxov, await pg.evaluate("document.documentElement.scrollWidth-innerWidth"))
                     H = await pg.evaluate("document.documentElement.scrollHeight")
                 # find elements wider than viewport
-                wide = await pg.evaluate("""[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.right>innerWidth+1 && getComputedStyle(e).position!=='fixed' && !e.closest('.no-scrollbar,[class*=overflow-x],.t-track')}).slice(0,3).map(e=>e.tagName+'.'+(e.className.baseVal??e.className).toString().slice(0,60))""")
-                print(lang or "az", name, "H", H, "overflow", maxov, errs[:4], wide if maxov else "")
+                wide = await pg.evaluate("""[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.right>innerWidth+1 && getComputedStyle(e).position!=='fixed' && !e.closest('.no-scrollbar,[class*=overflow-x],.t-track') && !(()=>{for(let a=e.parentElement;a&&a!==document.body;a=a.parentElement){const o=getComputedStyle(a).overflowX;if(o!=='visible'&&a.getBoundingClientRect().right<=innerWidth+1)return true}return false})()}).slice(0,3).map(e=>e.tagName+'.'+(e.className.baseVal??e.className).toString().slice(0,60))""")
+                # body clips horizontal overflow, so scrollWidth alone can miss content pushed past the edge
+                print(lang or "az", name, "H", H, "overflow", maxov, errs[:4], wide)
                 await ctx.close()
         await b.close()
 asyncio.run(main())
