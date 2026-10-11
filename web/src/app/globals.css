@@ -76,9 +76,8 @@ h1, h2, h3 {
 
 /* Line-reveal helper: each word sits in a mask so it can rise into view. */
 .reveal-line {
-  display: inline-block;
+  display: block;
   overflow: hidden;
-  vertical-align: top;
   padding-bottom: 0.08em;
 }
 .reveal-line > span {

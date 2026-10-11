@@ -15,7 +15,8 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 - Fonts: League Spartan (display) + Mulish (text) only. Both cover the full Azerbaijani alphabet. Before adding any font, verify it has Ə/ə (many popular fonts, e.g. Jost, Lato, Rubik, Outfit, do not).
 - Colours come from the `@theme` block in `web/src/app/globals.css`, mirroring the MOKA design system tokens. Day-palette names: Səhər (oak), Günorta (bamboo), Axşam (copper), Şəhər (concrete), Nar (rust).
 - Logo geometry lives in `web/src/lib/logo.ts`; SVG and 3D both derive from it. Every letter is split by the signature line (y 74.5–79.5).
-- GSAP only inside `useGSAP` with `gsap.matchMedia()`; disable pins/scrub under 1024px and for `prefers-reduced-motion`.
+- GSAP only inside `useGSAP` with `gsap.matchMedia()`. Pinned/scrubbed stories run on every screen size (phones included, using `100svh` and `anticipatePin`); only `prefers-reduced-motion` turns them off (use Tailwind `motion-safe:`/`motion-reduce:` for the matching layout). `ScrollTrigger.config({ ignoreMobileResize: true })` stays on.
+- 3D hero: mouse tilt on desktop, automatic sway on touch screens (`useTouch`), lower DPR on phones.
 - Three.js only via `next/dynamic` with `ssr: false`; keep the SVG fallback working.
 - No invented facts: origins, tasting notes, prices, farmer/artist names are marked as samples or `[placeholders]`.
 - Links to static pages go through `LINKS` in `web/src/lib/site.ts` (basePath-aware).

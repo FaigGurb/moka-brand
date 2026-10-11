@@ -61,11 +61,11 @@ Sonra `git add -A && git commit && git push` — GitHub Pages `main` budağını
 ## Animasiyalar
 
 Hamısı GSAP + ScrollTrigger ilə, `useGSAP` və `gsap.matchMedia()` daxilində (avtomatik təmizlənir):
-- Konsepsiya: böyük ekranda pinned hekayə, hərflər bir-bir işıqlanır, imza xətti çəkilir.
+- Konsepsiya: pinned hekayə, hərflər bir-bir işıqlanır, imza xətti çəkilir.
 - Bakıda bir gün: pinned rəng hekayəsi (Səhər → Günorta → Axşam → Şəhər → Nar).
-- Paket ailəsi: böyük ekranda şaquli scroll ilə üfüqi qalereya, telefonda adi sürüşdürmə.
+- Paket ailəsi: şaquli scroll ilə üfüqi qalereya.
 - Kafedə: clip-path ilə açılan vizual və çəkilən LED xətti.
-Kiçik ekranlarda və reduced-motion-da pin və scrub söndürülür, məzmun adi siyahı kimi görünür.
+Bütün bu hekayələr telefonda da işləyir; yalnız reduced-motion rejimində pin və scrub söndürülür və məzmun adi siyahı kimi görünür. Telefonda 3D hero siçan əvəzinə özü yavaş-yavaş yellənir.
 
 ## Problemlər
 

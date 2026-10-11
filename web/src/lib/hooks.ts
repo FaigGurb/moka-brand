@@ -28,3 +28,12 @@ export function useWebGL() {
   }, []);
   return ok;
 }
+
+/** True on devices whose primary pointer is a finger (phones, tablets). */
+export function useTouch() {
+  const [touch, setTouch] = useState(false);
+  useEffect(() => {
+    setTouch(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
+  }, []);
+  return touch;
+}

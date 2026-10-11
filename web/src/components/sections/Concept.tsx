@@ -17,15 +17,15 @@ export function Concept() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      // Pinned storytelling only on large screens with motion allowed; otherwise a plain list.
-      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      // Pinned storytelling on every screen size; reduced motion gets a plain list.
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
         const letters = gsap.utils.toArray<HTMLElement>(".c-letter");
         const panels = gsap.utils.toArray<HTMLElement>(".c-panel");
         gsap.set(letters, { opacity: 0.16 });
         gsap.set(panels, { autoAlpha: 0, y: 30 });
         const tl = gsap.timeline({
           defaults: { ease: "power2.inOut" },
-          scrollTrigger: { trigger: ".c-pin", start: "top top", end: "+=260%", pin: true, scrub: 0.6 },
+          scrollTrigger: { trigger: ".c-pin", start: "top top", end: "+=260%", pin: true, scrub: 0.6, anticipatePin: 1 },
         });
         tl.to(".c-line", { scaleX: 1, duration: 4, ease: "none" }, 0);
         STEPS.forEach((_, i) => {
@@ -40,7 +40,7 @@ export function Concept() {
         tl.to(letters, { opacity: 1, y: 0, duration: 0.4 }, 3.6);
         return () => tl.kill();
       });
-      mm.add("(max-width: 1023px), (prefers-reduced-motion: reduce)", () => {
+      mm.add("(prefers-reduced-motion: reduce)", () => {
         gsap.set(".c-line", { scaleX: 1 });
       });
       return () => mm.revert();
@@ -50,35 +50,35 @@ export function Concept() {
 
   return (
     <section id="konsepsiya" ref={root} className="bg-paper text-espresso">
-      <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 lg:min-h-screen lg:py-16">
+      <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:min-h-[100svh] motion-safe:py-16">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-axsam-ink">Konsepsiya</p>
-          <h2 className="max-w-[16ch] text-[clamp(36px,5.4vw,72px)] leading-[1.02] font-medium tracking-[-0.015em]">
+          <h2 className="max-w-[16ch] text-[clamp(32px,5.4vw,72px)] leading-[1.02] font-medium tracking-[-0.015em]">
             Hər hərf bir dəmləmə alətidir
           </h2>
         </div>
 
-        <div className="relative mt-14 grid grid-cols-2 gap-x-6 gap-y-10 lg:mt-16 lg:grid-cols-4">
+        <div className="relative mt-10 grid grid-cols-4 gap-x-3 gap-y-10 md:gap-x-6 lg:mt-16">
           {STEPS.map((s) => (
-            <figure key={s.id} className="c-letter flex flex-col gap-4">
-              <Letter id={s.id} className="h-[clamp(96px,12vw,170px)] w-auto self-start text-espresso" />
-              <figcaption className="font-[family-name:var(--font-display)] text-2xl">
-                {s.id} · {s.tool}
+            <figure key={s.id} className="c-letter flex flex-col gap-2 md:gap-4">
+              <Letter id={s.id} className="h-[clamp(60px,17vw,170px)] w-auto max-w-full self-start text-espresso" />
+              <figcaption className="font-[family-name:var(--font-display)] text-[13px] leading-tight sm:text-lg md:text-2xl">
+                <span className="hidden sm:inline">{s.id} · </span>{s.tool}
               </figcaption>
             </figure>
           ))}
           {/* the signature line, drawn as the story progresses */}
           <span
             aria-hidden="true"
-            className="c-line pointer-events-none absolute top-[calc(clamp(96px,12vw,170px)*0.5)] left-0 hidden h-[3px] w-full origin-left scale-x-0 bg-axsam lg:block"
+            className="c-line pointer-events-none absolute top-[calc(clamp(60px,17vw,170px)*0.5_-_1px)] left-0 h-[3px] w-full origin-left scale-x-0 bg-axsam"
           />
         </div>
 
-        <div className="relative mt-12 grid gap-6 lg:mt-14 lg:block lg:h-[120px]">
+        <div className="relative mt-10 grid gap-6 motion-safe:block motion-safe:h-[150px] lg:mt-14 lg:motion-safe:h-[120px]">
           {STEPS.map((s) => (
             <p
               key={s.id}
-              className="c-panel max-w-[52ch] text-[clamp(17px,1.6vw,22px)] leading-relaxed text-muted lg:absolute lg:inset-x-0 lg:top-0"
+              className="c-panel max-w-[52ch] text-[clamp(17px,1.6vw,22px)] leading-relaxed text-muted motion-safe:absolute motion-safe:inset-x-0 motion-safe:top-0"
             >
               <b className="text-espresso">{s.tool}.</b> {s.text}
             </p>

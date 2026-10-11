@@ -64,10 +64,12 @@ function useGlowTexture() {
 type Props = {
   progress: MutableRefObject<number>;
   reducedMotion: boolean;
+  /** Touch screens have no hover pointer: the wordmark sways on its own instead. */
+  touch: boolean;
   onReady?: () => void;
 };
 
-function Wordmark({ progress, reducedMotion }: Omit<Props, "onReady">) {
+function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
   const group = useRef<THREE.Group>(null);
   const tops = useRef<(THREE.Object3D | null)[]>([]);
   const bottoms = useRef<(THREE.Object3D | null)[]>([]);
@@ -119,7 +121,7 @@ function Wordmark({ progress, reducedMotion }: Omit<Props, "onReady">) {
   );
 
   // Fit the wordmark to the viewport width (phones get a smaller, closer composition).
-  const fit = Math.min(1.12, (viewport.width * (size.width < 640 ? 0.92 : 0.78)) / 6.9);
+  const fit = Math.min(1.12, (viewport.width * (size.width < 640 ? 0.9 : 0.78)) / 6.9);
 
   useFrame((state, delta) => {
     if (start.current === null) start.current = state.clock.elapsedTime;
@@ -131,8 +133,9 @@ function Wordmark({ progress, reducedMotion }: Omit<Props, "onReady">) {
 
     // Pointer-driven tilt with eased follow; frozen for reduced motion.
     if (group.current) {
-      const tx = reducedMotion ? 0 : -state.pointer.y * 0.16 + p * 0.25;
-      const ty = reducedMotion ? 0 : state.pointer.x * 0.28;
+      // Desktop follows the mouse; touch screens get a slow, continuous sway plus a turn as you scroll.
+      const tx = reducedMotion ? 0 : touch ? Math.sin(t * 0.5) * 0.08 + p * 0.35 : -state.pointer.y * 0.16 + p * 0.25;
+      const ty = reducedMotion ? 0 : touch ? Math.sin(t * 0.35) * 0.32 + p * 0.5 : state.pointer.x * 0.28;
       group.current.rotation.x += (tx - group.current.rotation.x) * damp;
       group.current.rotation.y += (ty - group.current.rotation.y) * damp;
       group.current.position.y = -p * 0.35;
@@ -198,10 +201,10 @@ function Wordmark({ progress, reducedMotion }: Omit<Props, "onReady">) {
   );
 }
 
-export default function HeroScene({ progress, reducedMotion, onReady }: Props) {
+export default function HeroScene({ progress, reducedMotion, touch, onReady }: Props) {
   return (
     <Canvas
-      dpr={[1, 1.75]}
+      dpr={touch ? [1, 1.5] : [1, 1.75]}
       camera={{ position: [0, 0.15, 7.2], fov: 32 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={() => onReady?.()}
@@ -212,12 +215,12 @@ export default function HeroScene({ progress, reducedMotion, onReady }: Props) {
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#c89b6d" />
       <pointLight position={[0, 0, 2.2]} intensity={2.2} distance={6} color="#f2c76e" />
       {/* Studio reflections built from light panels: no external HDR files. */}
-      <Environment resolution={128}>
+      <Environment resolution={touch ? 64 : 128}>
         <Lightformer intensity={2} position={[0, 3, 4]} scale={[8, 1.2, 1]} color="#fff6ea" />
         <Lightformer intensity={1.2} position={[-5, 0, 2]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} color="#c89b6d" />
         <Lightformer intensity={0.8} position={[5, -1, 2]} rotation-y={-Math.PI / 2} scale={[4, 2, 1]} color="#a8643a" />
       </Environment>
-      <Wordmark progress={progress} reducedMotion={reducedMotion} />
+      <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} />
     </Canvas>
   );
 }

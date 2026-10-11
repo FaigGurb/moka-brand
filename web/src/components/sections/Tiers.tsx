@@ -93,8 +93,8 @@ export function Tiers() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      // Horizontal gallery driven by vertical scroll on desktop; native swipe on touch screens.
-      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+      // Horizontal gallery driven by vertical scroll on every screen size; native swipe only for reduced motion.
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
         const track = root.current!.querySelector<HTMLElement>(".t-track")!;
         const distance = () => track.scrollWidth - window.innerWidth;
         const tween = gsap.to(track, {
@@ -118,18 +118,18 @@ export function Tiers() {
 
   return (
     <section id="paket" ref={root} className="bg-paper-2 text-espresso">
-      <div className="t-pin overflow-hidden lg:flex lg:h-screen lg:items-center">
-        <div className="t-track no-scrollbar flex snap-x snap-mandatory scroll-px-5 md:scroll-px-10 gap-8 overflow-x-auto px-5 py-24 md:px-10 lg:snap-none lg:overflow-visible lg:py-0 lg:pr-[10vw] lg:pl-[max(40px,calc((100vw-1320px)/2+40px))]">
-          <div className="flex w-[82vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
+      <div className="t-pin overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
+        <div className="t-track no-scrollbar flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
+          <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-axsam-ink">Paket ailəsi</p>
             <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">Bir ailə, üç pillə</h2>
             <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted">
               Hər paketdə imza xətti, loqo yeri və etiket quruluşu eynidir. Dəyişən material və vurğudur.
             </p>
-            <p className="hidden text-sm font-bold tracking-[0.06em] text-muted lg:block">Aşağı scroll edin →</p>
+            <p className="text-sm font-bold tracking-[0.06em] text-muted motion-reduce:hidden">Aşağı sürüşdürün →</p>
           </div>
           {TIERS.map((t, i) => (
-            <article key={t.n} className="flex w-[74vw] max-w-[380px] flex-none snap-start flex-col gap-4 lg:w-[26vw]">
+            <article key={t.n} className="flex w-[min(72vw,calc((100svh_-_250px)/1.53),380px)] flex-none snap-start flex-col gap-3 md:gap-4 lg:w-[min(26vw,calc((100svh_-_250px)/1.53))]">
               <div className="aspect-[3/4.6] w-full shadow-[0_40px_70px_-40px_rgba(27,23,20,0.55)] transition-transform duration-500 ease-[var(--ease-brand)] hover:-translate-y-2">
                 {t.bag}
               </div>

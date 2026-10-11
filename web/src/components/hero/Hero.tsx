@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import { Logo } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import { useReducedMotion, useWebGL } from "@/lib/hooks";
+import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import { LINKS } from "@/lib/site";
 
 // Three.js loads only in the browser and only for the hero.
@@ -19,6 +19,7 @@ export function Hero() {
   const [ready, setReady] = useState(false);
   const reduced = useReducedMotion();
   const webgl = useWebGL();
+  const touch = useTouch();
 
   useGSAP(
     () => {
@@ -59,7 +60,7 @@ export function Hero() {
         <p className="hero-fade eyebrow text-muted-dark">Coffee Roastery · Bakı · Korporativ kimlik konsepti</p>
 
         <div className="relative my-6 flex flex-1 items-center justify-center md:my-4">
-          <div className="relative aspect-[675/240] w-full max-w-[1100px]">
+          <div className="relative aspect-[675/330] w-full max-w-[1100px] sm:aspect-[675/240]">
             {/* SVG wordmark: visible until the 3D scene is ready, and the permanent fallback without WebGL. */}
             <Logo
               className={`absolute inset-x-[6%] top-1/2 w-[88%] -translate-y-1/2 text-paper transition-opacity duration-700 ${
@@ -68,8 +69,8 @@ export function Hero() {
               title="MOKA loqosu"
             />
             {show3D && (
-              <div className="absolute inset-[-12%_-8%]">
-                <HeroScene progress={progress} reducedMotion={reduced} onReady={() => setReady(true)} />
+              <div className="absolute inset-[-12%_-4%] sm:inset-[-12%_-8%]">
+                <HeroScene progress={progress} reducedMotion={reduced} touch={touch} onReady={() => setReady(true)} />
               </div>
             )}
           </div>
