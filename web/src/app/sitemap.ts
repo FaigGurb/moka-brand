@@ -3,7 +3,7 @@ import { BASE, SITE_ORIGIN } from "@/lib/meta";
 
 export const dynamic = "force-static";
 
-const PAGES = ["", "menu/", "privacy/"];
+const PAGES = ["", "menu/", "brand/", "privacy/"];
 const STATIC = ["ar/", "ar/card/", "ar/table/", "ar/selfie/", "game/", "game/line/", "game/rain/", "game/memory/", "club/"];
 
 export default function sitemap(): MetadataRoute.Sitemap {

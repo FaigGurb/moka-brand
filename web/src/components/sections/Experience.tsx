@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { ClubCard } from "../ClubCard";
+import { CremaBackground } from "../fx/CremaBackground";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
@@ -31,7 +32,7 @@ export function Experience() {
   );
 
   return (
-    <section id="tecrube" ref={root} className="bg-paper-2 text-espresso">
+    <section id="tecrube" ref={root} className="day-wash overflow-hidden bg-paper-2 text-espresso">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-axsam-ink">{t.exp.eyebrow}</p>
@@ -118,7 +119,8 @@ export function FinalCta() {
   const { locale, t } = useI18n();
   const LINKS = links(locale);
   return (
-    <section className="bg-espresso text-paper">
+    <section className="relative isolate overflow-hidden bg-espresso text-paper">
+      <CremaBackground className="-z-10" amp={0.75} />
       <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-24 md:px-10 md:py-32">
         <h2 className="max-w-[14ch] text-[clamp(40px,7vw,104px)] leading-[0.95] font-medium tracking-[-0.02em]">
           {t.final.title}

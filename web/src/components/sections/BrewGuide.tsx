@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { CUT_BOTTOM, CUT_TOP, HANDLE_PATH, LETTERS, pts } from "@/lib/logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
+import { CremaBackground } from "../fx/CremaBackground";
 
 // General brewing guidance (not MOKA's recipes). Step times in seconds.
 const RECIPES = [
@@ -108,7 +109,8 @@ export function BrewGuide() {
   const toolText = b.tools[tool];
 
   return (
-    <section id="demleme" ref={root} className="bg-espresso text-paper">
+    <section id="demleme" ref={root} className="relative isolate overflow-hidden bg-espresso text-paper">
+      <CremaBackground className="-z-10" amp={0.45} />
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="bg-rise grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
           <div>

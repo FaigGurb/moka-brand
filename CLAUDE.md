@@ -32,7 +32,14 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 - Links to static pages go through `links(locale)` in `web/src/lib/site.ts` (basePath-aware, adds `?lang=`).
 - All copy lives in `web/src/i18n/dict.ts` (az is the source; en/ru must have the same shape). Components read it with `useI18n()`. Day-palette brand names stay Azerbaijani in every language with a translated subtitle.
 - `ar/` and `game/` carry their own az/en/ru strings; language comes from `?lang=` or `localStorage['moka-lang']`, and their back buttons return to the matching language home.
-- Russian headings: League Spartan has no Cyrillic, so `Montserrat` sits next in the display stack (loaded from Google Fonts).
+- Russian headings: League Spartan has no Cyrillic, so `Montserrat` (self-hosted) sits next in the display stack.
+
+## Working method
+Follow `docs/ENGINEERING.md` (audit → prioritise → implement → verify; honest reporting; definition of done). Run `npm run check` + `npm run build` and the browser checks in `docs/tools/qa/` before deploying. Device checklist: `docs/QA.md`.
+
+- Brand book: `/brand/` (`components/pages/BrandPage.tsx`, copy in `src/i18n/brand.ts`, same shape in az/en/ru). Downloadable kit in `web/public/brand-kit/` (logo SVGs, tokens, sound logo, logo animation, PDFs) — regenerate with the scripts in `docs/tools/`.
+- Living background: `fx/DayAmbient.tsx` sets `--day`/`--day-rgb` from Baku time (`lib/day.ts`); `.day-glow`/`.day-wash` classes tint sections; `fx/CremaBackground.tsx` is a plain-WebGL shader for dark sections (in-view only, low res/fps, still frame for reduced motion).
+- AR libraries are vendored in `/vendor/` (no CDN at runtime).
 
 ## Commits
 End commit messages with the session attribution lines provided by the environment.

@@ -137,6 +137,9 @@ export function Nav({ sub = "" }: { sub?: string }) {
           <a href={L.menu} className="border border-glow px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-glow uppercase">
             {t.menu.nav}
           </a>
+          <a href={L.brand} className="border border-paper/40 px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-paper uppercase">
+            {t.footer.brand}
+          </a>
           <a href={L.ar} className="bg-paper px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-espresso uppercase">
             {t.nav.mobileAr}
           </a>

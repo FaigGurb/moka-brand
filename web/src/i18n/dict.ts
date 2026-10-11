@@ -176,6 +176,7 @@ const az = {
       prev: "Əvvəlki",
       next: "Növbəti",
       samples: "Lövhələrdəki mənşə və dad notları nümunədir.",
+      book: "Bütün qaydalar: brend kitabı",
     },
   },
   exp: {
@@ -260,7 +261,7 @@ const az = {
     sections: [
       { h: "Cihazında saxlanılanlar", p: "Brauzerin yaddaşında (localStorage) yalnız bunlar saxlanılır: seçdiyin dil, oyunlardakı ən yaxşı nəticələrin, MOKA Club xalların və kodların, giriş animasiyasının artıq göstərildiyi. Bunlar heç yerə göndərilmir; Club səhifəsindəki düymə ilə silə bilərsən." },
       { h: "Kamera", p: "AR səhifələri kameranı yalnız sən icazə verəndə açır. Görüntü cihazında, brauzerdə işlənir; heç bir şəkil və ya video yüklənmir. Selfi şəklini yalnız sən saxlayır və ya paylaşırsan." },
-      { h: "Kənar xidmətlər", p: "AR kitabxanaları (A-Frame, MindAR, model-viewer) jsDelivr CDN-dən, üz izləmə modeli Google MediaPipe serverindən yüklənir. Bu zaman həmin xidmətlər standart texniki məlumatları (IP ünvanı, brauzer) görə bilər. Sayt GitHub Pages-də yerləşir." },
+      { h: "Kənar xidmətlər", p: "AR kitabxanaları və şriftlər saytın özündən yüklənir. Yalnız qəhvə selfisi üz izləmə modelini Google MediaPipe-dan (jsDelivr və googleapis) yükləyir; bu zaman həmin xidmətlər standart texniki məlumatları (IP ünvanı, brauzer) görə bilər. Sayt GitHub Pages-də yerləşir." },
       { h: "Cookie", p: "Sayt cookie istifadə etmir." },
       { h: "Əlaqə", p: "Suallar üçün: [e-poçt]." },
     ],
@@ -276,8 +277,10 @@ const az = {
     credit: "Dizayn və kod: Faig Gurbanli",
     repo: "Mənbə kodu — GitHub",
     menu: "Menyu",
+    brand: "Brend kitabı",
     privacy: "Məxfilik",
     club: "MOKA Club",
+    dayNow: "Saytın rəngi Bakı vaxtı ilə dəyişir. İndi:",
   },
 };
 
@@ -454,6 +457,7 @@ const en: Dict = {
       prev: "Previous",
       next: "Next",
       samples: "The boards are in Azerbaijani; origins and tasting notes on them are samples.",
+      book: "All the rules: the brand book",
     },
   },
   exp: {
@@ -538,7 +542,7 @@ const en: Dict = {
     sections: [
       { h: "Stored on your device", p: "Only these are kept in your browser storage (localStorage): your language, your best game scores, your MOKA Club points and codes, and whether the intro animation was shown. Nothing is sent anywhere; you can delete it with the button on the Club page." },
       { h: "Camera", p: "The AR pages open the camera only after you allow it. The image is processed on your device, in the browser; no photo or video is uploaded. Only you save or share your selfie." },
-      { h: "Third-party services", p: "The AR libraries (A-Frame, MindAR, model-viewer) load from the jsDelivr CDN and the face-tracking model from Google's MediaPipe servers. These services may see standard technical data (IP address, browser). The site is hosted on GitHub Pages." },
+      { h: "Third-party services", p: "The AR libraries and fonts load from this site itself. Only the coffee selfie downloads Google MediaPipe's face-tracking model (from jsDelivr and googleapis); those services may see standard technical data (IP address, browser). The site is hosted on GitHub Pages." },
       { h: "Cookies", p: "The site does not use cookies." },
       { h: "Contact", p: "Questions: [email]." },
     ],
@@ -554,8 +558,10 @@ const en: Dict = {
     credit: "Design and code: Faig Gurbanli",
     repo: "Source code — GitHub",
     menu: "Menu",
+    brand: "Brand book",
     privacy: "Privacy",
     club: "MOKA Club",
+    dayNow: "The site colour follows the time in Baku. Now:",
   },
 };
 
@@ -730,6 +736,7 @@ const ru: Dict = {
       prev: "Назад",
       next: "Далее",
       samples: "Макеты на азербайджанском; происхождение и вкусовые ноты на них — примеры.",
+      book: "Все правила: брендбук",
     },
   },
   exp: {
@@ -814,7 +821,7 @@ const ru: Dict = {
     sections: [
       { h: "Что хранится на устройстве", p: "В памяти браузера (localStorage) хранится только: выбранный язык, лучшие результаты в играх, баллы и коды MOKA Club, а также то, что вступительная анимация уже была показана. Ничего никуда не отправляется; удалить данные можно кнопкой на странице Club." },
       { h: "Камера", p: "AR-страницы включают камеру только с вашего разрешения. Изображение обрабатывается на устройстве, в браузере; фото и видео не загружаются. Селфи сохраняете или отправляете только вы." },
-      { h: "Сторонние сервисы", p: "AR-библиотеки (A-Frame, MindAR, model-viewer) загружаются с CDN jsDelivr, модель отслеживания лица — с серверов Google MediaPipe. Эти сервисы могут видеть стандартные технические данные (IP-адрес, браузер). Сайт размещён на GitHub Pages." },
+      { h: "Сторонние сервисы", p: "AR-библиотеки и шрифты загружаются с самого сайта. Только кофейное селфи загружает модель отслеживания лица Google MediaPipe (с jsDelivr и googleapis); эти сервисы могут видеть стандартные технические данные (IP-адрес, браузер). Сайт размещён на GitHub Pages." },
       { h: "Cookie", p: "Сайт не использует cookie." },
       { h: "Контакты", p: "Вопросы: [e-mail]." },
     ],
@@ -830,8 +837,10 @@ const ru: Dict = {
     credit: "Дизайн и код: Фаиг Гурбанлы",
     repo: "Исходный код — GitHub",
     menu: "Меню",
+    brand: "Брендбук",
     privacy: "Конфиденциальность",
     club: "MOKA Club",
+    dayNow: "Цвет сайта меняется по времени Баку. Сейчас:",
   },
 };
 

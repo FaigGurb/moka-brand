@@ -90,7 +90,7 @@ export function BeanStory() {
         {/* warm light behind the Chemex */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,rgba(242,199,110,0.12),transparent_60%)] lg:bg-[radial-gradient(ellipse_at_70%_55%,rgba(242,199,110,0.14),transparent_55%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_75%,rgb(var(--day-rgb)/0.14),transparent_60%)] lg:bg-[radial-gradient(ellipse_at_70%_55%,rgb(var(--day-rgb)/0.16),transparent_55%)]"
         />
 
         <div

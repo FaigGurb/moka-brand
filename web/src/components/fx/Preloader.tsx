@@ -21,8 +21,13 @@ export function Preloader() {
       seen = sessionStorage.getItem("moka-intro") === "1";
       sessionStorage.setItem("moka-intro", "1");
     } catch {}
+    const done = () => {
+      (window as Window & { __mokaIntroDone?: boolean }).__mokaIntroDone = true;
+      window.dispatchEvent(new Event("moka:intro-done"));
+    };
     if (seen || matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setGone(true);
+      done();
       return;
     }
     document.documentElement.classList.add("is-loading");
@@ -33,11 +38,12 @@ export function Preloader() {
         setGone(true);
       },
     });
-    tl.fromTo(".pl-mark", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" })
-      .fromTo(".pl-line", { scaleX: 0 }, { scaleX: 1, duration: 0.7 }, 0.15)
-      .to(".pl-top", { yPercent: -100, duration: 0.9, ease: "power4.inOut" }, 0.95)
-      .to(".pl-bottom", { yPercent: 100, duration: 0.9, ease: "power4.inOut" }, 0.95)
-      .to(".pl-line", { opacity: 0, duration: 0.3 }, 1.1);
+    tl.fromTo(".pl-mark", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" })
+      .fromTo(".pl-line", { scaleX: 0 }, { scaleX: 1, duration: 0.5 }, 0.1)
+      .add(done, 0.6)
+      .to(".pl-top", { yPercent: -100, duration: 0.75, ease: "power4.inOut" }, 0.6)
+      .to(".pl-bottom", { yPercent: 100, duration: 0.75, ease: "power4.inOut" }, 0.6)
+      .to(".pl-line", { opacity: 0, duration: 0.25 }, 0.75);
     return () => {
       tl.kill();
       document.documentElement.classList.remove("is-loading");

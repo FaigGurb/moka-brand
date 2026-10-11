@@ -31,8 +31,20 @@ export function Hero() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from(".hero-word", { yPercent: 110, duration: 1.1, ease: "power4.out", stagger: 0.12, delay: 0.5 });
-        gsap.from(".hero-fade", { opacity: 0, y: 16, duration: 0.9, ease: "power2.out", stagger: 0.08, delay: 1.1 });
+        // The intro plays when the preloader opens (or at once on repeat visits). The paragraph only
+        // slides, it never starts invisible, so the largest text paints with the first frame.
+        const tl = gsap.timeline({ paused: true });
+        tl.from(".hero-word", { yPercent: 110, duration: 1.1, ease: "power4.out", stagger: 0.12 })
+          .from(".hero-fade", { opacity: 0, y: 16, duration: 0.9, ease: "power2.out", stagger: 0.08 }, 0.4)
+          .from(".hero-lead", { y: 16, duration: 0.9, ease: "power2.out" }, 0.45);
+        const play = () => tl.play();
+        if ((window as Window & { __mokaIntroDone?: boolean }).__mokaIntroDone) play();
+        else window.addEventListener("moka:intro-done", play, { once: true });
+        const failsafe = window.setTimeout(play, 2500);
+        return () => {
+          window.removeEventListener("moka:intro-done", play);
+          window.clearTimeout(failsafe);
+        };
       });
       // Scroll progress drives the 3D halves apart along the brand line.
       ScrollTrigger.create({
@@ -61,7 +73,7 @@ export function Hero() {
       {/* warm wash behind the wordmark, echoing the café's LED line */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgba(242,199,110,0.16),transparent_65%)]"
+        className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgb(var(--day-rgb)/0.2),transparent_65%)] transition-[background] duration-1000"
       />
       <div className="relative mx-auto flex w-full max-w-[1320px] flex-1 flex-col px-5 pt-24 pb-10 md:px-10 md:pt-28">
         <p className="hero-fade eyebrow text-muted-dark">{t.hero.eyebrow}</p>
@@ -92,7 +104,7 @@ export function Hero() {
             ))}
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
-            <p className="hero-fade max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
+            <p className="hero-lead max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
               {t.hero.text}
             </p>
             <div className="hero-fade flex flex-wrap gap-3">

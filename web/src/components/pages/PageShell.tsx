@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { ScrollLine } from "@/components/fx/ScrollLine";
 import { Cursor } from "@/components/fx/Cursor";
+import { DayAmbient } from "@/components/fx/DayAmbient";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
 
@@ -25,6 +26,7 @@ export function PageShell({ locale, sub, children }: { locale: Locale; sub: stri
       <SmoothScroll />
       <ScrollLine />
       <Cursor />
+      <DayAmbient />
       <div className="grain" aria-hidden="true" />
     </LocaleProvider>
   );

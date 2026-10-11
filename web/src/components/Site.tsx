@@ -15,6 +15,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { BeanField } from "@/components/beans/BeanField";
 import { Preloader } from "@/components/fx/Preloader";
 import { Cursor } from "@/components/fx/Cursor";
+import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
 import { Marquee } from "@/components/fx/Marquee";
 import { LocaleProvider } from "@/i18n/context";
@@ -51,6 +52,7 @@ export function Site({ locale }: { locale: Locale }) {
       <BeanField />
       <ScrollLine />
       <Cursor />
+      <DayAmbient />
       <div className="grain" aria-hidden="true" />
       <Preloader />
     </LocaleProvider>

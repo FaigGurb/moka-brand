@@ -7,6 +7,7 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import type { CupSize } from "@/lib/cupArt";
 import { useI18n } from "@/i18n/context";
+import { links } from "@/lib/site";
 
 const CupScene = dynamic(() => import("../apps/CupScene"), { ssr: false });
 
@@ -275,7 +276,7 @@ function Profile() {
 }
 
 export function Apps() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -297,14 +298,22 @@ export function Apps() {
   );
 
   return (
-    <section id="tetbiq" ref={root} className="bg-paper text-espresso">
+    <section id="tetbiq" ref={root} className="day-wash overflow-hidden bg-paper text-espresso">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="a-rise grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
           <div>
             <p className="eyebrow text-axsam-ink">{t.apps.eyebrow}</p>
             <h2 className="mt-4 text-[clamp(32px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">{t.apps.title}</h2>
           </div>
-          <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{t.apps.text}</p>
+          <div className="flex flex-col items-start gap-5">
+            <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{t.apps.text}</p>
+            <a
+              href={links(locale).brand}
+              className="inline-flex items-center gap-3 border-b-[3px] border-espresso pb-1 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-axsam hover:text-axsam-ink"
+            >
+              {t.apps.insta.book} <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
         <div className="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-10">
           <div className="a-rise lg:sticky lg:top-24">

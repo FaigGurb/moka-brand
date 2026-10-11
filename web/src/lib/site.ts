@@ -20,6 +20,7 @@ export function links(locale: Locale) {
     club: `${base}/club/${q}`,
     menu: `${HOME_OF(locale)}menu/`,
     privacy: `${HOME_OF(locale)}privacy/`,
+    brand: `${HOME_OF(locale)}brand/`,
     v1: `${base}/v1/`,
     repo: "https://github.com/FaigGurb/moka-brand",
   };

@@ -96,7 +96,7 @@ export function Store() {
   );
 
   return (
-    <section id="kafe" ref={root} className="bg-espresso text-paper">
+    <section id="kafe" ref={root} className="day-glow overflow-hidden bg-espresso text-paper">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
           <div className="flex flex-col gap-5">

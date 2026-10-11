@@ -104,7 +104,7 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- effects ---------- */
 html.is-loading, html.is-loading body { overflow: hidden; }
 /* without JS the intro still clears itself */
-.preloader { animation: preloader-out 0s linear 3.2s forwards; }
+.preloader { animation: preloader-out 0s linear 2.4s forwards; }
 @keyframes preloader-out { to { visibility: hidden; } }
 
 .cursor-ring {
@@ -131,3 +131,52 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .grain { animation: none; } .preloader { display: none; } }
 /* phones: no full-screen animated layer over the scrolling page */
 @media (hover: none), (pointer: coarse) { .grain { display: none; } }
+
+/* ---------- living background: the day colour (Baku time) ---------- */
+:root { --day: #f2c76e; --day-rgb: 242 199 110; }
+.day-glow, .day-wash { position: relative; isolation: isolate; }
+.day-glow::before, .day-wash::before {
+  content: ""; position: absolute; inset: -12%; z-index: -1; pointer-events: none;
+  animation: day-drift 30s ease-in-out infinite alternate;
+}
+.day-glow::before {
+  background:
+    radial-gradient(38% 48% at 28% 30%, rgb(var(--day-rgb) / 0.14), transparent 70%),
+    radial-gradient(34% 44% at 76% 72%, rgb(var(--day-rgb) / 0.1), transparent 70%);
+}
+.day-wash::before {
+  background:
+    radial-gradient(40% 50% at 80% 20%, rgb(var(--day-rgb) / 0.12), transparent 70%),
+    radial-gradient(36% 46% at 15% 85%, rgb(var(--day-rgb) / 0.08), transparent 70%);
+}
+@keyframes day-drift {
+  from { transform: translate3d(-4%, -3%, 0) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) scale(1.08); }
+}
+/* phones: keep the colour, skip the drifting layer */
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .day-glow::before, .day-wash::before { animation: none; }
+}
+
+/* ---------- brand book: motion principle demos ---------- */
+.motion-demo { width: 14px; height: 14px; border-radius: 9999px; }
+.motion-demo-0 { left: calc(50% - 7px); top: 0; animation: md-pour 1.8s cubic-bezier(0.55, 0, 1, 0.45) infinite; }
+.motion-demo-1 { left: 0; top: calc(50% - 7px); animation: md-settle 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; }
+.motion-demo-2 { left: 0; top: calc(50% - 1.5px); height: 3px; width: 100%; border-radius: 0; transform-origin: left; animation: md-line 1.8s linear infinite; }
+@keyframes md-pour { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(82px); opacity: 1; } 100% { transform: translateY(82px); opacity: 0; } }
+@keyframes md-settle { 0% { transform: translateX(0); } 60%, 100% { transform: translateX(min(200px, 60vw)); } }
+@keyframes md-line { 0% { transform: scaleX(0); } 80%, 100% { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .motion-demo { animation: none; } .motion-demo-2 { transform: none; } }
+
+/* ---------- print (brand book PDF) ---------- */
+@media print {
+  @page { size: A4; margin: 12mm; }
+  html, body { background: #fff; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  header.fixed, footer, .no-print, .grain, .cursor-ring, .preloader { display: none !important; }
+  .brand-book .b-sec { break-before: page; }
+  .brand-book .b-item { break-inside: avoid; }
+  .brand-book video { display: none; }
+  .brand-book > header { min-height: 255mm; display: flex; align-items: flex-end; break-after: page; }
+  .brand-book > header h1 { font-size: 72px; }
+}

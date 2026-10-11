@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 675 155">
+  <defs>
+    <clipPath id="split">
+      <rect x="0" y="0" width="675" height="74.5"/>
+      <rect x="0" y="79.5" width="675" height="75.5"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#split)" fill="#1B1714">
+    <!-- M: moka pot -->
+    <polygon points="32,4 87,47 145,4 172,149 2,150"/>
+    <!-- O: cup from above -->
+    <circle cx="266" cy="77" r="76"/>
+    <!-- K: chemex -->
+    <polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/>
+    <!-- A: V60 cone -->
+    <polygon points="597,4 671,149 522,149"/>
+  </g>
+  <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="#1B1714" stroke-width="8"/>
+</svg>

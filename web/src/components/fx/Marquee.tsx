@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
+import { CremaBackground } from "./CremaBackground";
 
 /**
  * Two bands of the brand line ("4 letters · 4 brews · 1 line") drifting in opposite directions.
@@ -64,7 +65,8 @@ export function Marquee() {
   );
 
   return (
-    <section ref={root} aria-hidden="true" className="relative overflow-hidden border-y border-paper/10 bg-espresso py-10 md:py-14">
+    <section ref={root} aria-hidden="true" className="relative isolate overflow-hidden border-y border-paper/10 bg-espresso py-10 md:py-14">
+      <CremaBackground className="-z-10" amp={0.8} />
       {row(false)}
       <div className="my-3 h-[3px] w-full bg-gradient-to-r from-transparent via-glow to-transparent opacity-70" />
       {row(true)}

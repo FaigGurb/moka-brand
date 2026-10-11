@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Letter, Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
+import { bakuHour, daySlot, type DaySlot } from "@/lib/day";
 
 type LetterId = "M" | "O" | "K" | "A";
 // Section accents come from the day palette; brand names stay Azerbaijani.
@@ -14,20 +15,6 @@ const SECTIONS = [
   { id: "beans", accent: "#D9B56A", letters: [] as LetterId[], sizes: false },
   { id: "food", accent: "#8E2F22", letters: [] as LetterId[], sizes: false },
 ] as const;
-
-const DAY = [
-  { name: "Səhər", hex: "#C89B6D", from: 6 },
-  { name: "Günorta", hex: "#D9B56A", from: 11 },
-  { name: "Axşam", hex: "#A8643A", from: 16 },
-  { name: "Şəhər", hex: "#8E8A84", from: 20 },
-];
-function bakuHour() {
-  try {
-    return Number(new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Baku" }).format(new Date()));
-  } catch {
-    return new Date().getHours();
-  }
-}
 
 // Bags in the beans section: the coloured part reaches the roast line (light = high, dark = low).
 const BAGS = [
@@ -69,12 +56,12 @@ export function MenuPage() {
   const { t } = useI18n();
   const m = t.menu;
   const root = useRef<HTMLDivElement>(null);
-  const [day, setDay] = useState<(typeof DAY)[number] | null>(null);
+  const [day, setDay] = useState<DaySlot | null>(null);
   const [active, setActive] = useState<string>(SECTIONS[0].id);
 
   useEffect(() => {
     const h = bakuHour();
-    setDay([...DAY].reverse().find((d) => h >= d.from) ?? DAY[3]);
+    setDay(daySlot(h));
     const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && setActive(e.target.id.replace("m-", ""))), {
       rootMargin: "-40% 0px -55% 0px",
     });
@@ -89,7 +76,8 @@ export function MenuPage() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.from(".m-hero > *", { y: 40, opacity: 0, duration: 1, ease: "power3.out", stagger: 0.08, delay: 0.1 });
+        // slide in without fading from zero, so the text paints in the first frame (LCP)
+        gsap.from(".m-hero > *", { y: 40, duration: 1, ease: "power3.out", stagger: 0.08, delay: 0.1 });
         gsap.utils.toArray<HTMLElement>(".m-sec").forEach((sec) => {
           gsap.from(sec.querySelectorAll(".m-item, .m-bag"), {
             y: 30,

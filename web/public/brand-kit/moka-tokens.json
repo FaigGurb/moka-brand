@@ -1,0 +1,53 @@
+{
+  "name": "MOKA Coffee Roastery",
+  "version": "1.0-concept",
+  "color": {
+    "espresso": "#1b1714",
+    "espresso-2": "#26211d",
+    "espresso-3": "#3a3530",
+    "paper": "#f5f1ea",
+    "paper-2": "#e9e4dc",
+    "muted": "#5e5852",
+    "muted-dark": "#b8b0a6",
+    "seher": "#c89b6d",
+    "gunorta": "#d9b56a",
+    "axsam": "#a8643a",
+    "axsam-ink": "#94552f",
+    "sheher": "#8e8a84",
+    "nar": "#8e2f22",
+    "nar-light": "#c9573f",
+    "kraft": "#c9a882",
+    "glow": "#ffe2a6",
+    "roast-0": "#8c9a5b",
+    "roast-1": "#c08a55",
+    "roast-2": "#8a5a3b",
+    "roast-3": "#5e3b26",
+    "roast-4": "#2b1d15",
+    "flavor-berry": "#e9b8c0",
+    "flavor-citrus": "#ebd27a",
+    "flavor-floral": "#d9c7e6",
+    "flavor-cocoa": "#a88a78"
+  },
+  "font": {
+    "display": "League Spartan",
+    "text": "Mulish",
+    "cyrillicDisplay": "Montserrat"
+  },
+  "motion": {
+    "ease": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+    "duration": {
+      "fast": 200,
+      "base": 400,
+      "slow": 700,
+      "story": 1100
+    }
+  },
+  "line": {
+    "cutTop": 74.5,
+    "cutBottom": 79.5,
+    "viewBox": [
+      675,
+      155
+    ]
+  }
+}

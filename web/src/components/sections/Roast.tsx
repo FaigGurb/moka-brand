@@ -50,7 +50,7 @@ export function Roast() {
   );
 
   return (
-    <section id="qovurma" ref={root} className="bg-paper text-espresso">
+    <section id="qovurma" ref={root} className="day-wash overflow-hidden bg-paper text-espresso">
       <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
         <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[340px] overflow-hidden bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
           <div className="h-[6%] bg-[#ECE8E1]" />

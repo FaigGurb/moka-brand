@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const web = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(web, "out");
 const root = join(web, "..");
-const PROTECTED = new Set(["ar", "game", "club", "fonts", "docs", "v1", "web", "README.md", "CLAUDE.md", ".git", ".gitattributes", ".nojekyll"]);
+const PROTECTED = new Set(["ar", "game", "club", "fonts", "docs", "vendor", "v1", "web", "README.md", "CLAUDE.md", ".git", ".gitattributes", ".nojekyll"]);
 
 if (!existsSync(join(out, "index.html"))) {
   console.error("web/out/index.html not found — run `npm run build` first.");
