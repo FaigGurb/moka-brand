@@ -8,7 +8,7 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 | Yol | Nədir |
 | --- | --- |
 | `/menu/` · `/en/menu/` · `/ru/menu/` | Menyu konsepti: espresso bar, dəmləmə, soyuq, dənlər, yemək, məkan (qiymət və ünvan yer tutucudur) |
-| `/brand/` (+ en, ru) | Brend kitabı: platforma, loqo qaydaları, rənglər və kontrast, tipoqrafiya, foto, danışıq tonu, motion, səs loqosu, yükləmələr (PDF, SVG, MP4, WAV) |
+| `/brand/` (+ en, ru) | Brend kitabı: platforma, loqo qaydaları, rənglər və kontrast, tipoqrafiya, foto, danışıq tonu, motion, səs loqosu, yükləmələr (PDF, SVG, MP4, WAV), çap faylları (vizit kartı, stəkan qolu, paket etiketi, A3 menyu; 3 mm kənarla) və Story/Reels şablonları |
 | `/privacy/` (+ en, ru) | Məxfilik: nə saxlanılır, kamera necə işlənir |
 | `/` · `/en/` · `/ru/` | Yeni sayt (v2) üç dildə: 3D hero, scroll hekayəsi, interaktiv qovurma xətti — `web/` qovluğundan build olunur |
 | `/ar/` | AR mərkəzi: üç WebAR təcrübəsinə keçid (`?lang=en|ru`) |
@@ -33,6 +33,7 @@ web/                      Next.js layihəsi (mənbə kodu)
   src/components/beans/   "Dəndən fincana" səhnəsi, bütün saytda üzən dənlər (BeanField)
   src/components/apps/    3D stəkan (CupScene.tsx)
   public/brand/           dizayn lövhələrinin WebP şəkilləri (Tətbiqlər bölməsi)
+  public/brand-kit/       brend paketi: PDF-lər, loqo, səs, video; print/ (çap) və social/ (Story/Reels)
   src/components/ui/      MagneticButton
   src/lib/                loqo həndəsəsi (logo.ts), GSAP qeydiyyatı, hook-lar, linklər
   scripts/deploy.mjs      statik exportu repo kökünə köçürür

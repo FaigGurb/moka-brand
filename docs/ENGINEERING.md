@@ -50,7 +50,7 @@ performance, off-screen WebGL draws). Release checklist for real devices: `docs/
 
 Asset generators (reproducible): `docs/tools/sound_logo.py` (sound logo WAV),
 `docs/tools/render_logo_video.py` + `logo-animation.html` (MP4/GIF), `docs/tools/render_brand_pdf.py`
-(brand book PDFs), `ar/models/source/generate.html` (AR GLB models).
+(brand book PDFs), `docs/tools/render_print.py` (print PDFs with 3 mm bleed; previews in `docs/tools/print-preview/`), `docs/tools/render_social.py` (Story/Reels PNGs), `ar/models/source/generate.html` (AR GLB models).
 
 ## 4. Definition of done (per change)
 

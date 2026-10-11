@@ -763,6 +763,15 @@ export function BrandPage() {
                     ["video1", "moka-logo-animation-1x1.mp4"],
                     ["video916", "moka-logo-animation-9x16.mp4"],
                     ["gif", "moka-logo-animation-1x1.gif"],
+                    ["card", "print/moka-business-card-90x50.pdf"],
+                    ["sleeve", "print/moka-cup-sleeve-12oz.pdf"],
+                    ["label", "print/moka-bag-label-100x150.pdf"],
+                    ["menuA3", "print/moka-menu-a3.pdf"],
+                    ["storyBean", "social/moka-story-bean.png"],
+                    ["storyPoll", "social/moka-story-poll.png"],
+                    ["storyDay", "social/moka-story-day.png"],
+                    ["reelsCover", "social/moka-reels-cover.png"],
+                    ["safeAreas", "social/moka-social-safe-areas.png"],
                   ] as const
                 ).map(([k, file]) => (
                   <li key={k} className="b-item">
@@ -777,6 +786,7 @@ export function BrandPage() {
                   </li>
                 ))}
               </ul>
+              <p className="mt-6 max-w-[62ch] text-[13px] leading-relaxed text-muted-dark">{b.downloads.printNote}</p>
               <a href={`${BASE}${locale === "az" ? "" : `/${locale}`}/`} className="no-print mt-12 inline-block text-[13px] font-bold tracking-[0.14em] text-glow uppercase">
                 ← {b.back}
               </a>
