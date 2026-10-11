@@ -19,7 +19,8 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 web/                      Next.js layihəsi (mənbə kodu)
   src/app/                layout, səhifə, qlobal stillər və dizayn tokenləri (globals.css)
   src/components/hero/    Hero və 3D səhnə (HeroScene.tsx)
-  src/components/sections Konsepsiya, Bakıda bir gün, Qovurma, Paket ailəsi, Kafedə, Təcrübə
+  src/components/sections Konsepsiya, Dəndən fincana, Bakıda bir gün, Qovurma, Paket ailəsi, Kafedə, Təcrübə
+  src/components/beans/   "Dəndən fincana" 3D səhnəsi (BeanStoryScene.tsx) və mərhələ sərhədləri (phases.ts)
   src/components/ui/      MagneticButton
   src/lib/                loqo həndəsəsi (logo.ts), GSAP qeydiyyatı, hook-lar, linklər
   scripts/deploy.mjs      statik exportu repo kökünə köçürür
@@ -57,7 +58,11 @@ Sonra `git add -A && git commit && git push` — GitHub Pages `main` budağını
 
 ## 3D səhnə necə işləyir
 
-`HeroScene.tsx` loqonun hər hərfini imza xətti boyunca iki yarıya bölür (`clipY`), hər yarını `ExtrudeGeometry` ilə həcmə çevirir və keramika materialı ilə işıqlandırır. Əks olunmalar xarici HDR faylı olmadan `Lightformer` panelləri ilə yaradılır. Hərflər açılışda yerinə düşür, siçana yumşaq reaksiya verir; scroll edəndə yarılar xətt boyunca aralanır və isti işıq güclənir. Three.js yalnız brauzerdə və yalnız hero üçün yüklənir (`next/dynamic`). WebGL yoxdursa, eyni loqo SVG kimi göstərilir. `prefers-reduced-motion` aktivdirsə, səhnə hərəkətsiz qalır.
+`HeroScene.tsx` loqonun hər hərfini imza xətti boyunca iki yarıya bölür (`clipY`), hər yarını `ExtrudeGeometry` ilə həcmə çevirir və keramika materialı ilə işıqlandırır. Əks olunmalar xarici HDR faylı olmadan `Lightformer` panelləri ilə yaradılır. Hərflər açılışda yerinə düşür, siçana yumşaq reaksiya verir; scroll edəndə yarılar xətt boyunca aralanır və isti işıq güclənir. Arxa planda qovrulmuş qəhvə dənələri üzür və scroll edəndə kənarlara dağılır. Three.js yalnız brauzerdə yüklənir (`next/dynamic`). WebGL yoxdursa, eyni loqo SVG kimi göstərilir. `prefers-reduced-motion` aktivdirsə, səhnə hərəkətsiz qalır.
+
+### Dəndən fincana (`sections/BeanStory.tsx`)
+
+Pinned 3D hekayə, bir scroll dəyəri (0–1) ilə idarə olunur: yaşıl dənlər üzür → qovrulur (rəng yaşıldan tünd qəhvəyiyə, `lib/bean.ts`) → spiral ilə Chemex-ə düşüb üyüdülür (hissəciklər filtrdə yığılır) → su tökülür, qəhvə aşağı kameraya damcılayır və imza xəttinə çatanda xətt işıqlanır. Dənlər `InstancedMesh`, üyüdülmüş qəhvə `Points`, maye isə clipping plane ilə dolur. Telefonda dən və hissəcik sayı azdır; səhnə yalnız ekranda görünəndə render olunur. Reduced-motion rejimində son kadr statik göstərilir, WebGL yoxdursa SVG "K" hərfi.
 
 ## Animasiyalar
 

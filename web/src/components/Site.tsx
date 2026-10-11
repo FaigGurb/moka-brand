@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/hero/Hero";
 import { Concept } from "@/components/sections/Concept";
+import { BeanStory } from "@/components/sections/BeanStory";
 import { DayPalette } from "@/components/sections/DayPalette";
 import { Roast } from "@/components/sections/Roast";
 import { Tiers } from "@/components/sections/Tiers";
@@ -25,6 +26,7 @@ export function Site({ locale }: { locale: Locale }) {
       <main lang={locale}>
         <Hero />
         <Concept />
+        <BeanStory />
         <DayPalette />
         <Roast />
         <Tiers />

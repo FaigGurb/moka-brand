@@ -18,6 +18,7 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 - GSAP only inside `useGSAP` with `gsap.matchMedia()`. Pinned/scrubbed stories run on every screen size (phones included, using `100svh` and `anticipatePin`); only `prefers-reduced-motion` turns them off (use Tailwind `motion-safe:`/`motion-reduce:` for the matching layout). `ScrollTrigger.config({ ignoreMobileResize: true })` stays on.
 - 3D hero: mouse tilt on desktop, automatic sway on touch screens (`useTouch`), lower DPR on phones.
 - Three.js only via `next/dynamic` with `ssr: false`; keep the SVG fallback working.
+- Bean story (`sections/BeanStory.tsx` + `beans/BeanStoryScene.tsx`): one scroll progress drives every phase; boundaries live in `beans/phases.ts` (shared by scene and captions — keep it free of three imports). Bean geometry/roast colours in `lib/bean.ts`. Canvas renders only while on screen (`frameloop`).
 - No invented facts: origins, tasting notes, prices, farmer/artist names are marked as samples or `[placeholders]`.
 - Links to static pages go through `links(locale)` in `web/src/lib/site.ts` (basePath-aware, adds `?lang=`).
 - All copy lives in `web/src/i18n/dict.ts` (az is the source; en/ru must have the same shape). Components read it with `useI18n()`. Day-palette brand names stay Azerbaijani in every language with a translated subtitle.

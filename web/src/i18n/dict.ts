@@ -40,6 +40,18 @@ const az = {
       { tool: "V60", text: "Konus dripper. Dənin dad notlarını ən aydın göstərən damla üsulu." },
     ],
   },
+  beans: {
+    eyebrow: "Proses · Dəndən fincana",
+    title: "Bir fincanın yolu",
+    steps: [
+      { title: "Dən", text: "Yaşıl dən hələ heç nə vəd etmir: nə ətri var, nə dadı. Hər partiyanın mənşəyi paketdə yazılır." },
+      { title: "Qovurma", text: "İstilik dənin rəngini və dadını dəyişir: açıq qovurmada meyvə, tündündə kakao. Paketdəki xətt bu dərəcəni göstərir." },
+      { title: "Üyütmə", text: "Dən dəmləmədən dərhal əvvəl üyüdülür. İncəlik dəmləmə alətinə görə seçilir: Chemex üçün orta-iri." },
+      { title: "Dəmləmə", text: "İsti su üyüdülmüş qəhvədən yavaş-yavaş süzülür. Kağız filtr fincanı təmiz və şəffaf edir." },
+    ],
+    final: { title: "Xətt", text: "Qəhvə xəttə çatanda fincan hazırdır. Loqodakı imza xətti də bu anı göstərir." },
+    alt: "Animasiya: qəhvə dənələri qovrulur, üyüdülür və Chemex-də dəmlənir; qəhvə imza xəttinə qədər dolur.",
+  },
   day: {
     eyebrow: "Rəng · Bakıda bir gün",
     // Brand names stay Azerbaijani in every language; `sub` translates them.
@@ -182,6 +194,18 @@ const en: Dict = {
       { tool: "V60", text: "A cone dripper. The pour-over method that shows a bean's tasting notes most clearly." },
     ],
   },
+  beans: {
+    eyebrow: "Process · From bean to cup",
+    title: "The journey of a cup",
+    steps: [
+      { title: "Bean", text: "A green bean promises nothing yet: no aroma, no flavour. The origin of every batch is printed on the bag." },
+      { title: "Roast", text: "Heat changes the bean's colour and taste: fruit in a light roast, cocoa in a dark one. The line on the bag shows the level." },
+      { title: "Grind", text: "Beans are ground right before brewing. The size depends on the brewer: medium-coarse for a Chemex." },
+      { title: "Brew", text: "Hot water slowly passes through the grounds. The paper filter keeps the cup clean and clear." },
+    ],
+    final: { title: "The line", text: "When the coffee reaches the line, the cup is ready. The signature line in the logo marks this moment." },
+    alt: "Animation: coffee beans are roasted, ground and brewed in a Chemex; the coffee fills up to the signature line.",
+  },
   day: {
     eyebrow: "Colour · A day in Baku",
     slides: [
@@ -320,6 +344,18 @@ const ru: Dict = {
       { tool: "Chemex", text: "Форма песочных часов и ручка. Чистая, прозрачная чашка; эта же иконка — на стаканах." },
       { tool: "V60", text: "Воронка-дриппер. Способ, который ярче всего раскрывает вкусовые ноты зерна." },
     ],
+  },
+  beans: {
+    eyebrow: "Процесс · От зерна до чашки",
+    title: "Путь одной чашки",
+    steps: [
+      { title: "Зерно", text: "Зелёное зерно пока ничего не обещает: ни аромата, ни вкуса. Происхождение каждой партии указано на пачке." },
+      { title: "Обжарка", text: "Жар меняет цвет и вкус зерна: в светлой обжарке — фрукты, в тёмной — какао. Линия на пачке показывает степень." },
+      { title: "Помол", text: "Зерно мелют прямо перед завариванием. Помол подбирают под способ: для Chemex — средне-крупный." },
+      { title: "Заваривание", text: "Горячая вода медленно проходит через молотый кофе. Бумажный фильтр делает чашку чистой и прозрачной." },
+    ],
+    final: { title: "Линия", text: "Когда кофе доходит до линии, чашка готова. Фирменная линия в логотипе отмечает этот момент." },
+    alt: "Анимация: кофейные зёрна обжариваются, мелются и завариваются в Chemex; кофе наполняется до фирменной линии.",
   },
   day: {
     eyebrow: "Цвет · Один день в Баку",

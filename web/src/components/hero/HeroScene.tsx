@@ -5,6 +5,7 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
 import { CUT_BOTTOM, CUT_TOP, LETTERS, VIEW_W, halves, type Pt } from "@/lib/logo";
+import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
 
 // 1 SVG unit = 0.01 world units; the wordmark is ~6.75 units wide, centred on the cut line.
 const S = 0.01;
@@ -201,6 +202,72 @@ function Wordmark({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
   );
 }
 
+/** Roasted beans drifting behind the wordmark; they scatter outwards as the page scrolls. */
+function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady">) {
+  const mesh = useRef<THREE.InstancedMesh>(null);
+  const { viewport } = useThree();
+  const COUNT = touch ? 9 : 16;
+  const geo = useMemo(() => createBeanGeometry("low"), []);
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({ roughness: 0.4, metalness: 0.05 }), []);
+  const beans = useMemo(() => {
+    const rnd = seeded(5);
+    return Array.from({ length: COUNT }, (_, i) => {
+      // spread around a ring so the centre (the wordmark) stays readable
+      const a = (i / COUNT) * Math.PI * 2 + rnd() * 0.5;
+      const r = 0.62 + rnd() * 0.38;
+      return {
+        x: Math.cos(a) * r,
+        y: Math.sin(a) * r,
+        z: -1.2 - rnd() * 2.2,
+        rot: [rnd() * 6.28, rnd() * 6.28, rnd() * 6.28] as const,
+        spin: [(rnd() - 0.5) * 0.6, (rnd() - 0.5) * 0.6] as const,
+        s: 0.13 + rnd() * 0.07,
+        ph: rnd() * 6.28,
+        roast: 0.55 + rnd() * 0.4,
+      };
+    });
+  }, [COUNT]);
+
+  useEffect(() => {
+    const c = new THREE.Color();
+    beans.forEach((b, i) => mesh.current?.setColorAt(i, roastColor(b.roast, c)));
+    if (mesh.current?.instanceColor) mesh.current.instanceColor.needsUpdate = true;
+  }, [beans]);
+  useEffect(() => () => (geo.dispose(), mat.dispose()), [geo, mat]);
+
+  const m4 = useMemo(() => new THREE.Matrix4(), []);
+  const q = useMemo(() => new THREE.Quaternion(), []);
+  const e = useMemo(() => new THREE.Euler(), []);
+  const v = useMemo(() => new THREE.Vector3(), []);
+  const sc = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame((state) => {
+    if (!mesh.current) return;
+    const t = reducedMotion ? 0 : state.clock.elapsedTime;
+    const p = progress.current;
+    const intro = reducedMotion ? 1 : THREE.MathUtils.clamp(t / 2.2, 0, 1);
+    const k = 1 - Math.pow(1 - intro, 3);
+    beans.forEach((b, i) => {
+      // half-size of the view at the bean's depth (camera z 7.2, fov 32)
+      const hh = Math.tan(THREE.MathUtils.degToRad(16)) * (7.2 - b.z);
+      const hw = hh * (viewport.width / viewport.height);
+      const out = (1 + p * 0.9) * (0.75 + 0.25 * k);
+      v.set(
+        b.x * hw * out + Math.sin(t * 0.3 + b.ph) * 0.15,
+        b.y * hh * 0.85 * out + Math.sin(t * 0.45 + b.ph * 1.3) * 0.2 - p * 0.6,
+        b.z + p * 1.5,
+      );
+      e.set(b.rot[0] + t * b.spin[0], b.rot[1] + t * b.spin[1], b.rot[2] + p * 2);
+      q.setFromEuler(e);
+      sc.setScalar(b.s * k);
+      mesh.current!.setMatrixAt(i, m4.compose(v, q, sc));
+    });
+    mesh.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return <instancedMesh ref={mesh} args={[geo, mat, COUNT]} frustumCulled={false} />;
+}
+
 export default function HeroScene({ progress, reducedMotion, touch, onReady }: Props) {
   return (
     <Canvas
@@ -220,6 +287,7 @@ export default function HeroScene({ progress, reducedMotion, touch, onReady }: P
         <Lightformer intensity={1.2} position={[-5, 0, 2]} rotation-y={Math.PI / 2} scale={[4, 3, 1]} color="#c89b6d" />
         <Lightformer intensity={0.8} position={[5, -1, 2]} rotation-y={-Math.PI / 2} scale={[4, 2, 1]} color="#a8643a" />
       </Environment>
+      <AmbientBeans progress={progress} reducedMotion={reducedMotion} touch={touch} />
       <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} />
     </Canvas>
   );
