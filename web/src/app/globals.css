@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* MOKA tokens — mirror the design system (tokens.json). */
+@theme {
+  --color-espresso: #1b1714;
+  --color-espresso-2: #26211d;
+  --color-espresso-3: #3a3530;
+  --color-paper: #f5f1ea;
+  --color-paper-2: #e9e4dc;
+  --color-muted: #5e5852;
+  --color-muted-dark: #b8b0a6;
+  --color-seher: #c89b6d;
+  --color-gunorta: #d9b56a;
+  --color-axsam: #a8643a;
+  --color-axsam-ink: #94552f;
+  --color-sheher: #8e8a84;
+  --color-nar: #8e2f22;
+  --color-nar-light: #c9573f;
+  --color-kraft: #c9a882;
+  --color-glow: #ffe2a6;
+  --color-roast-0: #8c9a5b;
+  --color-roast-1: #c08a55;
+  --color-roast-2: #8a5a3b;
+  --color-roast-3: #5e3b26;
+  --color-roast-4: #2b1d15;
+  --color-flavor-berry: #e9b8c0;
+  --color-flavor-citrus: #ebd27a;
+  --color-flavor-floral: #d9c7e6;
+  --color-flavor-cocoa: #a88a78;
+
+  --font-display: "League Spartan", "Futura", "Century Gothic", system-ui, sans-serif;
+  --font-sans: "Mulish", "Helvetica Neue", Arial, system-ui, sans-serif;
+
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root {
+  color-scheme: dark light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 80px;
+}
+
+body {
+  background: var(--color-espresso);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--color-gunorta);
+  color: var(--color-espresso);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gunorta);
+  outline-offset: 3px;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* Line-reveal helper: each word sits in a mask so it can rise into view. */
+.reveal-line {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+}
+.reveal-line > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,130 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { Logo } from "../Logo";
+import { gsap, useGSAP } from "@/lib/gsap";
+
+// Sample origins and notes for the concept; real assortment to be supplied by MOKA.
+const LEVELS = [
+  { label: "Yaşıl dən", short: "Yaşıl", line: 58, color: "#8C9A5B", ink: "#1B1714", origin: "Braziliya", notes: "Ev qovurması üçün", flavor: null },
+  { label: "Açıq qovurma", short: "Açıq", line: 50, color: "#C08A55", ink: "#1B1714", origin: "Efiopiya", notes: "Jasmin · ərik · bal", flavor: "#D9C7E6" },
+  { label: "Orta qovurma", short: "Orta", line: 42, color: "#8A5A3B", ink: "#F5F1EA", origin: "Kolumbiya", notes: "Karamel · qırmızı alma", flavor: "#E9B8C0" },
+  { label: "Tünd qovurma", short: "Tünd", line: 34, color: "#5E3B26", ink: "#F5F1EA", origin: "Qvatemala", notes: "Kakao · qəhvəyi şəkər", flavor: "#A88A78" },
+  { label: "French qovurma", short: "French", line: 26, color: "#2B1D15", ink: "#F5F1EA", origin: "Sumatra", notes: "Tünd şokolad · ədviyyat", flavor: "#A88A78" },
+];
+const FLAVORS = [
+  { name: "Giləmeyvə", hex: "#E9B8C0" },
+  { name: "Sitrus", hex: "#EBD27A" },
+  { name: "Çiçək", hex: "#D9C7E6" },
+  { name: "Kakao, qoz", hex: "#A88A78" },
+];
+
+export function Roast() {
+  const root = useRef<HTMLElement>(null);
+  const [lvl, setLvl] = useState(2);
+  const L = LEVELS[lvl];
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // The coffee "pours" into the bag the first time the section comes into view.
+        gsap.from(".r-fill", {
+          scaleY: 0,
+          transformOrigin: "bottom",
+          duration: 1.4,
+          ease: "power3.inOut",
+          scrollTrigger: { trigger: ".r-bag", start: "top 75%", once: true },
+        });
+        gsap.from(".r-copy > *", {
+          y: 24,
+          opacity: 0,
+          stagger: 0.08,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: { trigger: ".r-copy", start: "top 80%", once: true },
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
+
+  return (
+    <section id="qovurma" ref={root} className="bg-paper text-espresso">
+      <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
+        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[340px] overflow-hidden bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
+          <div className="h-[6%] bg-[#ECE8E1]" />
+          <div className="flex flex-col gap-2 p-[9%]">
+            <Logo className="w-[62%]" />
+            <span className="text-[9px] font-bold tracking-[0.3em]">COFFEE ROASTERY</span>
+            <span className="mt-4 font-[family-name:var(--font-display)] text-[28px] leading-none">{L.origin}</span>
+            <span className="flex items-center gap-2">
+              <span
+                className="h-3.5 w-3.5 flex-none rounded-full transition-colors duration-500"
+                style={{ background: L.flavor ?? "transparent" }}
+                aria-hidden="true"
+              />
+              <span className="font-[family-name:var(--font-display)] text-[17px] leading-tight">{L.notes}</span>
+            </span>
+          </div>
+          <div
+            className="r-fill absolute inset-x-0 bottom-0 flex flex-col justify-between px-[9%] py-4 transition-[height,background-color,color] duration-700 ease-[var(--ease-brand)]"
+            style={{ height: `${L.line}%`, background: L.color, color: L.ink }}
+          >
+            <span className="text-[11px] font-bold tracking-[0.18em] uppercase">{L.label}</span>
+            <span className="flex gap-1.5" aria-hidden="true">
+              {LEVELS.map((_, i) => (
+                <i key={i} className="block h-3 w-3 border-2 border-current" style={{ background: i <= lvl ? "currentColor" : "transparent" }} />
+              ))}
+            </span>
+          </div>
+        </div>
+
+        <div className="r-copy flex flex-col gap-6">
+          <p className="eyebrow text-axsam-ink">Qovurma xətti</p>
+          <h2 className="text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">
+            Xəttin hündürlüyü qovurmanı göstərir
+          </h2>
+          <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted">
+            Açıq qovurmada xətt yuxarıda, tünddə aşağıda. Rəfdə yan-yana duran paketlər özü bir şkala yaradır:
+            müştəri oxumadan seçir. Dad rəngi isə nə dadacağını göstərir.
+          </p>
+          <fieldset className="mt-2 flex flex-col gap-3">
+            <legend className="mb-3 text-sm font-bold tracking-[0.06em]">Qovurma səviyyəsini seçin</legend>
+            <input
+              id="roast-level"
+              type="range"
+              min={0}
+              max={4}
+              step={1}
+              value={lvl}
+              onChange={(e) => setLvl(Number(e.target.value))}
+              aria-valuetext={`${L.label}, xətt ${L.line}%`}
+              className="w-full accent-[#A8643A]"
+            />
+            <div className="flex justify-between text-xs font-bold tracking-[0.04em] text-muted" aria-hidden="true">
+              {LEVELS.map((l, i) => (
+                <button key={l.short} type="button" tabIndex={-1} onClick={() => setLvl(i)} className={i === lvl ? "text-espresso" : ""}>
+                  {l.short}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <p className="eyebrow text-espresso" aria-live="polite">
+            {L.label} · xətt {L.line}%
+          </p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label="Dad rəngləri">
+            {FLAVORS.map((f) => (
+              <li key={f.name} className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full" style={{ background: f.hex }} aria-hidden="true" />
+                {f.name}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-muted">Mənşə və dad notları nümunədir.</p>
+        </div>
+      </div>
+    </section>
+  );
+}

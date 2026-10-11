@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOKA Brand Experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Mulish:wght@400;700&display=swap">
+<style>
+/* Layout: one narrow column of full-bleed bands; each band is cut by the brand's split line, like the letters. */
+:root{
+  --bg:#F5F1EA; --fg:#1B1714; --muted:#5E5852; --surface:#FFFFFF; --band:#E9E4DC;
+  --espresso:#1B1714; --paper:#F5F1EA; --oak:#C89B6D; --bamboo:#D9B56A; --copper:#A8643A; --copper-ink:#94552F;
+  --concrete:#8E8A84; --rust:#8E2F22;
+  --r0:#8C9A5B; --r1:#C08A55; --r2:#8A5A3B; --r3:#5E3B26; --r4:#2B1D15;
+  --display:"League Spartan","Futura","Century Gothic",system-ui,sans-serif;
+  --body:"Mulish","Helvetica Neue",Arial,sans-serif;
+  --gut:clamp(16px,4vw,48px); --max:1180px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1B1714;--fg:#F5F1EA;--muted:#B8B0A6;--surface:#26211D;--band:#2A2420;--copper-ink:#D08A5A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1B1714;--fg:#F5F1EA;--muted:#B8B0A6;--surface:#26211D;--band:#2A2420;--copper-ink:#D08A5A;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--gut)}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.1;margin:0;text-wrap:balance}
+h2{font-size:clamp(32px,5vw,56px);letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.lead{font-size:clamp(18px,2vw,21px);color:var(--muted);max-width:60ch}
+a{color:var(--copper-ink)}
+:focus-visible{outline:3px solid var(--copper);outline-offset:3px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--band)}
+.top .wrap{display:flex;align-items:center;gap:24px;padding-block:14px;flex-wrap:wrap}
+.top svg{height:22px;width:auto;color:var(--fg)}
+.top nav{display:flex;gap:20px;flex-wrap:wrap;margin-left:auto}
+.top nav a{color:var(--fg);text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.06em}
+.top nav a:hover{color:var(--copper-ink)}
+.chip{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border:1.5px solid var(--fg);padding:4px 10px}
+
+/* hero */
+.hero{padding-block:clamp(56px,10vw,120px) clamp(48px,8vw,96px)}
+.hero .mark{width:100%;max-width:980px;height:auto;display:block;color:var(--fg)}
+.hero .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-top:40px}
+.hero .tag{font-family:var(--display);font-size:clamp(26px,3.6vw,40px);line-height:1.15;max-width:18ch}
+.hero .sub{letter-spacing:.42em;font-weight:700;font-size:clamp(12px,1.6vw,16px)}
+.l{transform-box:fill-box;transform-origin:50% 100%}
+@media (prefers-reduced-motion:no-preference){
+  .l{animation:drop .7s cubic-bezier(.2,.8,.2,1) both}
+  .l2{animation-delay:.12s}.l3{animation-delay:.24s}.l4{animation-delay:.36s}
+  .pour{transform-box:fill-box;transform-origin:0 50%;animation:pour .9s .75s cubic-bezier(.6,0,.2,1) both}
+}
+@keyframes drop{from{transform:translateY(-14%) scaleY(.92)}to{transform:none}}
+@keyframes pour{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* bands */
+section{padding-block:clamp(64px,9vw,112px)}
+.cut{height:5px;background:var(--fg);opacity:.9}
+.head{display:flex;flex-direction:column;gap:16px;margin-bottom:48px}
+
+/* concept */
+.letters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,2vw,28px)}
+.letter{background:var(--surface);padding:28px 22px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.letter svg{width:100%;max-width:150px;height:auto;color:var(--fg);transition:transform .3s}
+.letter:hover svg{transform:translateY(-4px)}
+.letter .big{font-family:var(--display);font-size:22px}
+.letter p{font-size:15px;color:var(--muted)}
+@media (max-width:760px){.letters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* palette */
+.pal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.pal{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sw{display:flex;flex-direction:column;background:var(--surface)}
+.sw .c{aspect-ratio:4/3;max-width:100%}
+.sw .t{padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.sw b{font-family:var(--display);font-weight:500;font-size:18px}
+.sw code{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sw span{font-size:13px;color:var(--muted)}
+.sw .c.paper{box-shadow:inset 0 0 0 1px var(--band)}
+
+/* roast */
+.roast{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,80px);align-items:center}
+@media (max-width:760px){.roast{grid-template-columns:1fr}}
+.bag{width:min(300px,100%);aspect-ratio:3/5;background:#FFFFFF;color:#1B1714;position:relative;overflow:hidden;margin-inline:auto;box-shadow:0 30px 60px -30px rgba(0,0,0,.45)}
+.bag .crimp{height:6%;background:#E9E5DE}
+.bag .lab{padding:8% 9%;display:flex;flex-direction:column;gap:6px}
+.bag .lab svg{width:60%;height:auto;color:#1B1714}
+.bag .cr{font-size:9px;letter-spacing:.3em;font-weight:700}
+.bag .org{font-family:var(--display);font-size:26px;margin-top:14px}
+.bag .notes{font-family:var(--display);font-size:17px;line-height:1.2;color:#1B1714}
+.bag .fl{display:flex;align-items:center;gap:8px}
+.bag .fl i{width:14px;height:14px;border-radius:50%;flex:none;transition:background-color .4s}
+.chips{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.chips span{display:flex;align-items:center;gap:6px}.chips i{width:12px;height:12px;border-radius:50%}
+.fill{position:absolute;left:0;right:0;bottom:0;padding:16px 9%;display:flex;flex-direction:column;justify-content:space-between;transition:height .6s cubic-bezier(.2,.8,.2,1),background-color .6s}
+.fill .lv{font-size:11px;font-weight:700;letter-spacing:.18em}
+.dots{display:flex;gap:6px}.dots i{width:13px;height:13px;border:2px solid currentColor}.dots i.on{background:currentColor}
+.ctrl{display:flex;flex-direction:column;gap:22px}
+.ctrl label{font-weight:700;font-size:14px;letter-spacing:.08em}
+input[type=range]{width:100%;accent-color:var(--copper)}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.levels{display:flex;gap:6px;flex-wrap:wrap}
+.levels button{font:inherit;font-size:13px;font-weight:700;padding:8px 12px;border:1.5px solid var(--fg);background:transparent;color:var(--fg);cursor:pointer;min-height:40px}
+.levels button[aria-pressed=true]{background:var(--fg);color:var(--bg)}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,40px);align-items:end}
+@media (max-width:860px){.tiers{grid-template-columns:1fr;max-width:340px;margin-inline:auto}}
+.tier{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tb{aspect-ratio:3/4.6;max-width:100%;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 50px -32px rgba(0,0,0,.5)}
+.tb .cr{height:4%}
+.tb .in{padding:9%;display:flex;flex-direction:column;gap:6px}
+.tb .in svg{width:55%;height:auto}
+.tb .k{font-size:10px;font-weight:700;letter-spacing:.26em}
+.tb .h{font-family:var(--display);font-size:clamp(20px,2.2vw,28px);line-height:1.05;margin-top:8px}
+.tb .bt{position:absolute;left:0;right:0;bottom:0;padding:6% 9%;font-size:11px;font-weight:700;letter-spacing:.16em}
+.tier h3{font-size:22px}.tier p{font-size:15px;color:var(--muted)}
+/* store */
+.store{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(24px,4vw,48px);align-items:center}
+@media (max-width:860px){.store{grid-template-columns:1fr}}
+.store svg{width:100%;height:auto;display:block}
+.ritual{background:var(--surface);padding:28px;display:flex;flex-direction:column;gap:14px}
+.ritual h3{font-size:24px}.ritual p{font-size:15px;color:var(--muted)}
+/* type */
+.typo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.typo{grid-template-columns:1fr}}
+.spec{background:var(--surface);padding:32px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.spec .g{font-size:clamp(52px,8vw,100px);line-height:1;white-space:nowrap}
+.spec .chars{font-size:20px;word-break:break-word}
+
+/* applications */
+.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:860px){.apps{grid-template-columns:1fr}}
+.app{background:var(--band);padding:28px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.app svg{width:100%;height:auto;max-height:260px}
+.app h3{font-size:22px}
+.app p{font-size:15px;color:var(--muted)}
+
+/* AR */
+.ar{background:var(--espresso);color:var(--paper)}
+.ar .lead,.ar .eyebrow{color:#B8B0A6}
+.ar .grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:48px;align-items:center}
+@media (max-width:760px){.ar .grid{grid-template-columns:1fr}}
+.ar ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;color:#D6D2CB}
+.phone{width:min(260px,100%);aspect-ratio:9/18;border:10px solid #3A3530;border-radius:34px;margin-inline:auto;position:relative;overflow:hidden;background:#2B2420}
+.phone svg{position:absolute;inset:0;width:100%;height:100%}
+
+footer{padding-block:48px;border-top:1px solid var(--band)}
+footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <svg viewBox="0 0 675 155" role="img" aria-label="MOKA"><use href="#wm"/></svg>
+    <span class="chip">Konsept / test işi</span>
+    <nav aria-label="Bölmələr">
+      <a href="#konsepsiya">Konsepsiya</a><a href="#reng">Rəng</a><a href="#qovurma">Qovurma</a><a href="#kafe">Kafedə</a><a href="#tetbiq">Tətbiqlər</a><a href="#oyun">Oyun</a><a href="#ar">AR</a>
+    </nav>
+  </div>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="split"><rect x="0" y="0" width="675" height="74.5"/><rect x="0" y="79.5" width="675" height="75.5"/></clipPath>
+    <g id="wm" fill="currentColor">
+      <g clip-path="url(#split)">
+        <polygon points="32,4 87,47 145,4 172,149 2,150"/>
+        <circle cx="266" cy="77" r="76"/>
+        <polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/>
+        <polygon points="597,4 671,149 522,149"/>
+      </g>
+      <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/>
+    </g>
+  </defs>
+</svg>
+
+<main>
+  <div class="wrap hero">
+    <svg class="mark" viewBox="0 0 675 155" role="img" aria-label="MOKA loqosu">
+      <g fill="currentColor">
+        <polygon class="l l1" points="32,4 87,47 145,4 172,149 2,150"/>
+        <circle class="l l2" cx="266" cy="77" r="76"/>
+        <g class="l l3"><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/></g>
+        <polygon class="l l4" points="597,4 671,149 522,149"/>
+      </g>
+      <rect class="pour" x="0" y="74.5" width="675" height="5" fill="var(--bg)"/>
+    </svg>
+    <div class="meta">
+      <p class="tag">4 hərf, 4 dəmləmə üsulu, 1 xətt.</p>
+      <p class="sub">COFFEE ROASTERY · BAKI</p>
+    </div>
+  </div>
+
+  <div class="cut" aria-hidden="true"></div>
+
+  <section id="konsepsiya">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Konsepsiya</span>
+        <h2>Hər hərf bir dəmləmə alətidir</h2>
+        <p class="lead">MOKA-nın loqosu dörd həndəsi formadan ibarətdir. Onlara diqqətlə baxanda qəhvənin dörd yolu görünür. Hərfləri kəsən ağ xətt isə fincandakı qəhvənin səviyyəsidir: bütün sistem bu xəttin üzərində qurulur.</p>
+      </div>
+      <div class="letters">
+        <div class="letter">
+          <svg viewBox="0 0 175 155" aria-hidden="true"><g clip-path="url(#split)" fill="currentColor"><polygon points="32,4 87,47 145,4 172,149 2,150"/></g></svg>
+          <span class="big">M · Moka pot</span>
+          <p>Trapesiya gövdə və çentikli qapaq. Ocaqda dəmlənən güclü, sıx qəhvə.</p>
+        </div>
+        <div class="letter">
+          <svg viewBox="190 0 155 155" aria-hidden="true"><g clip-path="url(#split)" fill="currentColor"><circle cx="266" cy="77" r="76"/></g></svg>
+          <span class="big">O · Fincan</span>
+          <p>Yuxarıdan baxılan fincan, eyni zamanda dən. Espresso barın simvolu.</p>
+        </div>
+        <div class="letter">
+          <svg viewBox="345 0 168 155" aria-hidden="true"><g fill="currentColor"><g clip-path="url(#split)"><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/></g><path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/></g></svg>
+          <span class="big">K · Chemex</span>
+          <p>Qum saatı forması və qulp. Təmiz, şəffaf fincan; stəkanlardakı ikon.</p>
+        </div>
+        <div class="letter">
+          <svg viewBox="518 0 157 155" aria-hidden="true"><g clip-path="url(#split)" fill="currentColor"><polygon points="597,4 671,149 522,149"/></g></svg>
+          <span class="big">A · V60</span>
+          <p>Konus dripper. Dənin dad notlarını ən aydın göstərən damla üsulu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reng" style="background:var(--band)">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Rəng</span>
+        <h2>Bakıda bir gün</h2>
+        <p class="lead">Qara-ağ loqo əsasdır. Köməkçi rənglər kafenin interyerindən gəlir və günün saatlarına görə adlanır: menyuda, Instagram-da və mövsümi kampaniyalarda bu adlar işlədilir.</p>
+      </div>
+      <div class="pal">
+        <div class="sw"><div class="c" style="background:var(--espresso)"></div><div class="t"><b>Espresso</b><code>#1B1714</code><span>Loqo, fasad</span></div></div>
+        <div class="sw"><div class="c paper" style="background:var(--paper)"></div><div class="t"><b>Kağız</b><code>#F5F1EA</code><span>Stəkan, paket</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--oak)"></div><div class="t"><b>Səhər</b><code>#C89B6D</code><span>Palıd panellər</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--bamboo)"></div><div class="t"><b>Günorta</b><code>#D9B56A</code><span>İşıqlı bambuk</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--copper)"></div><div class="t"><b>Axşam</b><code>#A8643A</code><span>Mis lampalar</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--concrete)"></div><div class="t"><b>Şəhər</b><code>#8E8A84</code><span>Beton divarlar</span></div></div>
+        <div class="sw"><div class="c" style="background:var(--rust)"></div><div class="t"><b>Nar</b><code>#8E2F22</code><span>Limitli buraxılışlar</span></div></div>
+        <div class="sw"><div class="c" style="background:#C9A882"></div><div class="t"><b>Kraft</b><code>#C9A882</code><span>Tək mənşə paketləri</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="qovurma">
+    <div class="wrap roast">
+      <div class="bag" aria-hidden="true">
+        <div class="crimp"></div>
+        <div class="lab">
+          <svg viewBox="0 0 675 155"><use href="#wm"/></svg>
+          <span class="cr">COFFEE ROASTERY</span>
+          <span class="org" id="org">Kolumbiya</span>
+          <span class="fl"><i id="chip"></i><span class="notes" id="notes">Karamel · qırmızı alma</span></span>
+        </div>
+        <div class="fill" id="fill"><span class="lv" id="lv">ORTA QOVURMA</span><span class="dots" id="dots"></span></div>
+      </div>
+      <div class="ctrl">
+        <span class="eyebrow">Qovurma xətti</span>
+        <h2>Xəttin hündürlüyü qovurmanı göstərir</h2>
+        <p class="lead">Açıq qovurmada xətt yuxarıda, tünddə aşağıdadır. Rəfdə yan-yana duran paketlər özü bir şkala yaradır; müştəri oxumadan seçir.</p>
+        <label for="roast">Qovurma səviyyəsini seçin</label>
+        <input type="range" id="roast" min="0" max="4" step="1" value="2" aria-describedby="lvtext">
+        <div class="scale" aria-hidden="true"><span>Yaşıl</span><span>Açıq</span><span>Orta</span><span>Tünd</span><span>French</span></div>
+        <p id="lvtext" class="eyebrow" style="color:var(--fg)">Orta qovurma · xətt 42%</p>
+        <div class="chips" aria-label="Dad rəngləri"><span><i style="background:#E9B8C0"></i>Giləmeyvə</span><span><i style="background:#EBD27A"></i>Sitrus</span><span><i style="background:#D9C7E6"></i>Çiçək</span><span><i style="background:#A88A78"></i>Kakao, qoz</span></div>
+        <p style="font-size:13px;color:var(--muted)">Xətt nə qədər qovrulduğunu, dad rəngi nə dadacağını göstərir. Mənşə və dad notları nümunədir.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="paket">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Paket ailəsi</span>
+        <h2>Bir ailə, üç pillə</h2>
+        <p class="lead">Hər paketdə imza xətti, loqo yeri və etiket quruluşu eynidir. Dəyişən material və vurğudur.</p>
+      </div>
+      <div class="tiers">
+        <div class="tier">
+          <div class="tb" style="background:#FFFFFF;color:#1B1714">
+            <div class="cr" style="background:#ECE8E1"></div>
+            <div class="in"><svg viewBox="0 0 675 155" aria-hidden="true" style="color:#1B1714"><use href="#wm"/></svg><span class="k">ƏSAS ÇEŞİD</span><span class="h">Karamel, qırmızı alma</span></div>
+            <div class="bt" style="height:42%;background:#8A5A3B;color:#F5F1EA">ORTA QOVURMA</div>
+          </div>
+          <h3>Əsas</h3><p>Ağ paket və qovurma xətti. Gündəlik çeşid.</p>
+        </div>
+        <div class="tier">
+          <div class="tb" style="background:#C9A882;color:#1B1714">
+            <div class="cr" style="background:#B9976F"></div>
+            <div class="in"><svg viewBox="0 0 675 155" aria-hidden="true" style="color:#1B1714"><use href="#wm"/></svg><span class="k">TƏK MƏNŞƏ</span><span class="h">Jasmin.<br>Ərik. Bal.</span><span style="font-size:12px">Fermer · region · hündürlük · emal</span></div>
+            <div class="bt" style="height:30%;background:#C08A55;border-top:4px solid #F5F1EA">AÇIQ QOVURMA · QR → AR</div>
+          </div>
+          <h3>Tək mənşə</h3><p>Kraft paket. Fermerin adı, dad notları başlıqda, QR kodla mənşə və AR.</p>
+        </div>
+        <div class="tier">
+          <div class="tb" style="background:#1B1714;color:#F5F1EA">
+            <div class="cr" style="background:#2B2420"></div>
+            <div class="in"><svg viewBox="0 0 675 155" aria-hidden="true" style="color:#F5F1EA"><use href="#wm"/></svg><span class="k" style="color:#C9573F">LİMİTLİ · NÖMRƏLİ</span><span class="h">Rəssam × MOKA</span></div>
+            <svg viewBox="0 0 300 200" aria-hidden="true" style="width:100%;height:auto;margin-top:auto"><polygon points="20,30 80,72 140,30 166,196 0,196" fill="#8E2F22"/><circle cx="220" cy="90" r="56" fill="#F5F1EA"/><polygon points="110,110 200,110 176,152 200,200 112,200 134,152" fill="#C89B6D"/><rect x="0" y="128" width="300" height="5" fill="#1B1714"/><rect x="0" y="133" width="300" height="4" fill="#8E2F22"/></svg>
+          </div>
+          <h3>Limitli</h3><p>Espresso paket, Nar xətt. Azərbaycan rəssamları ilə nömrəli tiraj.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tip" style="background:var(--band)">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Tipoqrafiya</span>
+        <h2>İki şrift, bir ritm</h2>
+      </div>
+      <div class="typo">
+        <div class="spec"><span class="eyebrow">Başlıqlar · League Spartan</span><span class="g" style="font-family:var(--display)">Aa Ğğ İı</span><p class="chars" style="font-family:var(--display)">Futura ruhunda həndəsi şrift: dairələri və üçbucaqları loqonun formaları ilə danışır.</p></div>
+        <div class="spec"><span class="eyebrow">Mətn · Mulish</span><span class="g">Əə Şş</span><p class="chars">Sakit, oxunaqlı mətn şrifti. Ə ə Ş ş Ç ç Ğ ğ İ ı Ö ö Ü ü: Azərbaycan əlifbasının hamısı.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kafe">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Kafedə</span>
+        <h2>Xətt işığa çevrilir</h2>
+        <p class="lead">Əsas divarda, imza xəttinin hündürlüyündə isti bir işıq zolağı böyük hərflərdən, piştaxtadan və rəflərdən keçir. İnteryerdə LED xətlər onsuz da var; birini bu xəttə qaldırmaq kafenin foto nöqtəsini yaradır.</p>
+      </div>
+      <div class="store">
+        <svg viewBox="0 0 1000 620" role="img" aria-label="Kafe divarı: böyük MOKA hərfləri və onlardan keçən isti işıq xətti">
+          <defs><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="9"/></filter></defs>
+          <rect width="1000" height="620" fill="#77736C"/><rect width="1000" height="40" fill="#2B2420"/>
+          <rect x="700" y="40" width="300" height="500" fill="#C89B6D"/>
+          <g fill="#F5F1EA" transform="translate(70,150) scale(0.86)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g>
+          <rect x="0" y="212" width="1000" height="8" fill="#F2C76E" filter="url(#glow)" opacity=".9"/><rect x="0" y="213" width="1000" height="6" fill="#FFE2A6"/>
+          <rect x="700" y="219" width="300" height="8" fill="#5E3B26"/>
+          <rect x="716" y="150" width="40" height="63" fill="#FFFFFF"/><rect x="716" y="186" width="40" height="27" fill="#8A5A3B"/><rect x="768" y="150" width="40" height="63" fill="#C9A882"/><rect x="820" y="150" width="40" height="63" fill="#1B1714"/><rect x="872" y="150" width="40" height="63" fill="#FFFFFF"/><rect x="872" y="176" width="40" height="37" fill="#C08A55"/><rect x="924" y="150" width="40" height="63" fill="#C9A882"/>
+          <rect x="60" y="400" width="600" height="140" fill="#1B1714"/><rect x="60" y="400" width="600" height="10" fill="#3A3530"/>
+          <polygon points="344,440 376,440 366,458 376,476 345,476 351,458" fill="#F5F1EA"/>
+          <rect y="540" width="1000" height="80" fill="#5E3B26"/>
+        </svg>
+        <div class="ritual">
+          <span class="eyebrow">Xətt ritualı</span>
+          <svg viewBox="0 0 300 220" aria-hidden="true"><path d="M40,30 L260,30 L238,190 L62,190 Z" fill="#1B1714"/><path d="M54,40 L246,40 L227,180 L73,180 Z" fill="#F5F1EA"/><path d="M63,108 L237,108 L227,180 L73,180 Z" fill="#5E3B26"/><rect x="60" y="104" width="180" height="3" fill="#1B1714"/><path d="M260,62 C300,62 300,130 250,130" fill="none" stroke="#1B1714" stroke-width="14"/><rect x="14" y="198" width="272" height="14" rx="7" fill="#1B1714"/></svg>
+          <h3>Hər fincan düz xəttə qədər</h3>
+          <p>Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Aşağıdakı oyun bu ritualın rəqəmsal versiyasıdır.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tetbiq">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Tətbiqlər</span>
+        <h2>Stəkandan kartadək eyni dil</h2>
+        <p class="lead">Brend kitabında stəkanlar, menyu, Instagram şablonları, önlük, çanta və stikerlər var. Burada üç nümunə:</p>
+      </div>
+      <div class="apps">
+        <div class="app">
+          <svg viewBox="0 0 200 300" role="img" aria-label="M ölçülü stəkan">
+            <rect x="20" y="8" width="160" height="22" rx="4" fill="#1B1714"/><rect x="14" y="28" width="172" height="10" rx="3" fill="#3A3530"/>
+            <polygon points="24,40 176,40 156,290 44,290" fill="#FFFFFF"/>
+            <polygon points="31,130 169,130 162,210 38,210" fill="#1B1714"/>
+            <rect x="30" y="168" width="140" height="4" fill="#FFFFFF"/>
+            <polygon points="86,228 118,228 108,246 118,264 87,264 93,246" fill="#1B1714"/>
+            <path d="M86,232 C78,232 76,238 76,241 C76,247 81,250 87,250" fill="none" stroke="#1B1714" stroke-width="3"/>
+          </svg>
+          <h3>Stəkan</h3><p>Qoldakı xətt ölçünü göstərir: S-də aşağıda, L-də yuxarıda.</p>
+        </div>
+        <div class="app">
+          <svg viewBox="0 0 340 200" role="img" aria-label="Loyalty kartı">
+            <rect width="340" height="200" fill="#FFFFFF"/>
+            <polygon points="40,62 60,76 80,62 88,130 32,130" fill="#1B1714"/>
+            <circle cx="134" cy="96" r="34" fill="#1B1714"/>
+            <polygon points="182,62 238,62 221,96 238,130 184,130 198,96" fill="none" stroke="#1B1714" stroke-width="3"/>
+            <polygon points="276,62 306,130 246,130" fill="none" stroke="#1B1714" stroke-width="3"/>
+            <rect x="20" y="94" width="300" height="3" fill="#FFFFFF"/>
+            <text x="32" y="40" font-family="'League Spartan', sans-serif" font-size="17" fill="#1B1714">Dəmləmə pasportu</text>
+            <text x="32" y="168" font-family="Mulish, sans-serif" font-size="12" fill="#5E5852">4 möhür = 5-ci qəhvə bizdən</text>
+          </svg>
+          <h3>Loyalty kartı</h3><p>Hər hərf bir möhürdür: dörd dəmləmə üsulunu sınayan hədiyyə alır.</p>
+        </div>
+        <div class="app">
+          <svg viewBox="0 0 340 425" role="img" aria-label="Instagram postu">
+            <rect width="340" height="425" fill="#1B1714"/>
+            <text font-family="'League Spartan', sans-serif" font-size="42" fill="#F5F1EA"><tspan x="32" y="80">4 hərf.</tspan><tspan x="32" y="128">4 dəmləmə.</tspan><tspan x="32" y="176">1 xətt.</tspan></text>
+            <rect x="32" y="330" width="276" height="4" fill="#F5F1EA"/>
+            <g fill="#F5F1EA" transform="translate(32,352) scale(0.222)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g>
+          </svg>
+          <h3>Instagram</h3><p>Hər postda imza xətti; profil ardıcıl baxanda vahid görünür.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="oyun" style="background:var(--band)">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap">
+      <div class="head" style="margin:0;max-width:620px">
+        <span class="eyebrow">Mini oyun</span>
+        <h2>Xətti tut</h2>
+        <p class="lead">Barmağını saxla, qəhvə tökülsün; burax, dayansın. Fincanı düz imza xəttinə qədər doldur. 5 raund, hər raundda qovurma tündləşir, axın sürətlənir.</p>
+      </div>
+      <a href="../game/" style="background:var(--fg);color:var(--bg);padding:16px 24px;font-weight:700;letter-spacing:.12em;text-decoration:none">OYNA</a>
+    </div>
+  </section>
+
+  <section id="ar" class="ar">
+    <div class="wrap grid">
+      <div class="head" style="margin:0">
+        <span class="eyebrow">Artırılmış reallıq</span>
+        <h2>Stəkanı skan et, qəhvə tökülsün</h2>
+        <p class="lead">Tətbiq yükləmədən, brauzerdə işləyən WebAR. Telefonu stəkandakı Chemex ikonuna tutursan:</p>
+        <ol>
+          <li>İkonun üstündə 3D Chemex peyda olur.</li>
+          <li>Qəhvə tökülür və imza xətti səviyyəsinə qədər dolur.</li>
+          <li>Altında dənin mənşəyi və qovurma səviyyəsi açılır.</li>
+        </ol>
+        <p style="display:flex;gap:16px;flex-wrap:wrap"><a href="../ar/" style="background:#F5F1EA;color:#1B1714;padding:14px 20px;font-weight:700;letter-spacing:.12em;text-decoration:none">AR DEMONU AÇ</a><a href="../ar/target.png" style="color:#D9B56A;padding:14px 0;font-weight:700">AR kartını aç</a></p><p style="color:#B8B0A6;font-size:14px">Kartı bir ekranda aç, telefonla demonu digərində işə sal.</p>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <svg viewBox="0 0 240 480">
+          <rect width="240" height="480" fill="#3A3530"/>
+          <polygon points="60,250 180,250 168,440 72,440" fill="#F5F1EA"/>
+          <polygon points="104,330 136,330 126,348 136,366 105,366 111,348" fill="#1B1714"/>
+          <polygon points="88,90 152,90 132,150 152,210 90,210 108,150" fill="none" stroke="#D9B56A" stroke-width="3"/>
+          <rect x="94" y="150" width="54" height="56" fill="#A8643A" opacity=".85"/>
+          <rect x="80" y="148" width="80" height="3" fill="#F5F1EA"/>
+          <rect x="70" y="322" width="100" height="52" fill="none" stroke="#D9B56A" stroke-width="2" stroke-dasharray="6 5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Konsept / test işi. MOKA Coffee Roastery-nin rəsmi saytı deyil.</span>
+    <span>@mokacoffeebaku · Dizayn: Faig Gurbanli</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var L=[
+    {n:"YAŞIL DƏN",t:"Yaşıl dən",h:58,c:"#8C9A5B",ink:"#1B1714",o:"Braziliya",no:"Ev qovurması üçün",f:"transparent"},
+    {n:"AÇIQ QOVURMA",t:"Açıq qovurma",h:50,c:"#C08A55",ink:"#1B1714",o:"Efiopiya",no:"Jasmin · ərik · bal",f:"#D9C7E6"},
+    {n:"ORTA QOVURMA",t:"Orta qovurma",h:42,c:"#8A5A3B",ink:"#F5F1EA",o:"Kolumbiya",no:"Karamel · qırmızı alma",f:"#E9B8C0"},
+    {n:"TÜND QOVURMA",t:"Tünd qovurma",h:34,c:"#5E3B26",ink:"#F5F1EA",o:"Qvatemala",no:"Kakao · qəhvəyi şəkər",f:"#A88A78"},
+    {n:"FRENCH QOVURMA",t:"French qovurma",h:26,c:"#2B1D15",ink:"#F5F1EA",o:"Sumatra",no:"Tünd şokolad · ədviyyat",f:"#A88A78"}
+  ];
+  var r=document.getElementById('roast'),f=document.getElementById('fill'),d=document.getElementById('dots');
+  function set(i){
+    var x=L[i];
+    f.style.height=x.h+'%';f.style.backgroundColor=x.c;f.style.color=x.ink;
+    document.getElementById('lv').textContent=x.n;
+    document.getElementById('org').textContent=x.o;
+    document.getElementById('notes').textContent=x.no;document.getElementById('chip').style.backgroundColor=x.f;
+    document.getElementById('lvtext').textContent=x.t+' · xətt '+x.h+'%';
+    var s='';for(var k=0;k<5;k++)s+='<i class="'+(k<=i?'on':'')+'"></i>';d.innerHTML=s;
+  }
+  r.addEventListener('input',function(){set(+r.value)});
+  set(2);
+})();
+</script>
+
+</body>
+</html>
