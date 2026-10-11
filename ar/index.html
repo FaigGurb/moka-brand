@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOKA AR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Lato:wght@400;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+  :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--muted:#B8B0A6;--copper:#A8643A}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Lato,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
+  a-scene{position:fixed;inset:0}
+  .ui{position:fixed;left:0;right:0;z-index:10;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none}
+  .ui.top{top:env(safe-area-inset-top,0px)}
+  .ui svg{height:20px;width:auto;color:var(--paper)}
+  .pill{pointer-events:auto;background:rgba(27,23,20,.8);border:1.5px solid var(--paper);padding:6px 12px;font-size:12px;font-weight:700;letter-spacing:.14em}
+  .card{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;background:var(--paper);color:var(--esp);padding:18px 20px;display:flex;flex-direction:column;gap:4px;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .card.show{transform:none}
+  .card .eb{font-size:11px;font-weight:700;letter-spacing:.2em;color:#5E5852}
+  .card .o{font-family:Jost,Futura,sans-serif;font-size:28px;line-height:1.1}
+  .card .n{font-size:14px;color:#5E5852}
+  .card .bar{height:6px;background:#E9E4DC;margin-top:10px;position:relative}
+  .card .bar i{position:absolute;left:0;top:0;bottom:0;width:42%;background:#8A5A3B}
+  .intro{position:fixed;inset:0;z-index:20;background:var(--esp);display:flex;flex-direction:column;justify-content:center;gap:22px;padding:32px max(24px,env(safe-area-inset-left,0px));max-width:520px;margin:0 auto}
+  .intro h1{font-family:Jost,Futura,sans-serif;font-weight:500;font-size:clamp(32px,8vw,46px);line-height:1.08;margin:0}
+  .intro p{margin:0;color:var(--muted);line-height:1.55}
+  .intro ol{margin:0;padding-left:20px;color:#D6D2CB;line-height:1.6}
+  .intro button{font:inherit;font-weight:700;letter-spacing:.12em;font-size:15px;background:var(--paper);color:var(--esp);border:0;padding:16px;cursor:pointer;min-height:52px}
+  .intro a{color:var(--oak)}
+  .intro .line{height:4px;background:var(--paper)}
+  .intro small{color:var(--muted)}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <svg viewBox="0 0 675 155" style="width:180px;height:auto;color:#F5F1EA" role="img" aria-label="MOKA">
+    <defs><clipPath id="s"><rect x="0" y="0" width="675" height="74.5"/><rect x="0" y="79.5" width="675" height="75.5"/></clipPath></defs>
+    <g fill="currentColor"><g clip-path="url(#s)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g><path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/></g>
+  </svg>
+  <div class="line"></div>
+  <h1>Stəkanı skan et, qəhvə tökülsün</h1>
+  <ol>
+    <li>Kameraya icazə ver.</li>
+    <li>Telefonu stəkan qoluna və ya <a href="./target.png" target="_blank" rel="noopener">AR kartına</a> tut.</li>
+    <li>Chemex peyda olur, qəhvə imza xəttinə qədər dolur.</li>
+  </ol>
+  <button id="start" type="button">KAMERANI AÇ</button>
+  <small>Kartı başqa ekranda açıb ona da tuta bilərsən. Konsept / test işi.</small>
+</div>
+
+<div class="ui top">
+  <svg viewBox="0 0 675 155" aria-hidden="true"><g fill="currentColor"><g clip-path="url(#s)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g></g></svg>
+  <span class="pill" id="status">KART AXTARILIR…</span>
+</div>
+
+<div class="card" id="card" aria-live="polite">
+  <span class="eb">BU FİNCANDA</span>
+  <span class="o">Kolumbiya</span>
+  <span class="n">Orta qovurma · karamel · qırmızı alma</span>
+  <div class="bar" aria-hidden="true"><i></i></div>
+</div>
+
+<a-scene id="scene" mindar-image="imageTargetSrc: ./target.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001"
+  color-space="sRGB" renderer="colorManagement: true; physicallyCorrectLights: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+  <a-assets></a-assets>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-light type="ambient" intensity="1.2"></a-light>
+  <a-light type="directional" intensity="2" position="0.5 1 1"></a-light>
+
+  <a-entity id="target" mindar-image-target="targetIndex: 0">
+    <!-- Chemex stands over the oak panel of the card (left 40%) -->
+    <a-entity id="chemex" position="-0.3 0.02 0.12" scale="0.001 0.001 0.001"
+      animation__in="property: scale; to: 1 1 1; dur: 700; easing: easeOutBack; startEvents: show"
+      animation__out="property: scale; to: 0.001 0.001 0.001; dur: 250; startEvents: hide">
+      <!-- glass -->
+      <a-cone position="0 0.14 0" radius-bottom="0.025" radius-top="0.15" height="0.28" open-ended="true" segments-radial="40"
+        material="color: #F5F1EA; opacity: 0.28; transparent: true; side: double; metalness: 0.1; roughness: 0.05"></a-cone>
+      <a-cone position="0 -0.15 0" radius-bottom="0.16" radius-top="0.025" height="0.3" open-ended="true" segments-radial="40"
+        material="color: #F5F1EA; opacity: 0.28; transparent: true; side: double; metalness: 0.1; roughness: 0.05"></a-cone>
+      <!-- wooden collar -->
+      <a-cylinder position="0 0.01 0" radius="0.06" height="0.07" segments-radial="32" material="color: #C89B6D; roughness: 0.8"></a-cylinder>
+      <a-torus position="0 0.01 0.045" radius="0.012" radius-tubular="0.003" rotation="0 90 0" material="color: #1B1714"></a-torus>
+      <!-- coffee fills from the bottom up to the brand line (70%) -->
+      <a-entity id="fill" position="0 -0.298 0" scale="1 0.001 1"
+        animation__pour="property: scale; from: 1 0.001 1; to: 1 0.7 1; dur: 2600; delay: 600; easing: easeInOutSine; startEvents: pour">
+        <a-cone position="0 0.148 0" radius-bottom="0.152" radius-top="0.02" height="0.296" segments-radial="40"
+          material="color: #3B2416; roughness: 0.35; metalness: 0"></a-cone>
+      </a-entity>
+      <!-- the brand line: a paper ring at the fill level -->
+      <a-torus id="ring" position="0 -0.09 0" rotation="90 0 0" radius="0.064" radius-tubular="0.004" segments-radial="8" segments-tubular="48"
+        material="color: #F5F1EA; emissive: #F5F1EA; emissiveIntensity: 0.6; opacity: 0; transparent: true"
+        animation__ring="property: material.opacity; from: 0; to: 1; dur: 400; delay: 3200; startEvents: pour"></a-torus>
+      <!-- stream -->
+      <a-cylinder id="stream" position="0 0.17 0" radius="0.007" height="0.62" material="color: #3B2416; opacity: 0; transparent: true"
+        animation__on="property: material.opacity; from: 0; to: 1; dur: 250; delay: 400; startEvents: pour"
+        animation__off="property: material.opacity; from: 1; to: 0; dur: 300; delay: 3100; startEvents: pour"></a-cylinder>
+    </a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+(function(){
+  var scene=document.getElementById('scene');
+  var intro=document.getElementById('intro');
+  var status=document.getElementById('status');
+  var card=document.getElementById('card');
+  var target=document.getElementById('target');
+  var chemex=document.getElementById('chemex');
+  var parts=['fill','ring','stream'].map(function(id){return document.getElementById(id)});
+
+  document.getElementById('start').addEventListener('click',function(){
+    intro.classList.add('hidden');
+    var go=function(){ scene.systems['mindar-image-system'].start(); };
+    if(scene.hasLoaded) go(); else scene.addEventListener('loaded',go);
+  });
+  scene.addEventListener('arError',function(){
+    status.textContent='KAMERA AÇILMADI';
+  });
+  target.addEventListener('targetFound',function(){
+    status.textContent='TAPILDI';
+    card.classList.add('show');
+    chemex.emit('show');
+    parts.forEach(function(p){p.emit('pour')});
+  });
+  target.addEventListener('targetLost',function(){
+    status.textContent='KART AXTARILIR…';
+    card.classList.remove('show');
+    chemex.emit('hide');
+  });
+})();
+</script>
+</body>
+</html>
