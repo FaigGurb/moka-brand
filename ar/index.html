@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MOKA AR</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@500&family=Lato:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Mulish:wght@400;700&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-master.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 <style>
   :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--muted:#B8B0A6;--copper:#A8643A}
-  html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Lato,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
   a-scene{position:fixed;inset:0}
   .ui{position:fixed;left:0;right:0;z-index:10;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none}
   .ui.top{top:env(safe-area-inset-top,0px)}
@@ -18,12 +18,12 @@
   .card{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;background:var(--paper);color:var(--esp);padding:18px 20px;display:flex;flex-direction:column;gap:4px;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
   .card.show{transform:none}
   .card .eb{font-size:11px;font-weight:700;letter-spacing:.2em;color:#5E5852}
-  .card .o{font-family:Jost,Futura,sans-serif;font-size:28px;line-height:1.1}
+  .card .o{font-family:'League Spartan',Futura,sans-serif;font-size:28px;line-height:1.1}
   .card .n{font-size:14px;color:#5E5852}
   .card .bar{height:6px;background:#E9E4DC;margin-top:10px;position:relative}
   .card .bar i{position:absolute;left:0;top:0;bottom:0;width:42%;background:#8A5A3B}
   .intro{position:fixed;inset:0;z-index:20;background:var(--esp);display:flex;flex-direction:column;justify-content:center;gap:22px;padding:32px max(24px,env(safe-area-inset-left,0px));max-width:520px;margin:0 auto}
-  .intro h1{font-family:Jost,Futura,sans-serif;font-weight:500;font-size:clamp(32px,8vw,46px);line-height:1.08;margin:0}
+  .intro h1{font-family:'League Spartan',Futura,sans-serif;font-weight:500;font-size:clamp(32px,8vw,46px);line-height:1.08;margin:0}
   .intro p{margin:0;color:var(--muted);line-height:1.55}
   .intro ol{margin:0;padding-left:20px;color:#D6D2CB;line-height:1.6}
   .intro button{font:inherit;font-weight:700;letter-spacing:.12em;font-size:15px;background:var(--paper);color:var(--esp);border:0;padding:16px;cursor:pointer;min-height:52px}
