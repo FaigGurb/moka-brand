@@ -2,9 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MOKA Coffee Roastery — Brend təcrübəsi",
-  description:
-    "MOKA Coffee Roastery üçün konsept korporativ kimlik: 4 hərf, 4 dəmləmə üsulu, 1 xətt. 3D, interaktiv qovurma xətti, AR və mini oyun.",
+  title: "MOKA Coffee Roastery",
 };
 
 export const viewport: Viewport = {
@@ -20,11 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* League Spartan + Mulish: both cover the full Azerbaijani alphabet (Ə ə Ş ş Ğ ğ İ ı …). */}
+        {/* League Spartan + Mulish cover the full Azerbaijani alphabet; Montserrat supplies Cyrillic headings for Russian. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Mulish:wght@400;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Montserrat:wght@500;600&family=Mulish:wght@400;600;700&display=swap"
         />
       </head>
       <body>{children}</body>

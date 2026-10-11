@@ -3,11 +3,12 @@
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { LETTERS, halves, pts } from "@/lib/logo";
+import { useI18n } from "@/i18n/context";
 
 /** Concept view of the café's main wall: the wordmark lit by a warm LED line at the signature height. */
-function Wall() {
+function Wall({ alt }: { alt: string }) {
   return (
-    <svg viewBox="0 0 1000 620" className="block h-auto w-full" role="img" aria-label="Kafe divarı: böyük MOKA hərfləri, onlardan və rəflərdən keçən isti işıq xətti, qarşıda piştaxta">
+    <svg viewBox="0 0 1000 620" className="block h-auto w-full" role="img" aria-label={alt}>
       <defs>
         <filter id="store-glow" x="-10%" y="-400%" width="120%" height="900%">
           <feGaussianBlur stdDeviation="9" />
@@ -59,6 +60,7 @@ function Wall() {
 }
 
 export function Store() {
+  const { t } = useI18n();
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -98,26 +100,25 @@ export function Store() {
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
           <div className="flex flex-col gap-5">
-            <p className="eyebrow text-gunorta">Kafedə</p>
-            <h2 className="text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">Xətt işığa çevrilir</h2>
+            <p className="eyebrow text-gunorta">{t.store.eyebrow}</p>
+            <h2 className="text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">{t.store.title}</h2>
           </div>
           <p className="max-w-[50ch] text-[17px] leading-relaxed text-muted-dark">
-            Əsas divarda, imza xəttinin hündürlüyündə isti bir LED zolaq böyük hərflərdən, piştaxtadan və rəflərdən keçir.
-            İnteryerdə LED xətlər onsuz da var: onlardan birini bu hündürlüyə qaldırmaq kafenin foto nöqtəsini yaradır.
+            {t.store.text}
           </p>
         </div>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-[1.7fr_1fr] lg:items-stretch">
           <figure className="flex flex-col gap-3">
             <div className="s-frame overflow-hidden">
-              <Wall />
+              <Wall alt={t.store.wallAlt} />
             </div>
-            <figcaption className="text-xs font-bold tracking-[0.16em] text-muted-dark uppercase">İşıq xətti · əsas divar · konsept vizual</figcaption>
+            <figcaption className="text-xs font-bold tracking-[0.16em] text-muted-dark uppercase">{t.store.caption}</figcaption>
           </figure>
 
           <div className="s-ritual flex flex-col gap-5 bg-paper p-8 text-espresso">
-            <p className="eyebrow text-axsam-ink">Xətt ritualı</p>
-            <svg viewBox="0 0 300 220" className="h-auto w-full max-w-[320px]" role="img" aria-label="Keramika fincan kəsiyi: qəhvə içindəki incə xəttə qədər doldurulub">
+            <p className="eyebrow text-axsam-ink">{t.store.ritualEyebrow}</p>
+            <svg viewBox="0 0 300 220" className="h-auto w-full max-w-[320px]" role="img" aria-label={t.store.cupAlt}>
               <path d="M40,30 L260,30 L238,190 L62,190 Z" fill="#1B1714" />
               <path d="M54,40 L246,40 L227,180 L73,180 Z" fill="#F5F1EA" />
               <path className="s-cup-fill" d="M63,108 L237,108 L227,180 L73,180 Z" fill="#5E3B26" />
@@ -125,10 +126,9 @@ export function Store() {
               <path d="M260,62 C300,62 300,130 250,130" fill="none" stroke="#1B1714" strokeWidth="14" />
               <rect x="14" y="198" width="272" height="14" rx="7" fill="#1B1714" />
             </svg>
-            <h3 className="text-[28px] leading-tight font-medium">Hər fincan düz xəttə qədər</h3>
+            <h3 className="text-[28px] leading-tight font-medium">{t.store.ritualTitle}</h3>
             <p className="text-[15px] leading-relaxed text-muted">
-              Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri
-              onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.
+              {t.store.ritualText}
             </p>
           </div>
         </div>

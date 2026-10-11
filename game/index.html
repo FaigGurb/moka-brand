@@ -2,81 +2,139 @@
 <html lang="az">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Xətti tut — MOKA</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Montserrat:wght@500;600&family=Mulish:wght@400;700&display=swap">
 <style>
-  :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--copper:#A8643A;--muted:#B8B0A6}
+  :root{--esp:#1B1714;--esp2:#26211D;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--glow:#FFE2A6;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--esp);color:var(--paper);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:none}
-  .app{height:100%;display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
-  header{display:flex;justify-content:space-between;align-items:center;gap:12px}
-  header a{color:var(--paper);display:flex}
-  header svg{height:18px;width:auto}
-  .hud{display:flex;gap:18px;font-weight:700;font-size:13px;letter-spacing:.14em}
+  html,body{margin:0;height:100%;background:var(--esp);color:var(--paper);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  .app{height:100%;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(14px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px}
+  .back{display:inline-flex;align-items:center;gap:8px;color:var(--paper);text-decoration:none;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 14px 0 10px;border:1.5px solid rgba(245,241,234,.35)}
+  .back:hover{border-color:var(--paper)}
+  .back svg{width:16px;height:16px}
+  .hud{display:flex;gap:16px;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
   .hud b{color:var(--bamboo);font-variant-numeric:tabular-nums}
-  .stage{flex:1;position:relative;min-height:0}
+  .stage{flex:1;position:relative;min-height:0;touch-action:none}
   canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .msg{position:absolute;left:0;right:0;top:12%;text-align:center;font-family:'League Spartan',Futura,sans-serif;font-size:clamp(28px,8vw,44px);font-weight:600;pointer-events:none;opacity:0;transition:opacity .25s}
-  .msg.show{opacity:1}
-  .msg small{display:block;font-family:Mulish,sans-serif;font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-top:6px}
-  .hint{text-align:center;font-size:14px;color:var(--muted);letter-spacing:.06em;padding-top:8px}
-  .panel{position:absolute;inset:0;z-index:5;background:rgba(27,23,20,.96);display:flex;flex-direction:column;justify-content:center;gap:20px;padding:24px}
-  .panel h1{font-family:'League Spartan',Futura,sans-serif;font-weight:500;font-size:clamp(40px,11vw,60px);line-height:1;margin:0}
+  .msg{position:absolute;left:0;right:0;top:9%;text-align:center;font-family:var(--display);font-size:clamp(28px,8vw,44px);font-weight:600;pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+  .msg.show{opacity:1;transform:none}
+  .msg small{display:block;font-family:Mulish,sans-serif;font-size:14px;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-top:6px}
+  .hint{text-align:center;font-size:13px;color:var(--muted);letter-spacing:.06em;padding-top:6px;margin:0}
+  .panel{touch-action:pan-y;position:absolute;inset:0;z-index:5;background:rgba(27,23,20,.97);display:flex;flex-direction:column;justify-content:center;gap:18px;padding:20px 4px;overflow-y:auto}
+  .panel h1{font-family:var(--display);font-weight:500;font-size:clamp(44px,12vw,64px);line-height:1;margin:0}
   .panel p{margin:0;color:var(--muted);line-height:1.55;font-size:16px}
   .panel .line{height:4px;background:var(--paper)}
-  .panel button{font:inherit;font-weight:700;letter-spacing:.14em;font-size:15px;background:var(--paper);color:var(--esp);border:0;padding:16px;min-height:52px;cursor:pointer}
-  .panel button:focus-visible{outline:3px solid var(--bamboo);outline-offset:3px}
-  .panel .big{font-family:'League Spartan',Futura,sans-serif;font-size:72px;line-height:1;font-variant-numeric:tabular-nums}
-  .panel .rows{display:flex;flex-direction:column;gap:6px;font-size:15px}
-  .panel .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #3A3530;padding:6px 0;font-variant-numeric:tabular-nums}
+  .btn{font:inherit;font-weight:700;letter-spacing:.14em;font-size:14px;text-transform:uppercase;background:var(--paper);color:var(--esp);border:0;padding:16px;min-height:52px;cursor:pointer;text-align:center;text-decoration:none;display:block}
+  .btn.ghost{background:transparent;color:var(--paper);border:1.5px solid rgba(245,241,234,.4)}
+  .btn:focus-visible,.back:focus-visible,.langs button:focus-visible{outline:3px solid var(--bamboo);outline-offset:3px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .langs{display:flex;gap:6px}
+  .langs button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;background:transparent;color:var(--muted);border:1.5px solid #3A3530;min-width:44px;min-height:40px;cursor:pointer}
+  .langs button[aria-pressed="true"]{color:var(--esp);background:var(--paper);border-color:var(--paper)}
+  .big{font-family:var(--display);font-size:72px;line-height:1;font-variant-numeric:tabular-nums}
+  .rows{display:flex;flex-direction:column;gap:2px;font-size:15px}
+  .rows div{display:flex;justify-content:space-between;border-bottom:1px solid #3A3530;padding:7px 0;font-variant-numeric:tabular-nums}
+  .rows .bonus{color:var(--bamboo)}
+  .toast{min-height:20px;font-size:13px;color:var(--bamboo);text-align:center}
   .hidden{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <a href="../" aria-label="MOKA brend saytına qayıt">
-      <svg viewBox="0 0 675 155" aria-hidden="true"><defs><clipPath id="s"><rect x="0" y="0" width="675" height="74.5"/><rect x="0" y="79.5" width="675" height="75.5"/></clipPath></defs><g fill="currentColor"><g clip-path="url(#s)"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g><path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="currentColor" stroke-width="8"/></g></svg>
-    </a>
-    <div class="hud"><span>RAUND <b id="round">1/5</b></span><span>XAL <b id="score">0</b></span></div>
+    <a class="back" id="back" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back">Sayta qayıt</span></a>
+    <div class="hud"><span><span data-t="round">Raund</span> <b id="round">1/5</b></span><span><span data-t="score">Xal</span> <b id="score">0</b></span></div>
   </header>
   <div class="stage" id="stage">
-    <canvas id="c" aria-label="Fincan və qəhvə axını"></canvas>
-    <div class="msg" id="msg"></div>
+    <canvas id="c" role="img" aria-label=""></canvas>
+    <div class="msg" id="msg" aria-live="polite"></div>
     <div class="panel" id="intro">
-      <h1>Xətti tut</h1>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button>
+      </div>
+      <h1 data-t="title">Xətti tut</h1>
       <div class="line"></div>
-      <p>Barmağını ekranda saxla, qəhvə tökülsün. Burax, axın dayansın. Qəhvəni düz imza xəttinə qədər doldur.</p>
-      <p>Diqqət: buraxandan sonra bir neçə damla da düşür. Hər raundda axın sürətlənir, qovurma tündləşir.</p>
-      <button id="go" type="button">BAŞLA</button>
+      <p data-t="rule1"></p>
+      <p data-t="rule2"></p>
+      <button class="btn" id="go" type="button" data-t="start">Başla</button>
     </div>
     <div class="panel hidden" id="end">
-      <p style="letter-spacing:.2em;font-weight:700;font-size:13px">NƏTİCƏ</p>
+      <p style="letter-spacing:.2em;font-weight:700;font-size:13px;text-transform:uppercase" data-t="result">Nəticə</p>
       <span class="big" id="total">0</span>
       <p id="verdict"></p>
       <div class="rows" id="rows"></div>
       <p id="best"></p>
-      <button id="again" type="button">YENİDƏN</button>
+      <div class="row">
+        <button class="btn" id="again" type="button" data-t="again">Yenidən</button>
+        <button class="btn ghost" id="share" type="button" data-t="share">Paylaş</button>
+      </div>
+      <a class="btn ghost" id="back2" href="../" data-t="backLong">MOKA saytına qayıt</a>
+      <p class="toast" id="toast" aria-live="polite"></p>
     </div>
   </div>
-  <p class="hint" id="hint">Basıb saxla: tök · Burax: dayan</p>
+  <p class="hint" id="hint" data-t="hint"></p>
 </div>
 <script>
 (function(){
-  var ROUNDS=[
-    {name:'Yaşıl dən',color:'#8C9A5B',speed:.22},
-    {name:'Açıq qovurma',color:'#C08A55',speed:.27},
-    {name:'Orta qovurma',color:'#8A5A3B',speed:.32},
-    {name:'Tünd qovurma',color:'#5E3B26',speed:.38},
-    {name:'French qovurma',color:'#3B2416',speed:.45}
-  ];
+  var T={
+    az:{back:'Sayta qayıt',backLong:'MOKA saytına qayıt',round:'Raund',score:'Xal',title:'Xətti tut',
+      rule1:'Barmağını ekranda saxla, qəhvə tökülsün. Burax, axın dayansın. Fincanı düz imza xəttinə qədər doldur.',
+      rule2:'Diqqət: buraxandan sonra bir neçə damla da düşür. Hər raundda axın sürətlənir, qovurma tündləşir. Ardıcıl "Mükəmməl" bonus qazandırır.',
+      start:'Başla',result:'Nəticə',again:'Yenidən',share:'Paylaş',hint:'Basıb saxla: tök · Burax: dayan',line:'XƏTT',
+      roasts:['Yaşıl dən','Açıq qovurma','Orta qovurma','Tünd qovurma','French qovurma'],
+      perfect:'Mükəmməl!',great:'Çox yaxşı',ok:'Pis deyil',far:'Uzaqdır',over:'Daşdı!',pts:'xal',streak:'Seriya',bonus:'Seriya bonusu',
+      v:['Usta barista. İşə qəbul!','Əla əl. Bir az da məşq.','Yaxşı başlanğıc.','Qəhvə səbr sevir. Yenidən cəhd et.'],
+      best:'Ən yaxşı nəticən',copied:'Nəticə kopyalandı',shareText:'MOKA "Xətti tut" oyununda nəticəm: ',canvas:'Fincan, imza xətti və qəhvə axını'},
+    en:{back:'Back to site',backLong:'Back to the MOKA site',round:'Round',score:'Score',title:'Hit the line',
+      rule1:'Press and hold to pour. Let go to stop. Fill the cup exactly to the signature line.',
+      rule2:'Careful: a few drops keep falling after you let go. Each round pours faster and the roast gets darker. Consecutive "Perfect" pours earn a bonus.',
+      start:'Start',result:'Result',again:'Play again',share:'Share',hint:'Hold: pour · Release: stop',line:'LINE',
+      roasts:['Green bean','Light roast','Medium roast','Dark roast','French roast'],
+      perfect:'Perfect!',great:'Great',ok:'Not bad',far:'Way off',over:'Overflow!',pts:'pts',streak:'Streak',bonus:'Streak bonus',
+      v:['Master barista. You are hired!','Steady hand. A little more practice.','Good start.','Coffee loves patience. Try again.'],
+      best:'Your best',copied:'Result copied',shareText:'My score in MOKA "Hit the line": ',canvas:'Cup, signature line and coffee stream'},
+    ru:{back:'На сайт',backLong:'Вернуться на сайт MOKA',round:'Раунд',score:'Очки',title:'Поймай линию',
+      rule1:'Удерживайте палец на экране, чтобы наливать кофе. Отпустите, чтобы остановить. Наполните чашку ровно до фирменной линии.',
+      rule2:'Внимание: после того как отпустите, упадут ещё несколько капель. С каждым раундом струя быстрее, обжарка темнее. Серия «Идеально» даёт бонус.',
+      start:'Начать',result:'Результат',again:'Ещё раз',share:'Поделиться',hint:'Удерживайте: налить · Отпустите: стоп',line:'ЛИНИЯ',
+      roasts:['Зелёное зерно','Светлая обжарка','Средняя обжарка','Тёмная обжарка','Французская обжарка'],
+      perfect:'Идеально!',great:'Отлично',ok:'Неплохо',far:'Мимо',over:'Перелили!',pts:'очк.',streak:'Серия',bonus:'Бонус за серию',
+      v:['Мастер-бариста. Вы приняты!','Твёрдая рука. Ещё немного практики.','Хорошее начало.','Кофе любит терпение. Попробуйте ещё.'],
+      best:'Ваш лучший результат',copied:'Результат скопирован',shareText:'Мой результат в игре MOKA «Поймай линию»: ',canvas:'Чашка, фирменная линия и струя кофе'}
+  };
+  var LANGS=['az','en','ru'];
+  function pickLang(){
+    var q=new URLSearchParams(location.search).get('lang'),s=null;
+    try{s=localStorage.getItem('moka-lang')}catch(e){}
+    return LANGS.indexOf(q)>-1?q:LANGS.indexOf(s)>-1?s:'az';
+  }
+  var lang=pickLang(),t=T[lang];
+  function applyLang(l){
+    lang=l;t=T[l];
+    try{localStorage.setItem('moka-lang',l)}catch(e){}
+    document.documentElement.lang=l;
+    document.title=t.title+' — MOKA';
+    document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t[el.getAttribute('data-t')]});
+    document.querySelectorAll('.langs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false')});
+    var home=l==='az'?'../':'../'+l+'/';
+    document.getElementById('back').href=home;document.getElementById('back2').href=home;
+    c.setAttribute('aria-label',t.canvas);
+    roundEl.textContent=(Math.min(st.r,4)+1)+'/5';
+  }
+
+  var ROUNDS=[{color:'#8C9A5B',speed:.22},{color:'#C08A55',speed:.27},{color:'#8A5A3B',speed:.32},{color:'#5E3B26',speed:.38},{color:'#3B2416',speed:.45}];
   var c=document.getElementById('c'),ctx=c.getContext('2d'),stage=document.getElementById('stage');
   var msg=document.getElementById('msg'),roundEl=document.getElementById('round'),scoreEl=document.getElementById('score');
-  var intro=document.getElementById('intro'),end=document.getElementById('end');
+  var intro=document.getElementById('intro'),end=document.getElementById('end'),toast=document.getElementById('toast');
   var W=0,H=0,dpr=1;
-  var st={r:0,level:0,target:.6,pouring:false,drip:0,phase:'idle',score:0,results:[],t:0};
+  var st={r:0,level:0,target:.6,pouring:false,drip:0,phase:'idle',score:0,results:[],streak:0,flash:0};
 
+  document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
+  applyLang(lang);
+
+  function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
   function resize(){
     dpr=Math.min(window.devicePixelRatio||1,2);
     W=stage.clientWidth;H=stage.clientHeight;
@@ -85,21 +143,20 @@
   window.addEventListener('resize',resize);resize();
 
   function cupGeom(){
-    var ch=Math.min(H*.62,420),cw=ch*.62;
-    var cx=W/2,bottom=H*.94,top=bottom-ch;
+    var ch=Math.min(H*.58,420),cw=ch*.62;
+    var cx=W/2,bottom=H*.96,top=bottom-ch;
     return {cx:cx,top:top,bottom:bottom,tw:cw,bw:cw*.72,h:ch};
   }
-  function xAt(g,y){ // half-width of the cup at height y
-    var k=(y-g.top)/g.h;return (g.tw+(g.bw-g.tw)*k)/2;
-  }
+  function xAt(g,y){var k=(y-g.top)/g.h;return (g.tw+(g.bw-g.tw)*k)/2}
   function startRound(){
     st.level=0;st.drip=0;st.pouring=false;st.phase='ready';
     st.target=.35+Math.random()*.5;
     roundEl.textContent=(st.r+1)+'/5';
-    say(ROUNDS[st.r].name,'RAUND '+(st.r+1));
+    say(t.roasts[st.r],t.round+' '+(st.r+1));
   }
   function say(big,small){
-    msg.innerHTML=big+(small?'<small>'+small+'</small>':'');
+    msg.innerHTML='';msg.appendChild(document.createTextNode(big));
+    if(small){var s=document.createElement('small');s.textContent=small;msg.appendChild(s)}
     msg.classList.add('show');
     clearTimeout(say.t);say.t=setTimeout(function(){msg.classList.remove('show')},1300);
   }
@@ -120,52 +177,69 @@
 
   function finishRound(){
     st.phase='done';
-    var diff=Math.abs(st.level-st.target)*100,pts,label;
-    if(st.level>1){pts=0;label='Daşdı!'}
-    else{pts=Math.max(0,Math.round(100-diff*6));label=diff<1.5?'Mükəmməl!':diff<4?'Çox yaxşı':diff<8?'Pis deyil':'Uzaqdır'}
-    st.score+=pts;scoreEl.textContent=st.score;
-    st.results.push({name:ROUNDS[st.r].name,pts:pts});
-    say(label,'+'+pts+' XAL');
+    var diff=Math.abs(st.level-st.target)*100,pts,label,bonus=0;
+    if(st.level>1){pts=0;label=t.over;st.streak=0;buzz(150)}
+    else{
+      pts=Math.max(0,Math.round(100-diff*6));
+      if(diff<1.5){label=t.perfect;st.streak++;st.flash=1;buzz([30,40,30]);if(st.streak>1)bonus=20*(st.streak-1)}
+      else{st.streak=0;label=diff<4?t.great:diff<8?t.ok:t.far}
+    }
+    st.score+=pts+bonus;scoreEl.textContent=st.score;
+    st.results.push({name:t.roasts[st.r],pts:pts,bonus:bonus});
+    say(label,'+'+pts+' '+t.pts+(bonus?' · '+t.streak+' ×'+st.streak+' +'+bonus:''));
     setTimeout(function(){
       st.r++;
       if(st.r<ROUNDS.length)startRound();else showEnd();
-    },1500);
+    },1600);
   }
   function showEnd(){
     st.phase='idle';
-    document.getElementById('total').textContent=st.score+' / 500';
-    var v=st.score>=450?'Usta barista. İşə qəbul!':st.score>=350?'Əla əl. Bir az da məşq.':st.score>=200?'Yaxşı başlanğıc.':'Qəhvə səbr sevir. Yenidən cəhd et.';
+    document.getElementById('total').textContent=st.score;
+    var s=st.score,v=s>=450?t.v[0]:s>=350?t.v[1]:s>=200?t.v[2]:t.v[3];
     document.getElementById('verdict').textContent=v;
-    document.getElementById('rows').innerHTML=st.results.map(function(r){return '<div><span>'+r.name+'</span><span>'+r.pts+'</span></div>'}).join('');
-    var best=0;try{best=+(localStorage.getItem('moka-line-best')||0);if(st.score>best){best=st.score;localStorage.setItem('moka-line-best',best)}}catch(e){best=Math.max(best,st.score)}
-    document.getElementById('best').textContent='Ən yaxşı nəticən: '+best;
+    var rows=document.getElementById('rows');rows.innerHTML='';
+    st.results.forEach(function(r){
+      var d=document.createElement('div');d.innerHTML='<span></span><span></span>';
+      d.children[0].textContent=r.name;d.children[1].textContent=r.pts;rows.appendChild(d);
+      if(r.bonus){var b=document.createElement('div');b.className='bonus';b.innerHTML='<span></span><span></span>';b.children[0].textContent=t.bonus;b.children[1].textContent='+'+r.bonus;rows.appendChild(b)}
+    });
+    var best=0;try{best=+(localStorage.getItem('moka-line-best')||0);if(s>best){best=s;localStorage.setItem('moka-line-best',best)}}catch(e){best=Math.max(best,s)}
+    document.getElementById('best').textContent=t.best+': '+best;
+    toast.textContent='';
     end.classList.remove('hidden');
     document.getElementById('again').focus();
   }
   function newGame(){
-    st.r=0;st.score=0;st.results=[];scoreEl.textContent='0';
+    st.r=0;st.score=0;st.results=[];st.streak=0;scoreEl.textContent='0';
     intro.classList.add('hidden');end.classList.add('hidden');
     startRound();
   }
   document.getElementById('go').addEventListener('click',newGame);
   document.getElementById('again').addEventListener('click',newGame);
+  document.getElementById('share').addEventListener('click',function(){
+    var url=location.origin+location.pathname+'?lang='+lang;
+    var text=t.shareText+st.score+'/500';
+    if(navigator.share){navigator.share({title:'MOKA',text:text,url:url}).catch(function(){});return}
+    var full=text+' '+url;
+    (navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(function(){toast.textContent=t.copied},function(){toast.textContent=full});
+  });
 
   var last=performance.now();
   function frame(now){
-    var dt=Math.min((now-last)/1000,.05);last=now;st.t+=dt;
-    var R=ROUNDS[st.r]||ROUNDS[0];
+    var dt=Math.min((now-last)/1000,.05);last=now;
+    var R=ROUNDS[st.r]||ROUNDS[ROUNDS.length-1];
     if(st.phase==='pouring'&&st.pouring){st.level+=R.speed*dt;if(st.level>1.02)up()}
     if(st.phase==='settling'){
       var add=Math.min(st.drip,R.speed*dt*.5);st.level+=add;st.drip-=add;
       if(st.drip<=.0005)finishRound();
     }
+    if(st.flash>0)st.flash=Math.max(0,st.flash-dt*1.6);
     draw(R);
     requestAnimationFrame(frame);
   }
   function draw(R){
     ctx.clearRect(0,0,W,H);
     var g=cupGeom();
-    // liquid
     var lv=Math.min(st.level,1.04),ly=g.bottom-g.h*Math.min(lv,1);
     if(lv>0){
       ctx.fillStyle=R.color;ctx.beginPath();
@@ -173,21 +247,21 @@
       ctx.lineTo(g.cx+xAt(g,ly),ly);ctx.lineTo(g.cx-xAt(g,ly),ly);ctx.closePath();ctx.fill();
       ctx.fillStyle='rgba(245,241,234,.18)';ctx.fillRect(g.cx-xAt(g,ly),ly,xAt(g,ly)*2,3);
     }
-    // cup outline
     ctx.strokeStyle='#F5F1EA';ctx.lineWidth=5;ctx.lineJoin='round';ctx.beginPath();
     ctx.moveTo(g.cx-g.tw/2,g.top);ctx.lineTo(g.cx-g.bw/2,g.bottom);ctx.lineTo(g.cx+g.bw/2,g.bottom);ctx.lineTo(g.cx+g.tw/2,g.top);ctx.stroke();
-    // target: the brand line
     if(st.phase!=='idle'){
       var ty=g.bottom-g.h*st.target,hw=xAt(g,ty)+26;
+      if(st.flash>0){ctx.save();ctx.shadowColor='#FFE2A6';ctx.shadowBlur=24*st.flash;ctx.fillStyle='#FFE2A6';ctx.fillRect(g.cx-hw,ty-3,hw*2,6);ctx.restore()}
       ctx.fillStyle='#F5F1EA';ctx.fillRect(g.cx-hw,ty-2,hw*2,4);
-      ctx.fillStyle='#D9B56A';ctx.font='700 12px Mulish, sans-serif';ctx.textAlign='left';ctx.fillText('XƏTT',g.cx+hw+6,ty+4);
+      ctx.fillStyle='#D9B56A';ctx.font='700 12px Mulish, sans-serif';ctx.textAlign='left';
+      var lx=g.cx+hw+6;if(lx+44>W){ctx.textAlign='right';lx=g.cx-hw-6}
+      ctx.fillText(t.line,lx,ty+4);
     }
-    // Chemex spout above
-    var sy=g.top-H*.2,sx=g.cx;
+    // Chemex spout, kept inside the canvas on short screens
+    var sy=Math.max(64,g.top-H*.16),sx=g.cx;
     ctx.fillStyle='#F5F1EA';ctx.beginPath();
     ctx.moveTo(sx-34,sy-56);ctx.lineTo(sx+34,sy-56);ctx.lineTo(sx+10,sy-14);ctx.lineTo(sx-10,sy-14);ctx.closePath();ctx.fill();
     ctx.fillStyle='#C89B6D';ctx.fillRect(sx-14,sy-20,28,10);
-    // stream
     if(st.pouring||st.phase==='settling'){
       var w=st.pouring?6:Math.max(1.5,st.drip*90);
       ctx.fillStyle=R.color;ctx.fillRect(sx-w/2,sy-12,w,Math.max(0,ly-sy+12));

@@ -3,15 +3,13 @@
 import { useRef } from "react";
 import { Letter } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useI18n } from "@/i18n/context";
 
-const STEPS = [
-  { id: "M", tool: "Moka pot", text: "Trapesiya gövdə və çentikli qapaq. Ocaqda dəmlənən güclü, sıx qəhvə; evlərin klassik aləti." },
-  { id: "O", tool: "Fincan", text: "Yuxarıdan baxılan fincan, eyni zamanda qəhvə dənəsi. Espresso barın simvolu." },
-  { id: "K", tool: "Chemex", text: "Qum saatı forması və qulp. Təmiz, şəffaf fincan; stəkanlardakı ikon da budur." },
-  { id: "A", tool: "V60", text: "Konus dripper. Dənin dad notlarını ən aydın göstərən damla üsulu." },
-] as const;
+const IDS = ["M", "O", "K", "A"] as const;
 
 export function Concept() {
+  const { t } = useI18n();
+  const STEPS = IDS.map((id, i) => ({ id, ...t.concept.steps[i] }));
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -52,9 +50,9 @@ export function Concept() {
     <section id="konsepsiya" ref={root} className="bg-paper text-espresso">
       <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:min-h-[100svh] motion-safe:py-16">
         <div className="flex flex-col gap-5">
-          <p className="eyebrow text-axsam-ink">Konsepsiya</p>
+          <p className="eyebrow text-axsam-ink">{t.concept.eyebrow}</p>
           <h2 className="max-w-[16ch] text-[clamp(32px,5.4vw,72px)] leading-[1.02] font-medium tracking-[-0.015em]">
-            Hər hərf bir dəmləmə alətidir
+            {t.concept.title}
           </h2>
         </div>
 

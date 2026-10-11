@@ -6,14 +6,15 @@ import { Logo } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
-import { LINKS } from "@/lib/site";
+import { links } from "@/lib/site";
+import { useI18n } from "@/i18n/context";
 
 // Three.js loads only in the browser and only for the hero.
 const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false });
 
-const LINES = ["4 hərf.", "4 dəmləmə.", "1 xətt."];
-
 export function Hero() {
+  const { locale, t } = useI18n();
+  const L = links(locale);
   const root = useRef<HTMLElement>(null);
   const progress = useRef(0);
   const [ready, setReady] = useState(false);
@@ -57,7 +58,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgba(242,199,110,0.16),transparent_65%)]"
       />
       <div className="relative mx-auto flex w-full max-w-[1320px] flex-1 flex-col px-5 pt-24 pb-10 md:px-10 md:pt-28">
-        <p className="hero-fade eyebrow text-muted-dark">Coffee Roastery · Bakı · Korporativ kimlik konsepti</p>
+        <p className="hero-fade eyebrow text-muted-dark">{t.hero.eyebrow}</p>
 
         <div className="relative my-6 flex flex-1 items-center justify-center md:my-4">
           <div className="relative aspect-[675/330] w-full max-w-[1100px] sm:aspect-[675/240]">
@@ -66,7 +67,7 @@ export function Hero() {
               className={`absolute inset-x-[6%] top-1/2 w-[88%] -translate-y-1/2 text-paper transition-opacity duration-700 ${
                 show3D && ready ? "opacity-0" : "opacity-100"
               }`}
-              title="MOKA loqosu"
+              title={t.hero.logo}
             />
             {show3D && (
               <div className="absolute inset-[-12%_-4%] sm:inset-[-12%_-8%]">
@@ -78,7 +79,7 @@ export function Hero() {
 
         <div className="grid items-end gap-8 md:grid-cols-[1.2fr_1fr] md:gap-16">
           <h1 className="font-[family-name:var(--font-display)] text-[clamp(44px,8.4vw,112px)] leading-[0.92] font-medium tracking-[-0.02em]">
-            {LINES.map((l) => (
+            {t.hero.lines.map((l) => (
               <span key={l} className="reveal-line block">
                 <span className="hero-word">{l}</span>
               </span>
@@ -86,13 +87,12 @@ export function Hero() {
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
             <p className="hero-fade max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
-              MOKA-nın loqosunda qəhvənin dörd yolu gizlənib: moka pot, fincan, Chemex və V60. Hərfləri kəsən
-              xətt isə fincandakı qəhvənin səviyyəsidir. Bütün kimlik bu xəttin üzərində qurulur.
+              {t.hero.text}
             </p>
             <div className="hero-fade flex flex-wrap gap-3">
-              <MagneticButton href="#konsepsiya">Konsepsiyanı kəşf et</MagneticButton>
-              <MagneticButton href={LINKS.ar} variant="ghost">
-                AR demo
+              <MagneticButton href="#konsepsiya">{t.hero.cta}</MagneticButton>
+              <MagneticButton href={L.ar} variant="ghost">
+                {t.hero.ar}
               </MagneticButton>
             </div>
           </div>

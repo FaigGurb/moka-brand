@@ -15,7 +15,7 @@ if (!existsSync(join(out, "index.html"))) {
 }
 
 // Remove the previous export (_next chunks change names on every build).
-for (const name of ["_next", "404", "404.html", "index.txt"]) {
+for (const name of ["_next", "404", "404.html", "index.txt", "en", "ru"]) {
   const p = join(root, name);
   if (existsSync(p)) rmSync(p, { recursive: true, force: true });
 }

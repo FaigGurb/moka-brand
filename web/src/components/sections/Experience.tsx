@@ -3,9 +3,12 @@
 import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { LINKS } from "@/lib/site";
+import { links } from "@/lib/site";
+import { useI18n } from "@/i18n/context";
 
 export function Experience() {
+  const { locale, t } = useI18n();
+  const LINKS = links(locale);
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -30,9 +33,9 @@ export function Experience() {
     <section id="tecrube" ref={root} className="bg-paper text-espresso">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-5">
-          <p className="eyebrow text-axsam-ink">Təcrübə</p>
+          <p className="eyebrow text-axsam-ink">{t.exp.eyebrow}</p>
           <h2 className="max-w-[18ch] text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">
-            Brendi telefonda da toxun
+            {t.exp.title}
           </h2>
         </div>
 
@@ -42,19 +45,19 @@ export function Experience() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={LINKS.arCard}
-                alt="AR kartı: palıd fonda Chemex, MOKA loqosu və pattern"
+                alt={t.exp.arAlt}
                 className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]"
                 loading="lazy"
               />
             </div>
             <div className="flex flex-1 flex-col gap-4 p-8">
-              <p className="eyebrow text-gunorta">WebAR · tətbiq lazım deyil</p>
-              <h3 className="text-[30px] leading-tight font-medium">Stəkanı skan et, qəhvə tökülsün</h3>
+              <p className="eyebrow text-gunorta">{t.exp.arEyebrow}</p>
+              <h3 className="text-[30px] leading-tight font-medium">{t.exp.arTitle}</h3>
               <p className="max-w-[44ch] text-[15px] leading-relaxed text-muted-dark">
-                Kameranı AR kartına tut: üzərində şüşə Chemex peyda olur və qəhvə imza xəttinə qədər dolur. Kartı başqa ekranda açıb sına.
+                {t.exp.arText}
               </p>
               <span className="mt-auto inline-flex items-center gap-3 text-[13px] font-bold tracking-[0.14em] uppercase">
-                AR demonu aç <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                {t.exp.arCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </span>
             </div>
           </a>
@@ -71,13 +74,13 @@ export function Experience() {
               </svg>
             </div>
             <div className="flex flex-1 flex-col gap-4 p-8">
-              <p className="eyebrow text-espresso/70">Mini oyun</p>
-              <h3 className="text-[30px] leading-tight font-medium">Xətti tut</h3>
+              <p className="eyebrow text-espresso/70">{t.exp.gameEyebrow}</p>
+              <h3 className="text-[30px] leading-tight font-medium">{t.exp.gameTitle}</h3>
               <p className="max-w-[44ch] text-[15px] leading-relaxed text-espresso/80">
-                Barmağını saxla, qəhvə tökülsün; burax, dayansın. Fincanı düz xəttə qədər doldur. 5 raund, hər raundda qovurma tündləşir.
+                {t.exp.gameText}
               </p>
               <span className="mt-auto inline-flex items-center gap-3 text-[13px] font-bold tracking-[0.14em] uppercase">
-                Oyna <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                {t.exp.gameCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </span>
             </div>
           </a>
@@ -88,21 +91,22 @@ export function Experience() {
 }
 
 export function FinalCta() {
+  const { locale, t } = useI18n();
+  const LINKS = links(locale);
   return (
     <section className="bg-espresso text-paper">
       <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-24 md:px-10 md:py-32">
         <h2 className="max-w-[14ch] text-[clamp(40px,7vw,104px)] leading-[0.95] font-medium tracking-[-0.02em]">
-          Hər fincan düz xəttə qədər.
+          {t.final.title}
         </h2>
         <div className="h-[3px] w-full bg-gradient-to-r from-glow via-gunorta to-transparent" aria-hidden="true" />
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">
-            Bu konsept MOKA-nın mövcud loqosunu dəyişmədən onu loqo, rəng, qablaşdırma, kafe və rəqəmsal təcrübədən ibarət vahid sistemə çevirir.
-            Növbəti addım: real menyu, dən çeşidi və orijinal loqo faylı ilə çap fayllarına keçmək.
+            {t.final.text}
           </p>
           <div className="flex flex-wrap gap-3">
-            <MagneticButton href={LINKS.ar}>AR demonu aç</MagneticButton>
-            <MagneticButton href="#top" variant="ghost">Yuxarı qayıt</MagneticButton>
+            <MagneticButton href={LINKS.ar}>{t.final.ar}</MagneticButton>
+            <MagneticButton href="#top" variant="ghost">{t.final.top}</MagneticButton>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 # CLAUDE.md — MOKA Brand Experience
 
 ## What this is
-Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the official site. All visible copy is Azerbaijani.
+Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the official site. Three languages: Azerbaijani (default, `/`), English (`/en/`), Russian (`/ru/`).
 
 ## Layout
 - `web/` — Next.js 15 source (static export, basePath `/moka-brand`). Edit here.
@@ -19,7 +19,10 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 - 3D hero: mouse tilt on desktop, automatic sway on touch screens (`useTouch`), lower DPR on phones.
 - Three.js only via `next/dynamic` with `ssr: false`; keep the SVG fallback working.
 - No invented facts: origins, tasting notes, prices, farmer/artist names are marked as samples or `[placeholders]`.
-- Links to static pages go through `LINKS` in `web/src/lib/site.ts` (basePath-aware).
+- Links to static pages go through `links(locale)` in `web/src/lib/site.ts` (basePath-aware, adds `?lang=`).
+- All copy lives in `web/src/i18n/dict.ts` (az is the source; en/ru must have the same shape). Components read it with `useI18n()`. Day-palette brand names stay Azerbaijani in every language with a translated subtitle.
+- `ar/` and `game/` carry their own az/en/ru strings; language comes from `?lang=` or `localStorage['moka-lang']`, and their back buttons return to the matching language home.
+- Russian headings: League Spartan has no Cyrillic, so `Montserrat` sits next in the display stack (loaded from Google Fonts).
 
 ## Commits
 End commit messages with the session attribution lines provided by the environment.

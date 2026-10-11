@@ -7,10 +7,10 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 
 | Yol | Nədir |
 | --- | --- |
-| `/` | Yeni sayt (v2): 3D hero, scroll hekayəsi, interaktiv qovurma xətti — `web/` qovluğundan build olunur |
-| `/ar/` | WebAR demo (A-Frame + MindAR): AR kartını skan edəndə Chemex-ə qəhvə tökülür |
+| `/` · `/en/` · `/ru/` | Yeni sayt (v2) üç dildə: 3D hero, scroll hekayəsi, interaktiv qovurma xətti — `web/` qovluğundan build olunur |
+| `/ar/` | WebAR demo (A-Frame + MindAR): AR kartını skan edəndə Chemex-ə qəhvə tökülür; `?lang=en|ru` |
 | `/ar/target.png` | AR kartı (stəkan qolu dizaynı) |
-| `/game/` | "Xətti tut" mini oyunu |
+| `/game/` | "Xətti tut" mini oyunu (seriya bonusu, vibrasiya, nəticəni paylaşma); `?lang=en|ru` |
 | `/v1/` | Saytın əvvəlki, tək fayllı versiyası |
 
 ## Layihə quruluşu
@@ -50,7 +50,8 @@ Sonra `git add -A && git commit && git push` — GitHub Pages `main` budağını
 ## Fərdiləşdirmə
 
 - **Rənglər və şriftlər:** `web/src/app/globals.css` içindəki `@theme` bloku (dizayn sistemindəki tokenlərlə eynidir).
-- **Mətnlər:** hər bölmə öz faylındadır, məsələn `sections/Roast.tsx` içindəki `LEVELS` (mənşə, dad notları, xətt hündürlüyü).
+- **Mətnlər (3 dil):** hamısı `web/src/i18n/dict.ts` faylındadır — `az`, `en`, `ru` obyektləri eyni quruluşdadır. Rəng və ölçülər isə komponentlərdə qalır (məs. `sections/Roast.tsx` içindəki `LEVEL_STYLE`).
+- **Rus şrifti:** League Spartan-da Kiril yoxdur; başlıqlarda Rus hərfləri avtomatik Montserrat-dan götürülür.
 - **Linklər:** `web/src/lib/site.ts`.
 - **Loqo:** `web/src/lib/logo.ts` — həm SVG, həm də 3D eyni həndəsədən qurulur. Orijinal vektor fayl gəlsə, nöqtələri buradan dəyişin.
 

@@ -3,23 +3,22 @@
 import { useRef, useState } from "react";
 import { Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useI18n } from "@/i18n/context";
 
-// Sample origins and notes for the concept; real assortment to be supplied by MOKA.
-const LEVELS = [
-  { label: "Yaşıl dən", short: "Yaşıl", line: 58, color: "#8C9A5B", ink: "#1B1714", origin: "Braziliya", notes: "Ev qovurması üçün", flavor: null },
-  { label: "Açıq qovurma", short: "Açıq", line: 50, color: "#C08A55", ink: "#1B1714", origin: "Efiopiya", notes: "Jasmin · ərik · bal", flavor: "#D9C7E6" },
-  { label: "Orta qovurma", short: "Orta", line: 42, color: "#8A5A3B", ink: "#F5F1EA", origin: "Kolumbiya", notes: "Karamel · qırmızı alma", flavor: "#E9B8C0" },
-  { label: "Tünd qovurma", short: "Tünd", line: 34, color: "#5E3B26", ink: "#F5F1EA", origin: "Qvatemala", notes: "Kakao · qəhvəyi şəkər", flavor: "#A88A78" },
-  { label: "French qovurma", short: "French", line: 26, color: "#2B1D15", ink: "#F5F1EA", origin: "Sumatra", notes: "Tünd şokolad · ədviyyat", flavor: "#A88A78" },
+// Sample origins and notes for the concept (text in the dictionary); real assortment to be supplied by MOKA.
+const LEVEL_STYLE = [
+  { line: 58, color: "#8C9A5B", ink: "#1B1714", flavor: null },
+  { line: 50, color: "#C08A55", ink: "#1B1714", flavor: "#D9C7E6" },
+  { line: 42, color: "#8A5A3B", ink: "#F5F1EA", flavor: "#E9B8C0" },
+  { line: 34, color: "#5E3B26", ink: "#F5F1EA", flavor: "#A88A78" },
+  { line: 26, color: "#2B1D15", ink: "#F5F1EA", flavor: "#A88A78" },
 ];
-const FLAVORS = [
-  { name: "Giləmeyvə", hex: "#E9B8C0" },
-  { name: "Sitrus", hex: "#EBD27A" },
-  { name: "Çiçək", hex: "#D9C7E6" },
-  { name: "Kakao, qoz", hex: "#A88A78" },
-];
+const FLAVOR_HEX = ["#E9B8C0", "#EBD27A", "#D9C7E6", "#A88A78"];
 
 export function Roast() {
+  const { t } = useI18n();
+  const LEVELS = LEVEL_STYLE.map((s, i) => ({ ...s, ...t.roast.levels[i] }));
+  const FLAVORS = FLAVOR_HEX.map((hex, i) => ({ hex, name: t.roast.flavors[i] }));
   const root = useRef<HTMLElement>(null);
   const [lvl, setLvl] = useState(2);
   const L = LEVELS[lvl];
@@ -82,16 +81,15 @@ export function Roast() {
         </div>
 
         <div className="r-copy flex flex-col gap-6">
-          <p className="eyebrow text-axsam-ink">Qovurma xətti</p>
+          <p className="eyebrow text-axsam-ink">{t.roast.eyebrow}</p>
           <h2 className="text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">
-            Xəttin hündürlüyü qovurmanı göstərir
+            {t.roast.title}
           </h2>
           <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted">
-            Açıq qovurmada xətt yuxarıda, tünddə aşağıda. Rəfdə yan-yana duran paketlər özü bir şkala yaradır:
-            müştəri oxumadan seçir. Dad rəngi isə nə dadacağını göstərir.
+            {t.roast.text}
           </p>
           <fieldset className="mt-2 flex flex-col gap-3">
-            <legend className="mb-3 text-sm font-bold tracking-[0.06em]">Qovurma səviyyəsini seçin</legend>
+            <legend className="mb-3 text-sm font-bold tracking-[0.06em]">{t.roast.legend}</legend>
             <input
               id="roast-level"
               type="range"
@@ -100,7 +98,7 @@ export function Roast() {
               step={1}
               value={lvl}
               onChange={(e) => setLvl(Number(e.target.value))}
-              aria-valuetext={`${L.label}, xətt ${L.line}%`}
+              aria-valuetext={`${L.label}, ${t.roast.line} ${L.line}%`}
               className="w-full accent-[#A8643A]"
             />
             <div className="flex justify-between text-xs font-bold tracking-[0.04em] text-muted" aria-hidden="true">
@@ -112,9 +110,9 @@ export function Roast() {
             </div>
           </fieldset>
           <p className="eyebrow text-espresso" aria-live="polite">
-            {L.label} · xətt {L.line}%
+            {L.label} · {t.roast.line} {L.line}%
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label="Dad rəngləri">
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label={t.roast.flavorsLabel}>
             {FLAVORS.map((f) => (
               <li key={f.name} className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full" style={{ background: f.hex }} aria-hidden="true" />
@@ -122,7 +120,7 @@ export function Roast() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-muted">Mənşə və dad notları nümunədir.</p>
+          <p className="text-xs text-muted">{t.roast.sample}</p>
         </div>
       </div>
     </section>

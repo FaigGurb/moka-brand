@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { useI18n } from "@/i18n/context";
+import type { Dict } from "@/i18n/dict";
 
 function Dots({ n, ink }: { n: number; ink: string }) {
   return (
@@ -14,65 +16,62 @@ function Dots({ n, ink }: { n: number; ink: string }) {
   );
 }
 
-const TIERS = [
-  {
-    n: "Əsas",
-    sub: "Ağ paket və qovurma xətti. Rəfin gündəlik çeşidi.",
-    bag: (
-      <div className="relative flex h-full flex-col overflow-hidden bg-white text-espresso">
+type BagText = Dict["tiers"]["bag"];
+
+function bags(b: BagText) {
+  return [
+    (
+      <div key="core" className="relative flex h-full flex-col overflow-hidden bg-white text-espresso">
         <div className="h-[5%] bg-[#ECE8E1]" />
         <div className="flex flex-col gap-2 p-[9%]">
           <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em]">ƏSAS ÇEŞİD</span>
+          <span className="text-[9px] font-bold tracking-[0.3em]">{b.core}</span>
           <span className="mt-5 flex items-center gap-2">
-            <span className="h-3.5 w-3.5 rounded-full bg-flavor-berry" aria-hidden="true" />
-            <span className="font-[family-name:var(--font-display)] text-[26px] leading-[1.05]">Karamel, qırmızı alma</span>
+            <span className="h-3.5 w-3.5 flex-none rounded-full bg-flavor-berry" aria-hidden="true" />
+            <span className="font-[family-name:var(--font-display)] text-[26px] leading-[1.05]">{b.coreNotes}</span>
           </span>
         </div>
         <div className="absolute inset-x-0 bottom-0 flex h-[42%] flex-col justify-between bg-roast-2 px-[9%] py-4 text-paper">
-          <span className="text-[11px] font-bold tracking-[0.18em]">ORTA QOVURMA</span>
+          <span className="text-[11px] font-bold tracking-[0.18em]">{b.medium}</span>
           <Dots n={3} ink="#F5F1EA" />
         </div>
       </div>
     ),
-  },
-  {
-    n: "Tək mənşə",
-    sub: "Kraft paket. Fermerin adı, dad notları başlıqda, QR kodla mənşə və AR.",
-    bag: (
-      <div className="relative flex h-full flex-col overflow-hidden bg-kraft text-espresso">
+    (
+      <div key="single" className="relative flex h-full flex-col overflow-hidden bg-kraft text-espresso">
         <div className="h-[5%] bg-[#B9976F]" />
         <div className="flex flex-col gap-2 p-[9%]">
           <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em]">TƏK MƏNŞƏ</span>
+          <span className="text-[9px] font-bold tracking-[0.3em]">{b.single}</span>
           <span className="mt-4 flex gap-1.5" aria-hidden="true">
             <span className="h-3.5 w-3.5 rounded-full bg-flavor-floral" />
             <span className="h-3.5 w-3.5 rounded-full bg-flavor-citrus" />
           </span>
-          <span className="font-[family-name:var(--font-display)] text-[34px] leading-[1]">Jasmin.<br />Ərik. Bal.</span>
+          <span className="font-[family-name:var(--font-display)] text-[32px] leading-[1]">
+            {b.singleNotes[0]}
+            <br />
+            {b.singleNotes[1]}
+          </span>
           <span className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] leading-snug">
-            <span><b>Fermer</b><br />[ad]</span>
-            <span><b>Region</b><br />[region]</span>
-            <span><b>Hündürlük</b><br />[m]</span>
-            <span><b>Emal</b><br />[üsul]</span>
+            <span><b>{b.farmer}</b><br />{b.ph.farmer}</span>
+            <span><b>{b.region}</b><br />{b.ph.region}</span>
+            <span><b>{b.altitude}</b><br />{b.ph.altitude}</span>
+            <span><b>{b.process}</b><br />{b.ph.process}</span>
           </span>
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex h-[26%] items-end justify-between border-t-4 border-paper bg-roast-1 px-[9%] py-4">
-          <span className="text-[11px] font-bold tracking-[0.18em]">AÇIQ QOVURMA</span>
+        <div className="absolute inset-x-0 bottom-0 flex h-[24%] items-end justify-between border-t-4 border-paper bg-roast-1 px-[9%] py-4">
+          <span className="text-[11px] font-bold tracking-[0.18em]">{b.light}</span>
           <span className="text-[11px] font-bold tracking-[0.12em]">QR → AR</span>
         </div>
       </div>
     ),
-  },
-  {
-    n: "Limitli",
-    sub: "Espresso paket, Nar xətt. Azərbaycan rəssamları ilə nömrəli tiraj, rəqəmsal çap.",
-    bag: (
-      <div className="relative flex h-full flex-col overflow-hidden bg-espresso text-paper">
+    (
+      <div key="limited" className="relative flex h-full flex-col overflow-hidden bg-espresso text-paper">
         <div className="h-[5%] bg-espresso-2" />
         <div className="flex flex-col gap-2 p-[9%]">
           <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em] text-nar-light">LİMİTLİ · № [0001] / [500]</span>
+          <span className="text-[9px] font-bold tracking-[0.3em] text-nar-light">{b.limited}</span>
+          <span className="mt-3 font-[family-name:var(--font-display)] text-[24px] leading-tight">{b.artist}</span>
         </div>
         <svg viewBox="0 0 300 200" className="mt-auto w-full" aria-hidden="true">
           <polygon points="20,30 80,72 140,30 166,196 0,196" fill="#8E2F22" />
@@ -81,13 +80,15 @@ const TIERS = [
           <rect x="0" y="128" width="300" height="5" fill="#1B1714" />
           <rect x="0" y="133" width="300" height="4" fill="#8E2F22" />
         </svg>
-        <span className="absolute top-[22%] left-[9%] font-[family-name:var(--font-display)] text-[24px]">[Rəssam] × MOKA</span>
       </div>
     ),
-  },
-];
+  ];
+}
 
 export function Tiers() {
+  const { t } = useI18n();
+  const bagEls = bags(t.tiers.bag);
+  const TIERS = t.tiers.items.map((it, i) => ({ n: it.name, sub: it.sub, bag: bagEls[i] }));
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -121,12 +122,12 @@ export function Tiers() {
       <div className="t-pin overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
         <div className="t-track no-scrollbar flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
-            <p className="eyebrow text-axsam-ink">Paket ailəsi</p>
-            <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">Bir ailə, üç pillə</h2>
+            <p className="eyebrow text-axsam-ink">{t.tiers.eyebrow}</p>
+            <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">{t.tiers.title}</h2>
             <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted">
-              Hər paketdə imza xətti, loqo yeri və etiket quruluşu eynidir. Dəyişən material və vurğudur.
+              {t.tiers.text}
             </p>
-            <p className="text-sm font-bold tracking-[0.06em] text-muted motion-reduce:hidden">Aşağı sürüşdürün →</p>
+            <p className="text-sm font-bold tracking-[0.06em] text-muted motion-reduce:hidden">{t.tiers.hint}</p>
           </div>
           {TIERS.map((t, i) => (
             <article key={t.n} className="flex w-[min(72vw,calc((100svh_-_250px)/1.53),380px)] flex-none snap-start flex-col gap-3 md:gap-4 lg:w-[min(26vw,calc((100svh_-_250px)/1.53))]">

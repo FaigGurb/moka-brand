@@ -2,9 +2,33 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
-import { LINKS, NAV } from "@/lib/site";
+import { HOME, NAV_IDS, links } from "@/lib/site";
+import { useI18n } from "@/i18n/context";
+import { LOCALES } from "@/i18n/dict";
+
+function LangSwitch({ className = "" }: { className?: string }) {
+  const { locale, t } = useI18n();
+  return (
+    <div role="group" aria-label={t.nav.lang} className={`flex ${className}`}>
+      {LOCALES.map((l) => (
+        <a
+          key={l}
+          href={HOME[l]}
+          hrefLang={l}
+          lang={l}
+          aria-current={l === locale ? "true" : undefined}
+          className="flex min-h-[40px] min-w-[40px] items-center justify-center px-2 text-[12px] font-bold tracking-[0.1em] text-paper/60 uppercase transition-colors hover:text-paper aria-[current]:text-paper aria-[current]:underline aria-[current]:decoration-glow aria-[current]:decoration-2 aria-[current]:underline-offset-[6px]"
+        >
+          {l}
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export function Nav() {
+  const { locale, t } = useI18n();
+  const L = links(locale);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
@@ -18,9 +42,10 @@ export function Nav() {
 
   // Highlight the section currently in view.
   useEffect(() => {
-    const els = NAV.map((n) => document.querySelector(n.href)).filter(Boolean) as Element[];
+    // The hero (#top) is observed too, so nothing stays highlighted after scrolling back up.
+    const els = ["#top", ...NAV_IDS].map((id) => document.querySelector(id)).filter(Boolean) as Element[];
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(`#${e.target.id}`)),
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id === "top" ? "" : `#${e.target.id}`)),
       { rootMargin: "-45% 0px -50% 0px" },
     );
     els.forEach((el) => io.observe(el));
@@ -41,44 +66,45 @@ export function Nav() {
       }`}
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <nav aria-label="Əsas menyu" className="mx-auto flex h-16 max-w-[1320px] items-center gap-6 px-5 md:px-10">
-        <a href="#top" className="text-paper" aria-label="MOKA — yuxarı qayıt">
+      <nav aria-label={t.nav.label} className="mx-auto flex h-16 max-w-[1320px] items-center gap-5 px-5 md:px-10">
+        <a href="#top" className="text-paper" aria-label={t.logoHome}>
           <Logo className="h-[18px] w-auto" />
         </a>
-        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase sm:inline">
-          Konsept · test işi
+        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase xl:inline">
+          {t.nav.badge}
         </span>
-        <ul className="ml-auto hidden items-center gap-7 lg:flex">
-          {NAV.map((n) => (
-            <li key={n.href}>
+        <ul className="ml-auto hidden items-center gap-6 lg:flex">
+          {NAV_IDS.map((id, i) => (
+            <li key={id}>
               <a
-                href={n.href}
-                aria-current={active === n.href ? "true" : undefined}
-                className="relative py-2 text-[13px] font-bold tracking-[0.06em] text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper"
+                href={id}
+                aria-current={active === id ? "true" : undefined}
+                className="relative py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper"
               >
-                {n.label}
+                {t.nav.items[i]}
                 <span
                   aria-hidden="true"
                   className={`absolute -bottom-0.5 left-0 h-[2px] bg-glow transition-all duration-500 ease-[var(--ease-brand)] ${
-                    active === n.href ? "w-full" : "w-0"
+                    active === id ? "w-full" : "w-0"
                   }`}
                 />
               </a>
             </li>
           ))}
         </ul>
+        <LangSwitch className="ml-auto hidden sm:flex lg:ml-0" />
         <a
-          href={LINKS.ar}
-          className="ml-auto hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow lg:ml-0 lg:inline-block"
+          href={L.ar}
+          className="hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-espresso uppercase transition-colors hover:bg-glow lg:inline-block"
         >
-          AR demo
+          {t.nav.ar}
         </a>
         <button
           type="button"
-          className="ml-auto flex h-11 w-11 items-center justify-center text-paper lg:hidden"
+          className="ml-auto flex h-11 w-11 items-center justify-center text-paper sm:ml-0 lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
-          aria-label={open ? "Menyunu bağla" : "Menyunu aç"}
+          aria-label={open ? t.nav.close : t.nav.open}
           onClick={() => setOpen((o) => !o)}
         >
           <span className="relative block h-3 w-6">
@@ -87,28 +113,24 @@ export function Nav() {
           </span>
         </button>
       </nav>
-      <div
-        id="mobile-menu"
-        hidden={!open}
-        className="h-[calc(100svh-4rem)] overflow-y-auto bg-espresso px-5 pb-10 lg:hidden"
-      >
+      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-espresso px-5 pb-10 lg:hidden">
         <ul className="flex flex-col border-t border-paper/15">
-          {NAV.map((n, i) => (
-            <li key={n.href} className="border-b border-paper/15">
-              <a
-                href={n.href}
-                onClick={() => setOpen(false)}
-                className="flex items-baseline justify-between py-5 font-[family-name:var(--font-display)] text-3xl text-paper"
-              >
-                {n.label}
-                <span className="text-xs font-bold tracking-[0.2em] text-muted-dark">0{i + 1}</span>
+          {NAV_IDS.map((id, i) => (
+            <li key={id} className="border-b border-paper/15">
+              <a href={id} onClick={() => setOpen(false)} className="flex items-baseline py-5 font-[family-name:var(--font-display)] text-3xl text-paper">
+                {t.nav.items[i]}
               </a>
             </li>
           ))}
         </ul>
-        <div className="mt-8 flex flex-col gap-3">
-          <a href={LINKS.ar} className="bg-paper px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-espresso uppercase">AR demonu aç</a>
-          <a href={LINKS.game} className="border border-paper/40 px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-paper uppercase">Xətti tut — oyna</a>
+        <LangSwitch className="mt-6 -ml-2 sm:hidden" />
+        <div className="mt-6 flex flex-col gap-3">
+          <a href={L.ar} className="bg-paper px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-espresso uppercase">
+            {t.nav.mobileAr}
+          </a>
+          <a href={L.game} className="border border-paper/40 px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-paper uppercase">
+            {t.nav.mobileGame}
+          </a>
         </div>
       </div>
     </header>
