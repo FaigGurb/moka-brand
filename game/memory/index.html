@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hərf yaddaşı — MOKA</title>
+<meta name="theme-color" content="#1B1714">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Montserrat:wght@500;600&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../shared/game.css">
+<style>
+  .stage{touch-action:manipulation;display:flex;align-items:center;justify-content:center}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:min(100%,calc((100svh - 190px) * .8),520px)}
+  .card{aspect-ratio:3/4;perspective:700px;border:0;padding:0;background:none;cursor:pointer;font:inherit;color:inherit}
+  .card .in{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .card.open .in,.card.done .in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px;text-align:center}
+  .back-f{background:var(--esp2);border:1.5px solid rgba(245,241,234,.14)}
+  .back-f::after{content:"";position:absolute;left:10%;right:10%;top:50%;height:3px;margin-top:-1.5px;background:rgba(255,226,166,.55)}
+  .back-f svg{width:46%;opacity:.35}
+  .front{transform:rotateY(180deg);background:var(--paper);color:var(--esp)}
+  .front .big{font-family:var(--display);font-size:clamp(30px,9vw,56px);line-height:1}
+  .front .nm{font-weight:700;font-size:clamp(10px,2.6vw,13px);letter-spacing:.04em;line-height:1.15}
+  .front .sub{font-size:clamp(9px,2.2vw,11px);opacity:.7}
+  .front svg{width:58%;height:auto}
+  .card.done .front{box-shadow:inset 0 0 0 3px var(--glow)}
+  .card.done{animation:pulse .5s}
+  @keyframes pulse{50%{transform:scale(1.06)}}
+  .card:focus-visible{outline:3px solid var(--bamboo);outline-offset:3px}
+  .learn{min-height:22px;text-align:center;font-size:14px;color:var(--bamboo);margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a class="back" id="back" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
+    <div class="hud"><span><span data-t="moves"></span> <b id="moves">0</b></span><span><span data-t="time"></span> <b id="time">0:00</b></span></div>
+  </header>
+  <div class="stage" id="stage">
+    <div class="grid" id="grid" role="grid" aria-label=""></div>
+    <div class="panel" id="intro">
+      <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+      <h1 data-t="title"></h1>
+      <div class="line"></div>
+      <p data-t="rule1"></p>
+      <p data-t="rule2"></p>
+      <button class="btn" id="go" type="button" data-t="start"></button>
+    </div>
+    <div class="panel hidden" id="end">
+      <p style="letter-spacing:.2em;font-weight:700;font-size:13px;text-transform:uppercase" data-t="result"></p>
+      <span class="big" id="total">0</span>
+      <p id="verdict"></p>
+      <div class="rows" id="rows"></div>
+      <p id="best"></p>
+      <a class="club" id="clubBox" href="../../club/"><span id="clubText"></span><span>Club →</span></a>
+      <div class="row">
+        <button class="btn" id="again" type="button" data-t="again"></button>
+        <button class="btn ghost" id="share" type="button" data-t="share"></button>
+      </div>
+      <a class="btn ghost" id="back2" href="../../" data-t="backLong"></a>
+      <p class="toast" id="toast" aria-live="polite"></p>
+    </div>
+  </div>
+  <p class="learn" id="learn" aria-live="polite"></p>
+</div>
+<script src="../../club/club.js"></script>
+<script>
+(function(){
+  var T={
+    az:{back:'Oyunlar',backLong:'MOKA saytına qayıt',moves:'Gediş',time:'Vaxt',title:'Hərf yaddaşı',
+      rule1:'16 kart, 8 cüt. Hərfi öz dəmləmə aləti ilə, günün rəngini öz adı ilə tap.',
+      rule2:'Az gediş və tez bitirmək daha çox xal verir. Hər tapılan cüt sənə brendin bir qaydasını xatırladır.',
+      start:'Başla',result:'Xal',again:'Yenidən',share:'Paylaş',moves2:'Gediş',time2:'Vaxt',
+      v:['Brend kitabını əzbər bilirsən!','Əla yaddaş.','Yaxşı nəticə.','Yenidən cəhd et, hərflər səni gözləyir.'],
+      best:'Ən yaxşı nəticən',copied:'Nəticə kopyalandı',shareText:'MOKA "Hərf yaddaşı" oyununda nəticəm: ',
+      clubPts:'xal qazandın',clubCap:'Bu gün bu oyunun xal limiti dolub',grid:'Kartlar',card:'Kart',
+      tools:['Moka pot','Fincan','Chemex','V60'],
+      learn:['M = Moka pot: ocaqda güclü qəhvə','O = Fincan: espresso barın simvolu','K = Chemex: təmiz, şəffaf fincan','A = V60: dad notlarını ən aydın göstərir','Səhər = palıd işığı','Günorta = bambuk dirəklər','Axşam = mis lampalar','Nar = limitli buraxılışlar'],
+      subs:['','','','']},
+    en:{back:'Games',backLong:'Back to the MOKA site',moves:'Moves',time:'Time',title:'Letter memory',
+      rule1:'16 cards, 8 pairs. Match each letter with its brewer, and each colour of the day with its name.',
+      rule2:'Fewer moves and a faster finish score more. Every pair reminds you of a brand rule.',
+      start:'Start',result:'Score',again:'Play again',share:'Share',moves2:'Moves',time2:'Time',
+      v:['You know the brand book by heart!','Great memory.','Good result.','Try again, the letters are waiting.'],
+      best:'Your best',copied:'Result copied',shareText:'My score in MOKA "Letter memory": ',
+      clubPts:'points earned',clubCap:"Today's points limit for this game is reached",grid:'Cards',card:'Card',
+      tools:['Moka pot','Cup','Chemex','V60'],
+      learn:['M = Moka pot: strong stovetop coffee','O = Cup: the symbol of the espresso bar','K = Chemex: a clean, clear cup','A = V60: shows tasting notes most clearly','Səhər (Morning) = oak light','Günorta (Noon) = bamboo poles','Axşam (Evening) = copper lamps','Nar (Pomegranate) = limited releases'],
+      subs:['Morning','Noon','Evening','Pomegranate']},
+    ru:{back:'Игры',backLong:'Вернуться на сайт MOKA',moves:'Ходы',time:'Время',title:'Память букв',
+      rule1:'16 карт, 8 пар. Найдите для каждой буквы её способ заваривания, а для цвета дня — его название.',
+      rule2:'Меньше ходов и быстрее — больше очков. Каждая пара напоминает одно правило бренда.',
+      start:'Начать',result:'Очки',again:'Ещё раз',share:'Поделиться',moves2:'Ходы',time2:'Время',
+      v:['Вы знаете брендбук наизусть!','Отличная память.','Хороший результат.','Попробуйте ещё, буквы ждут.'],
+      best:'Ваш лучший результат',copied:'Результат скопирован',shareText:'Мой результат в MOKA «Память букв»: ',
+      clubPts:'баллов получено',clubCap:'Дневной лимит баллов за эту игру исчерпан',grid:'Карты',card:'Карта',
+      tools:['Moka pot','Чашка','Chemex','V60'],
+      learn:['M = Moka pot: крепкий кофе на плите','O = Чашка: символ эспрессо-бара','K = Chemex: чистая, прозрачная чашка','A = V60: ярче всего раскрывает вкус','Səhər (Утро) = свет дуба','Günorta (День) = бамбук','Axşam (Вечер) = медные лампы','Nar (Гранат) = лимитированные выпуски'],
+      subs:['Утро','День','Вечер','Гранат']}
+  };
+  // letter polygons (same geometry as the logo, viewBox 675×155)
+  var POLY={M:'32,4 87,47 145,4 172,149 2,150',K:'381,7 508,7 467,77 508,149 385,149 407,77',A:'597,4 671,149 522,149'};
+  function letterSvg(id){
+    var vb={M:'0 0 175 155',O:'188 0 156 155',K:'344 0 168 155',A:'518 0 157 155'}[id];
+    var shape=id==='O'?'<circle cx="266" cy="77" r="76"/>':'<polygon points="'+POLY[id]+'"/>';
+    var handle=id==='K'?'<path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" fill="none" stroke="#1B1714" stroke-width="8"/>':'';
+    return '<svg viewBox="'+vb+'" aria-hidden="true"><defs><clipPath id="cut'+id+'"><rect x="0" y="0" width="675" height="74.5"/><rect x="0" y="79.5" width="675" height="76"/></clipPath></defs><g fill="#1B1714" clip-path="url(#cut'+id+')">'+shape+'</g>'+handle+'</svg>';
+  }
+  var TOOL_ICON=[
+    '<svg viewBox="0 0 40 40"><path d="M12 6h16l-2 4H14zM11 12h18l3 22H8z" fill="#1B1714"/><path d="M29 16h4v8h-4" fill="none" stroke="#1B1714" stroke-width="2.5"/></svg>',
+    '<svg viewBox="0 0 40 40"><path d="M7 14h22l-2 16H9z" fill="#1B1714"/><path d="M29 17c6 0 6 9 0 9" fill="none" stroke="#1B1714" stroke-width="2.5"/><rect x="4" y="32" width="28" height="3" fill="#1B1714"/></svg>',
+    '<svg viewBox="0 0 40 40"><path d="M11 4h18l-7 15 7 17H11l7-17z" fill="#1B1714"/><rect x="15" y="17" width="10" height="4" fill="#C89B6D"/></svg>',
+    '<svg viewBox="0 0 40 40"><path d="M6 8h28L22 26h-4z" fill="#1B1714"/><rect x="12" y="28" width="16" height="3" fill="#1B1714"/></svg>'];
+  var COLORS=[['Səhər','#C89B6D'],['Günorta','#D9B56A'],['Axşam','#A8643A'],['Nar','#8E2F22']];
+  var LANGS=['az','en','ru'];
+  var q=new URLSearchParams(location.search).get('lang'),saved=null;try{saved=localStorage.getItem('moka-lang')}catch(e){}
+  var lang=LANGS.indexOf(q)>-1?q:LANGS.indexOf(saved)>-1?saved:'az',t=T[lang];
+  var grid=document.getElementById('grid'),intro=document.getElementById('intro'),end=document.getElementById('end'),learn=document.getElementById('learn'),toast=document.getElementById('toast');
+  var st={cards:[],open:[],moves:0,found:0,start:0,timer:0,lock:false,elapsed:0};
+
+  function applyLang(l){
+    lang=l;t=T[l];try{localStorage.setItem('moka-lang',l)}catch(e){}
+    document.documentElement.lang=l;document.title=t.title+' — MOKA';
+    document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t[el.getAttribute('data-t')]});
+    document.querySelectorAll('.langs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false')});
+    var sfx=l==='az'?'':'?lang='+l;
+    document.getElementById('back').href='../'+sfx;
+    document.getElementById('back2').href=l==='az'?'../../':'../../'+l+'/';
+    document.getElementById('clubBox').href='../../club/'+sfx;
+    grid.setAttribute('aria-label',t.grid);
+    if(st.cards.length)render();
+  }
+  document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
+
+  function faceHtml(c){
+    if(c.kind==='letter')return letterSvg(c.key);
+    if(c.kind==='tool')return TOOL_ICON[c.pair]+'<span class="nm">'+t.tools[c.pair]+'</span>';
+    if(c.kind==='swatch')return '<span style="display:block;width:70%;aspect-ratio:1;border-radius:50%;background:'+COLORS[c.pair-4][1]+'"></span>';
+    var sub=t.subs[c.pair-4];
+    return '<span class="nm" style="font-size:clamp(13px,3.4vw,18px)">'+COLORS[c.pair-4][0]+'</span>'+(sub?'<span class="sub">'+sub+'</span>':'');
+  }
+  function label(c){
+    if(c.kind==='letter')return c.key;
+    if(c.kind==='tool')return t.tools[c.pair];
+    if(c.kind==='swatch')return COLORS[c.pair-4][0]+' ●';
+    return COLORS[c.pair-4][0];
+  }
+  var BACK='<svg viewBox="0 0 675 155" aria-hidden="true"><g fill="#F5F1EA"><polygon points="32,4 87,47 145,4 172,149 2,150"/><circle cx="266" cy="77" r="76"/><polygon points="381,7 508,7 467,77 508,149 385,149 407,77"/><polygon points="597,4 671,149 522,149"/></g></svg>';
+  function render(){
+    grid.innerHTML='';
+    st.cards.forEach(function(c,i){
+      var b=document.createElement('button');b.type='button';b.className='card'+(c.done?' done':c.open?' open':'');
+      b.setAttribute('aria-label',(c.open||c.done)?label(c):t.card+' '+(i+1));
+      b.innerHTML='<span class="in"><span class="face back-f">'+BACK+'</span><span class="face front">'+faceHtml(c)+'</span></span>';
+      b.addEventListener('click',function(){flip(i)});
+      grid.appendChild(b);
+    });
+  }
+  // flip by toggling classes on the existing buttons so the CSS 3D turn animates
+  function update(){
+    st.cards.forEach(function(c,i){
+      var b=grid.children[i];if(!b)return;
+      b.classList.toggle('open',!!c.open&&!c.done);b.classList.toggle('done',!!c.done);
+      b.setAttribute('aria-label',(c.open||c.done)?label(c):t.card+' '+(i+1));
+    });
+  }
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var x=a[i];a[i]=a[j];a[j]=x}return a}
+  function start(){
+    var cards=[];
+    ['M','O','K','A'].forEach(function(k,i){cards.push({kind:'letter',key:k,pair:i},{kind:'tool',pair:i})});
+    for(var i=0;i<4;i++)cards.push({kind:'swatch',pair:4+i},{kind:'name',pair:4+i});
+    st={cards:shuffle(cards),open:[],moves:0,found:0,start:performance.now(),lock:false,elapsed:0};
+    clearInterval(st.timer);st.timer=setInterval(tick,250);
+    document.getElementById('moves').textContent='0';learn.textContent='';
+    intro.classList.add('hidden');end.classList.add('hidden');render();
+  }
+  function tick(){st.elapsed=(performance.now()-st.start)/1000;var s=Math.floor(st.elapsed);document.getElementById('time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  function flip(i){
+    var c=st.cards[i];if(st.lock||c.open||c.done)return;
+    c.open=true;st.open.push(i);update();
+    if(st.open.length<2)return;
+    st.moves++;document.getElementById('moves').textContent=st.moves;
+    var a=st.cards[st.open[0]],b=st.cards[st.open[1]];
+    if(a.pair===b.pair){
+      a.done=b.done=true;a.open=b.open=false;st.open=[];st.found++;
+      learn.textContent=t.learn[a.pair];
+      try{navigator.vibrate&&navigator.vibrate(25)}catch(e){}
+      update();if(st.found===8)setTimeout(finish,700);
+    }else{
+      st.lock=true;
+      setTimeout(function(){a.open=b.open=false;st.open=[];st.lock=false;update()},850);
+    }
+  }
+  function finish(){
+    clearInterval(st.timer);tick();
+    var score=Math.max(100,Math.round(1000-Math.max(0,st.moves-8)*25-st.elapsed*4));
+    document.getElementById('total').textContent=score;
+    document.getElementById('verdict').textContent=score>=800?t.v[0]:score>=600?t.v[1]:score>=400?t.v[2]:t.v[3];
+    var rows=document.getElementById('rows');rows.innerHTML='';
+    [[t.moves2,st.moves],[t.time2,document.getElementById('time').textContent]].forEach(function(r){var d=document.createElement('div');d.innerHTML='<span></span><span></span>';d.children[0].textContent=r[0];d.children[1].textContent=r[1];rows.appendChild(d)});
+    var best=0;try{best=+(localStorage.getItem('moka-memory-best')||0);if(score>best){best=score;localStorage.setItem('moka-memory-best',best)}}catch(e){best=Math.max(best,score)}
+    document.getElementById('best').textContent=t.best+': '+best;
+    var res=window.MokaClub?MokaClub.award('memory',score/10):{added:0,total:0,capped:false};
+    var ct=document.getElementById('clubText');ct.innerHTML='';var b1=document.createElement('b');b1.textContent='+'+res.added;
+    ct.append(b1,' '+(res.added||!res.capped?t.clubPts:t.clubCap)+' · '+res.total);
+    st.score=score;toast.textContent='';end.classList.remove('hidden');document.getElementById('again').focus();
+  }
+  document.getElementById('go').addEventListener('click',start);
+  document.getElementById('again').addEventListener('click',start);
+  document.getElementById('share').addEventListener('click',function(){
+    var url=location.origin+location.pathname+'?lang='+lang,text=t.shareText+(st.score||0);
+    if(navigator.share){navigator.share({title:'MOKA',text:text,url:url}).catch(function(){});return}
+    (navigator.clipboard?navigator.clipboard.writeText(text+' '+url):Promise.reject()).then(function(){toast.textContent=t.copied},function(){toast.textContent=text+' '+url});
+  });
+  applyLang(lang);
+})();
+</script>
+</body>
+</html>

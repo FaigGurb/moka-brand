@@ -13,6 +13,10 @@ import { Experience, FinalCta } from "@/components/sections/Experience";
 import { ScrollRefresh } from "@/components/ScrollRefresh";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { BeanField } from "@/components/beans/BeanField";
+import { Preloader } from "@/components/fx/Preloader";
+import { Cursor } from "@/components/fx/Cursor";
+import { ScrollLine } from "@/components/fx/ScrollLine";
+import { Marquee } from "@/components/fx/Marquee";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
 
@@ -36,6 +40,7 @@ export function Site({ locale }: { locale: Locale }) {
         <BrewGuide />
         <Tiers />
         <Store />
+        <Marquee />
         <Apps />
         <Experience />
         <FinalCta />
@@ -44,6 +49,10 @@ export function Site({ locale }: { locale: Locale }) {
       <ScrollRefresh />
       <SmoothScroll />
       <BeanField />
+      <ScrollLine />
+      <Cursor />
+      <div className="grain" aria-hidden="true" />
+      <Preloader />
     </LocaleProvider>
   );
 }

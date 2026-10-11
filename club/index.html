@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MOKA Club</title>
+<meta name="description" content="MOKA Club konsepti: oyna, AR-ı sına, xal topla, endirim kodu qazan.">
+<meta name="theme-color" content="#1B1714">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat:wght@500&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../ar/shared/ui.css">
+<style>
+  body{min-height:100svh}
+  .wrap{max-width:1100px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(40px + env(safe-area-inset-bottom,0px))}
+  .bar{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .hero{display:grid;gap:28px;margin:40px 0 36px;align-items:center}
+  @media(min-width:820px){.hero{grid-template-columns:1.3fr 1fr}}
+  .hero h1{font-size:clamp(34px,7vw,64px);line-height:1.04}
+  .hero p{margin:0;color:var(--muted);line-height:1.6;max-width:54ch;font-size:17px}
+  .wallet{border:1.5px solid rgba(255,226,166,.4);padding:22px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;background:linear-gradient(135deg,rgba(255,226,166,.08),transparent 60%)}
+  .wallet .pts{font-family:var(--display);font-size:64px;line-height:1;color:var(--glow);font-variant-numeric:tabular-nums}
+  .wallet small{display:block;color:var(--muted);font-size:13px;line-height:1.45;margin-top:6px}
+  .cup{width:92px;height:auto}
+  h2.sec{font-size:clamp(26px,4vw,36px);margin:44px 0 16px}
+  .rewards{display:grid;gap:12px}
+  @media(min-width:760px){.rewards{grid-template-columns:repeat(3,1fr)}}
+  .rw{border:1.5px solid rgba(245,241,234,.15);padding:18px;display:flex;flex-direction:column;gap:10px}
+  .rw .cost{font-family:var(--display);font-size:36px;line-height:1}
+  .rw .cost span{font-size:14px;font-family:Mulish,sans-serif;font-weight:700;color:var(--muted);margin-left:6px}
+  .rw h3{margin:0;font-size:18px}
+  .rw p{margin:0;color:var(--muted);font-size:14px;line-height:1.5;flex:1}
+  .rw .btn[disabled]{opacity:.35;cursor:not-allowed}
+  .rw .need{font-size:12px;color:var(--muted)}
+  .pass{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(min-width:760px){.pass{grid-template-columns:repeat(6,1fr)}}
+  .st{aspect-ratio:1;border:1.5px dashed rgba(245,241,234,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:8px;text-decoration:none;font-size:12px;font-weight:700;line-height:1.2;position:relative}
+  .st .ic{font-family:var(--display);font-size:34px;line-height:1;color:rgba(245,241,234,.35)}
+  .st.on{border-style:solid;border-color:var(--glow);background:rgba(255,226,166,.08)}
+  .st.on .ic{color:var(--glow)}
+  .st.on::after{content:"✓";position:absolute;top:6px;right:8px;color:var(--glow);font-size:14px}
+  .passbar{margin-top:12px;font-size:14px;color:var(--muted)}
+  .how{display:grid;gap:10px;color:#D6D2CB;line-height:1.55;padding-left:18px;margin:0}
+  .codes{display:grid;gap:10px}
+  .code{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1.5px solid rgba(245,241,234,.15);padding:12px 14px;font-size:14px}
+  .code b{font-family:ui-monospace,Menlo,monospace;letter-spacing:.08em;font-size:16px}
+  .code button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:transparent;color:var(--paper);border:1.5px solid rgba(245,241,234,.35);min-height:40px;padding:0 12px;cursor:pointer}
+  .log{list-style:none;padding:0;margin:0;font-size:14px}
+  .log li{display:flex;justify-content:space-between;border-bottom:1px solid #3A3530;padding:8px 0;color:#D6D2CB}
+  .log li b{font-variant-numeric:tabular-nums}
+  .note{margin-top:36px;color:var(--muted);font-size:13px;line-height:1.6;border-top:1.5px solid rgba(245,241,234,.15);padding-top:18px;display:grid;gap:10px}
+  .linkbtn{font:inherit;font-size:13px;background:none;border:0;color:var(--oak);text-decoration:underline;cursor:pointer;padding:0;justify-self:start}
+  dialog{border:0;padding:0;background:var(--paper);color:var(--esp);max-width:min(420px,92vw);width:100%}
+  dialog::backdrop{background:rgba(27,23,20,.85)}
+  .tk{display:flex;flex-direction:column;gap:14px;padding:22px;text-align:center}
+  .tk .line{height:4px;background:var(--esp)}
+  .tk h3{margin:0;font-family:var(--display);font-weight:500;font-size:28px}
+  .tk .qr{display:flex;justify-content:center}
+  .tk .qr svg,.tk .qr img{width:190px;height:190px}
+  .tk .cd{font-family:ui-monospace,Menlo,monospace;font-size:22px;letter-spacing:.1em;font-weight:700}
+  .tk small{color:#5E5852;line-height:1.5}
+  .tk .btn{background:var(--esp);color:var(--paper)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <a class="back" data-home href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
+    <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+  </div>
+
+  <section class="hero">
+    <div style="display:grid;gap:16px">
+      <p class="eyebrow">MOKA Club</p>
+      <h1 data-t="title"></h1>
+      <p data-t="lead"></p>
+    </div>
+    <div class="wallet" aria-live="polite">
+      <svg class="cup" viewBox="0 0 100 130" aria-hidden="true">
+        <defs><clipPath id="cupclip"><path d="M8 8 H92 L80 124 H20 Z"/></clipPath></defs>
+        <path d="M8 8 H92 L80 124 H20 Z" fill="rgba(245,241,234,.06)"/>
+        <rect id="fill" x="0" y="124" width="100" height="0" fill="#5E3B26" clip-path="url(#cupclip)"/>
+        <path d="M8 8 H92 L80 124 H20 Z" fill="none" stroke="#F5F1EA" stroke-width="3"/>
+        <rect x="2" y="44" width="96" height="3" fill="#FFE2A6"/>
+      </svg>
+      <div>
+        <span class="pts" id="pts">0</span>
+        <small id="next"></small>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="sec" data-t="rewardsT"></h2>
+  <div class="rewards" id="rewards"></div>
+
+  <h2 class="sec" data-t="passT"></h2>
+  <div class="pass" id="pass"></div>
+  <p class="passbar" id="passbar"></p>
+
+  <h2 class="sec" data-t="codesT"></h2>
+  <div class="codes" id="codes"></div>
+
+  <h2 class="sec" data-t="howT"></h2>
+  <ol class="how">
+    <li data-t="how1"></li>
+    <li data-t="how2"></li>
+    <li data-t="how3"></li>
+    <li data-t="how4"></li>
+  </ol>
+
+  <h2 class="sec" data-t="logT"></h2>
+  <ul class="log" id="log"></ul>
+
+  <div class="note">
+    <span data-t="note"></span>
+    <span data-t="biz"></span>
+    <button type="button" class="linkbtn" id="reset" data-t="reset"></button>
+  </div>
+</div>
+
+<dialog id="ticket" aria-labelledby="tkT">
+  <div class="tk">
+    <span class="eyebrow" style="color:#94552F">MOKA Club</span>
+    <h3 id="tkT"></h3>
+    <div class="line"></div>
+    <div class="qr" id="tkQr"></div>
+    <div class="cd" id="tkCode"></div>
+    <small id="tkExp"></small>
+    <small data-t="tkNote"></small>
+    <button class="btn" type="button" id="tkClose" data-t="close"></button>
+  </div>
+</dialog>
+
+<script src="./vendor/qrcode.js"></script>
+<script src="./club.js"></script>
+<script type="module">
+import { initLang } from '../ar/shared/lang.js';
+const T = {
+  az: { back: 'Sayta qayıt', title: 'Xal topla, endirim qazan', lead: 'Oyunlar və AR təcrübələri xal verir. Stəkan imza xəttinə qədər dolanda növbəti hədiyyə açılır. Konsept: real proqramda xallar MOKA hesabında və kassada saxlanılardı.',
+    pts: 'xal', toNext: 'növbəti hədiyyəyə {n} xal qaldı', allOpen: 'Bütün hədiyyələr açıqdır!',
+    rewardsT: 'Hədiyyələr', rewards: { size: ['Ölçü artımı', 'S qiymətinə M stəkan.'], ten: ['10% endirim', 'İstənilən içkiyə və ya paketə bir dəfəlik.'], filter: ['Pulsuz filtr qəhvə', 'V60 və ya Chemex — barista seçsin.'] },
+    claim: 'Kodu al', need: '{n} xal lazımdır',
+    passT: 'Dəmləmə pasportu', stamps: ['Xətti tut', 'Dən yağışı', 'Hərf yaddaşı', 'Kartı skan et', 'Masana qoy', 'Qəhvə selfisi'],
+    passDone: 'Pasport tamamdır: +100 bonus xal alındı.', passLeft: '{n}/6 möhür. Hamısını topla: +100 bonus xal.',
+    codesT: 'Kodlarım', noCodes: 'Hələ kod yoxdur. Xal topla və hədiyyə seç.', show: 'Göstər', till: 'son tarix',
+    howT: 'Necə qazanılır?', how1: 'Oyunlar: nəticə xala çevrilir. Gündə hər oyundan ən çox 100 xal.', how2: 'AR: kartı skan et, stəkanı masana qoy və ya selfi çək — hər biri +25 xal.', how3: 'Pasport: 6 təcrübənin hamısını sına, +100 bonus.', how4: 'Hədiyyə seç: kod 7 gün etibarlıdır, kassada QR-ı göstər.',
+    logT: 'Son hərəkətlər', noLog: 'Hələ heç nə yoxdur.', src: { line: 'Xətti tut', rain: 'Dən yağışı', memory: 'Hərf yaddaşı', arCard: 'AR · kart', arTable: 'AR · masa', arSelfie: 'AR · selfi', passport: 'Pasport bonusu', claim: 'Hədiyyə' },
+    note: 'Konsept demo: xallar yalnız bu brauzerdə saxlanılır və kodlar real endirim vermir.', biz: 'Biznes ideyası: oyun və AR müştərini brendlə tanış edir, xal isə onu kafeyə qaytarır. Real tətbiqdə xallar hesabla bağlanar, kodlar kassada yoxlanar və saxtakarlığa qarşı limitlər qoyular.',
+    reset: 'Məlumatları sil', resetQ: 'Bütün xallar və kodlar silinsin?', tkT: '', close: 'Bağla', tkNote: 'Kassada bu QR-ı göstər. Konsept demo — real endirim deyil.', exp: 'Son tarix: {d}' },
+  en: { back: 'Back to site', title: 'Collect points, earn rewards', lead: 'Games and AR experiences earn points. When the cup fills to the signature line, the next reward unlocks. Concept: in a real programme points would live in a MOKA account and at the till.',
+    pts: 'points', toNext: '{n} points to the next reward', allOpen: 'All rewards unlocked!',
+    rewardsT: 'Rewards', rewards: { size: ['Size up', 'An M cup for the price of an S.'], ten: ['10% off', 'One drink or one bag, once.'], filter: ['Free filter coffee', 'V60 or Chemex — barista’s choice.'] },
+    claim: 'Get code', need: '{n} points needed',
+    passT: 'Brew passport', stamps: ['Hit the line', 'Bean rain', 'Letter memory', 'Scan the card', 'On your table', 'Coffee selfie'],
+    passDone: 'Passport complete: +100 bonus points added.', passLeft: '{n}/6 stamps. Collect them all: +100 bonus points.',
+    codesT: 'My codes', noCodes: 'No codes yet. Collect points and pick a reward.', show: 'Show', till: 'valid till',
+    howT: 'How to earn', how1: 'Games: your score turns into points. Up to 100 points per game per day.', how2: 'AR: scan the card, place the cup on your table or take a selfie — +25 points each.', how3: 'Passport: try all 6 experiences, +100 bonus.', how4: 'Pick a reward: the code is valid for 7 days, show the QR at the till.',
+    logT: 'Recent activity', noLog: 'Nothing yet.', src: { line: 'Hit the line', rain: 'Bean rain', memory: 'Letter memory', arCard: 'AR · card', arTable: 'AR · table', arSelfie: 'AR · selfie', passport: 'Passport bonus', claim: 'Reward' },
+    note: 'Concept demo: points are stored only in this browser and the codes do not give real discounts.', biz: 'Business idea: games and AR introduce people to the brand, points bring them back to the café. In a real app points would be tied to an account, codes checked at the till and limits set against abuse.',
+    reset: 'Delete my data', resetQ: 'Delete all points and codes?', tkT: '', close: 'Close', tkNote: 'Show this QR at the till. Concept demo — not a real discount.', exp: 'Valid till: {d}' },
+  ru: { back: 'На сайт', title: 'Копите баллы, получайте подарки', lead: 'Игры и AR приносят баллы. Когда стакан наполняется до фирменной линии, открывается следующий подарок. Концепт: в реальной программе баллы хранились бы в аккаунте MOKA и на кассе.',
+    pts: 'баллов', toNext: 'до следующего подарка {n} баллов', allOpen: 'Все подарки открыты!',
+    rewardsT: 'Подарки', rewards: { size: ['Размер больше', 'Стакан M по цене S.'], ten: ['Скидка 10%', 'На один напиток или пачку, один раз.'], filter: ['Фильтр-кофе бесплатно', 'V60 или Chemex — на выбор бариста.'] },
+    claim: 'Получить код', need: 'Нужно {n} баллов',
+    passT: 'Паспорт заваривания', stamps: ['Поймай линию', 'Зерновой дождь', 'Память букв', 'Скан карточки', 'На вашем столе', 'Кофейное селфи'],
+    passDone: 'Паспорт заполнен: +100 бонусных баллов начислено.', passLeft: '{n}/6 отметок. Соберите все: +100 бонусных баллов.',
+    codesT: 'Мои коды', noCodes: 'Кодов пока нет. Копите баллы и выберите подарок.', show: 'Показать', till: 'до',
+    howT: 'Как получить баллы', how1: 'Игры: результат превращается в баллы. До 100 баллов за игру в день.', how2: 'AR: отсканируйте карточку, поставьте стакан на стол или сделайте селфи — по +25 баллов.', how3: 'Паспорт: попробуйте все 6 сценариев, +100 бонус.', how4: 'Выберите подарок: код действует 7 дней, покажите QR на кассе.',
+    logT: 'Последние действия', noLog: 'Пока ничего.', src: { line: 'Поймай линию', rain: 'Зерновой дождь', memory: 'Память букв', arCard: 'AR · карточка', arTable: 'AR · стол', arSelfie: 'AR · селфи', passport: 'Бонус паспорта', claim: 'Подарок' },
+    note: 'Концепт-демо: баллы хранятся только в этом браузере, коды не дают реальной скидки.', biz: 'Бизнес-идея: игры и AR знакомят с брендом, баллы возвращают в кофейню. В реальном приложении баллы привязаны к аккаунту, коды проверяются на кассе, есть лимиты против злоупотреблений.',
+    reset: 'Удалить мои данные', resetQ: 'Удалить все баллы и коды?', tkT: '', close: 'Закрыть', tkNote: 'Покажите этот QR на кассе. Концепт-демо — не настоящая скидка.', exp: 'Действует до: {d}' },
+};
+const SRC = ['line', 'rain', 'memory', 'arCard', 'arTable', 'arSelfie'];
+const LINKS = ['../game/line/', '../game/rain/', '../game/memory/', '../ar/card/', '../ar/table/', '../ar/selfie/'];
+const ICON = ['—', '•', 'M', '▢', '◆', '☺'];
+let t = T.az, lang = 'az';
+const $ = (id) => document.getElementById(id);
+const fmt = (s, n) => s.replace('{n}', n);
+const dateStr = (ms) => new Date(ms).toLocaleDateString(lang === 'az' ? 'az-Latn-AZ' : lang === 'ru' ? 'ru-RU' : 'en-GB');
+
+function qrSvg(text) {
+  const q = qrcode(0, 'M'); q.addData(text); q.make();
+  return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+}
+function render() {
+  const s = MokaClub.state();
+  $('pts').textContent = s.points;
+  const next = MokaClub.REWARDS.find((r) => r.cost > s.points);
+  // the cup fills to the line (y=44 of 8..124) as you approach the next reward
+  const prev = [...MokaClub.REWARDS].reverse().find((r) => r.cost <= s.points);
+  const from = prev ? prev.cost : 0, to = next ? next.cost : from || 1;
+  const k = next ? Math.min(1, (s.points - from) / (to - from)) : 1;
+  const top = 124 - (124 - 46) * k;
+  $('fill').setAttribute('y', top); $('fill').setAttribute('height', 124 - top);
+  $('next').textContent = next ? fmt(t.toNext, next.cost - s.points) : t.allOpen;
+
+  const rw = $('rewards'); rw.innerHTML = '';
+  MokaClub.REWARDS.forEach((r) => {
+    const d = document.createElement('div'); d.className = 'rw';
+    const [name, desc] = t.rewards[r.id];
+    d.innerHTML = `<div class="cost">${r.cost}<span>${t.pts}</span></div><h3></h3><p></p>`;
+    d.querySelector('h3').textContent = name; d.querySelector('p').textContent = desc;
+    const b = document.createElement('button'); b.className = 'btn'; b.type = 'button'; b.textContent = t.claim;
+    if (s.points < r.cost) { b.disabled = true; const n = document.createElement('span'); n.className = 'need'; n.textContent = fmt(t.need, r.cost - s.points); d.append(b, n); }
+    else d.append(b);
+    b.addEventListener('click', () => { const c = MokaClub.claim(r.id); if (c) { render(); showTicket(c); } });
+    rw.appendChild(d);
+  });
+
+  const ps = $('pass'); ps.innerHTML = '';
+  let n = 0;
+  SRC.forEach((k, i) => {
+    const a = document.createElement('a'); a.className = 'st' + (s.stamps[k] ? ' on' : ''); a.href = LINKS[i] + (lang === 'az' ? '' : '?lang=' + lang);
+    a.innerHTML = `<span class="ic" aria-hidden="true">${ICON[i]}</span><span></span>`; a.lastChild.textContent = t.stamps[i];
+    if (s.stamps[k]) n++;
+    ps.appendChild(a);
+  });
+  $('passbar').textContent = s.passport ? t.passDone : fmt(t.passLeft, n);
+
+  const cs = $('codes'); cs.innerHTML = '';
+  const active = s.codes.filter((c) => c.exp > Date.now());
+  if (!active.length) { const p = document.createElement('p'); p.style.color = 'var(--muted)'; p.style.margin = '0'; p.textContent = t.noCodes; cs.appendChild(p); }
+  active.forEach((c) => {
+    const d = document.createElement('div'); d.className = 'code';
+    d.innerHTML = '<span><b></b><br><small></small></span>';
+    d.querySelector('b').textContent = c.code;
+    d.querySelector('small').textContent = t.rewards[c.id][0] + ' · ' + t.till + ' ' + dateStr(c.exp);
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = t.show; b.addEventListener('click', () => showTicket(c));
+    d.appendChild(b); cs.appendChild(d);
+  });
+
+  const lg = $('log'); lg.innerHTML = '';
+  if (!s.log.length) { const li = document.createElement('li'); li.textContent = t.noLog; lg.appendChild(li); }
+  s.log.slice(0, 10).forEach((e) => {
+    const li = document.createElement('li');
+    const key = e.src.startsWith('claim') ? 'claim' : e.src;
+    li.innerHTML = '<span></span><b></b>';
+    li.firstChild.textContent = (t.src[key] || e.src) + ' · ' + dateStr(e.t);
+    li.lastChild.textContent = (e.pts > 0 ? '+' : '') + e.pts;
+    lg.appendChild(li);
+  });
+}
+function showTicket(c) {
+  $('tkT').textContent = t.rewards[c.id][0];
+  $('tkQr').innerHTML = qrSvg(c.code);
+  $('tkCode').textContent = c.code;
+  $('tkExp').textContent = fmt(t.exp.replace('{d}', dateStr(c.exp)), '');
+  $('ticket').showModal();
+}
+$('tkClose').addEventListener('click', () => $('ticket').close());
+$('reset').addEventListener('click', () => { if (confirm(t.resetQ)) { MokaClub.reset(); render(); } });
+window.addEventListener('mokaclub', render);
+initLang(T, { home: '../', onChange: (tt, l) => { t = tt; lang = l; render(); } });
+</script>
+</body>
+</html>

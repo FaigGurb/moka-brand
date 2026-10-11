@@ -63,7 +63,7 @@ function CupConfigurator() {
         <h3 className="text-2xl font-medium md:text-3xl">{c.title}</h3>
         <span className="text-[11px] font-bold tracking-[0.14em] text-muted uppercase sm:text-[12px]">↔ {c.drag}</span>
       </div>
-      <div ref={box} className="relative mx-auto my-4 aspect-square w-full max-w-[460px]">
+      <div ref={box} data-cursor="↔" className="relative mx-auto my-4 aspect-square w-full max-w-[460px]">
         {webgl === true ? (
           <CupScene sleeve={sl.hex} ink={sl.ink} line={sl.line} size={size} reducedMotion={reduced} touch={touch} active={active} />
         ) : (
@@ -212,6 +212,7 @@ function Profile() {
             <button
               type="button"
               onClick={() => show(p.i)}
+              data-cursor="+"
               className="group relative block aspect-[3/4] w-full overflow-hidden bg-paper-2"
               aria-label={`${ig.open}: ${ig.posts[p.i]}`}
             >

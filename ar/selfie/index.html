@@ -11,6 +11,9 @@
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
 <style>
   html,body{height:100%;overflow:hidden}
+  /* MindAR puts the camera <video> at z-index -2: the page itself must be see-through while the camera runs */
+  html.running{background:#000}
+  html.running body{background:transparent}
   a-scene{position:fixed;inset:0}
   .top{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top,0px)) 16px 12px;pointer-events:none}
   .top>*{pointer-events:auto}
@@ -87,42 +90,50 @@
   <a-camera active="false" position="0 0 0"></a-camera>
   <a-light type="ambient" intensity="1"></a-light>
   <a-light type="directional" intensity="1.2" position="0 1 1"></a-light>
+  <!-- MindAR toggles each anchor's visibility itself, so filters are switched on inner wrappers. -->
   <!-- 0: foam moustache (upper lip) -->
-  <a-entity class="fx fx0" mindar-face-target="anchorIndex: 0">
-    <a-plane id="stache" position="0 0.13 0.06" width="0.85" height="0.32" material="transparent: true; shader: flat; alphaTest: 0.05"></a-plane>
+  <a-entity mindar-face-target="anchorIndex: 0">
+    <a-entity class="fx fx0">
+      <a-plane id="stache" position="0 0.13 0.06" width="0.85" height="0.32" material="transparent: true; shader: flat; alphaTest: 0.05"></a-plane>
+    </a-entity>
   </a-entity>
   <!-- 1: the signature line across the eyes + wordmark above the head -->
-  <a-entity class="fx fx1" mindar-face-target="anchorIndex: 168" visible="false">
-    <a-plane id="lineGlow" position="0 0 0.08" width="2.6" height="0.34" material="transparent: true; shader: flat; blending: additive; depthWrite: false"></a-plane>
-    <a-plane position="0 0 0.1" width="2.3" height="0.035" material="color: #FFE2A6; shader: flat"
-      animation="property: scale; from: 0.6 1 1; to: 1 1 1; dir: alternate; loop: true; dur: 1400; easing: easeInOutSine"></a-plane>
+  <a-entity mindar-face-target="anchorIndex: 168">
+    <a-entity class="fx fx1" visible="false">
+      <a-plane id="lineGlow" position="0 0 0.08" width="2.6" height="0.34" material="transparent: true; shader: flat; blending: additive; depthWrite: false"></a-plane>
+      <a-plane position="0 0 0.1" width="2.3" height="0.035" material="color: #FFE2A6; shader: flat"
+        animation="property: scale; from: 0.6 1 1; to: 1 1 1; dir: alternate; loop: true; dur: 1400; easing: easeInOutSine"></a-plane>
+    </a-entity>
   </a-entity>
-  <a-entity class="fx fx1" mindar-face-target="anchorIndex: 10" visible="false">
-    <a-plane id="wmPlane" position="0 0.42 -0.1" width="1.1" height="0.25" material="transparent: true; shader: flat"></a-plane>
-  </a-entity>
-  <!-- 2: crown of the four letters, orbiting -->
-  <a-entity class="fx fx2" mindar-face-target="anchorIndex: 10" visible="false">
-    <a-entity id="crown" position="0 0.55 -0.45" animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 9000; easing: linear"></a-entity>
+  <a-entity mindar-face-target="anchorIndex: 10">
+    <a-entity class="fx fx1" visible="false">
+      <a-plane id="wmPlane" position="0 0.42 -0.1" width="1.1" height="0.25" material="transparent: true; shader: flat"></a-plane>
+    </a-entity>
+    <!-- 2: crown of the four letters, orbiting -->
+    <a-entity class="fx fx2" visible="false">
+      <a-entity id="crown" position="0 0.55 -0.45" animation="property: rotation; from: 0 0 0; to: 0 360 0; loop: true; dur: 9000; easing: linear"></a-entity>
+    </a-entity>
   </a-entity>
 </a-scene>
 
+<script src="../../club/club.js"></script>
 <script type="module">
 import { initLang, WORDMARK_SVG } from '../shared/lang.js';
 import { drawWordmark, drawLetter, DAY } from '../shared/moka-art.js';
 
 document.getElementById('wm').innerHTML = WORDMARK_SVG;
 const T = {
-  az: { back: 'AR menyusu', eyebrow: 'AR · Ön kamera', title: 'Qəhvə selfisi', lead: 'Üç MOKA filtri: köpük bığ, üzündən keçən imza xətti və başının üstündə fırlanan dörd hərf. Şəkil çək, birbaşa paylaş.',
+  az: { back: 'AR menyusu', clubPts: 'xal', eyebrow: 'AR · Ön kamera', title: 'Qəhvə selfisi', lead: 'Üç MOKA filtri: köpük bığ, üzündən keçən imza xətti və başının üstündə fırlanan dörd hərf. Şəkil çək, birbaşa paylaş.',
     start: 'Kameranı aç', qr: 'Ön kameralı telefonda daha yaxşıdır: QR-ı skan et.', privacy: 'Görüntü cihazından çıxmır: hər şey brauzerdə işlənir, heç nə yüklənmir.',
     searching: 'Üz axtarılır…', found: 'Hazır', camErr: 'Kamera açılmadı', tip: 'Üzünü kadrın ortasına gətir və işıqlı yerdə dur.', camTip: 'Brauzer parametrlərində bu sayta kamera icazəsi ver və səhifəni yenilə.',
     f: ['Köpük', 'Xətt', 'Tac'], shoot: 'Şəkil çək', resultT: 'Bu fincan sənindir', share: 'Paylaş', save: 'Yadda saxla', again: 'Yenidən çək',
     frame: '4 hərf · 4 dəmləmə · 1 xətt', tag: '#mokacoffeebaku' },
-  en: { back: 'AR menu', eyebrow: 'AR · Front camera', title: 'Coffee selfie', lead: 'Three MOKA filters: a foam moustache, the signature line across your face and four letters circling your head. Take a photo and share it right away.',
+  en: { back: 'AR menu', clubPts: 'points', eyebrow: 'AR · Front camera', title: 'Coffee selfie', lead: 'Three MOKA filters: a foam moustache, the signature line across your face and four letters circling your head. Take a photo and share it right away.',
     start: 'Open camera', qr: 'Best on a phone with a front camera: scan the QR code.', privacy: 'The image never leaves your device: everything runs in the browser, nothing is uploaded.',
     searching: 'Looking for a face…', found: 'Ready', camErr: 'Camera unavailable', tip: 'Bring your face to the centre and stay in good light.', camTip: 'Allow camera access for this site in your browser settings, then reload.',
     f: ['Foam', 'Line', 'Crown'], shoot: 'Take photo', resultT: 'This cup is yours', share: 'Share', save: 'Save', again: 'Take another',
     frame: '4 letters · 4 brews · 1 line', tag: '#mokacoffeebaku' },
-  ru: { back: 'Меню AR', eyebrow: 'AR · Фронтальная камера', title: 'Кофейное селфи', lead: 'Три фильтра MOKA: усы из пенки, фирменная линия через лицо и четыре буквы над головой. Сделайте фото и сразу поделитесь.',
+  ru: { back: 'Меню AR', clubPts: 'баллов', eyebrow: 'AR · Фронтальная камера', title: 'Кофейное селфи', lead: 'Три фильтра MOKA: усы из пенки, фирменная линия через лицо и четыре буквы над головой. Сделайте фото и сразу поделитесь.',
     start: 'Открыть камеру', qr: 'Лучше на телефоне с фронтальной камерой: отсканируйте QR.', privacy: 'Изображение не покидает устройство: всё работает в браузере, ничего не загружается.',
     searching: 'Ищу лицо…', found: 'Готово', camErr: 'Камера недоступна', tip: 'Держите лицо в центре кадра и при хорошем свете.', camTip: 'Разрешите сайту доступ к камере в настройках браузера и обновите страницу.',
     f: ['Пенка', 'Линия', 'Корона'], shoot: 'Сделать фото', resultT: 'Эта чашка — ваша', share: 'Поделиться', save: 'Сохранить', again: 'Ещё раз',
@@ -214,7 +225,7 @@ function renderFilters() {
 }
 function setFilter(i) {
   filter = i;
-  document.querySelectorAll('.fx').forEach((e) => e.setAttribute('visible', e.classList.contains('fx' + i)));
+  document.querySelectorAll('.fx').forEach((e) => { e.setAttribute('visible', e.classList.contains('fx' + i)); });
   renderFilters();
   try { navigator.vibrate && navigator.vibrate(10); } catch (e) {}
 }
@@ -224,6 +235,7 @@ const scene = document.getElementById('scene');
 let tipTimer;
 document.getElementById('start').addEventListener('click', () => {
   document.getElementById('intro').classList.add('hidden');
+  document.documentElement.classList.add('running');
   setStatus('searching');
   const go = () => { scene.systems['mindar-face-system'].start(); tipTimer = setTimeout(() => { if (state === 'searching') { tip.textContent = tt.tip; tip.classList.add('show'); } }, 7000); };
   if (scene.hasLoaded) go(); else scene.addEventListener('loaded', go);
@@ -276,6 +288,13 @@ document.getElementById('shutter').addEventListener('click', async () => {
   document.getElementById('shot').alt = tt.resultT;
   document.getElementById('save').href = url;
   document.getElementById('result').classList.remove('hidden');
+  try {
+    if (window.MokaClub && !sessionStorage.getItem('moka-ar-selfie')) {
+      sessionStorage.setItem('moka-ar-selfie', '1');
+      const r = MokaClub.award('arSelfie', 25);
+      if (r.added) MokaClub.toast(`+${r.added} ${tt.clubPts} · MOKA Club`, '../../club/' + (document.documentElement.lang === 'az' ? '' : '?lang=' + document.documentElement.lang));
+    }
+  } catch (e) {}
   const file = new File([lastBlob], 'moka-selfie.jpg', { type: 'image/jpeg' });
   document.getElementById('share').classList.toggle('hidden', !(navigator.canShare && navigator.canShare({ files: [file] })));
 });

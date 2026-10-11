@@ -32,6 +32,8 @@
   .xp.c3{background:linear-gradient(160deg,rgba(168,100,58,.2),transparent 60%)}
   .how{margin-top:40px;display:grid;gap:12px;color:var(--muted);font-size:14px;line-height:1.6;border-top:1.5px solid rgba(245,241,234,.15);padding-top:20px}
   .how b{color:var(--paper)}
+  .clubline{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;border:1.5px solid rgba(255,226,166,.4);padding:14px 18px;text-decoration:none;color:var(--paper);font-size:15px}
+  .clubline b{font-family:var(--display);font-size:28px;color:var(--glow)}
   .qr{display:flex;gap:16px;align-items:center}
   .qr img{width:96px;height:96px;background:#fff;padding:6px}
   @media(max-width:759px){.qr{display:none}}
@@ -75,12 +77,14 @@
       <span class="go"><span data-t="open"></span> →</span>
     </a>
   </div>
+  <a class="clubline" data-hub="../club/" href="../club/"><span class="eyebrow" style="margin:0">MOKA Club</span><span data-t="club"></span><b id="pts">0</b></a>
   <div class="how">
     <p><b data-t="howT"></b> <span data-t="how"></span></p>
     <div class="qr"><img src="./qr.png" alt="" id="qr" width="96" height="96"><span data-t="qr"></span></div>
     <small data-t="note"></small>
   </div>
 </div>
+<script src="../club/club.js"></script>
 <script type="module">
 import { initLang, WORDMARK_SVG } from './shared/lang.js';
 document.getElementById('wm').innerHTML = WORDMARK_SVG;
@@ -89,22 +93,23 @@ const T = {
     c1t: 'Kartı skan et', c1p: 'Kameranı AR kartına və ya stəkan qoluna tut: dörd hərf kartdan qalxır, Chemex peyda olur və qəhvə imza xəttinə qədər dolur.',
     c2t: 'Masana qoy', c2p: 'Stəkanı, Chemex-i, paketi və 3D loqonu real ölçüdə masana yerləşdir. Qolun rəngini günün saatına görə dəyiş.',
     c3t: 'Qəhvə selfisi', c3p: 'Ön kamera ilə üç MOKA filtri: köpük bığ, imza xətti və hərflərdən tac. Şəkil çək və paylaş.',
-    open: 'Aç', new: 'Yeni', howT: 'Necə işləyir?', how: 'Kamera icazəsi lazımdır. iPhone-da Safari, Android-də Chrome tövsiyə olunur. "Masana qoy" iPhone-da Quick Look, Android-də Scene Viewer ilə açılır.',
+    open: 'Aç', new: 'Yeni', club: 'Hər AR təcrübəsi +25 xal verir. Xal topla, endirim kodu qazan →', howT: 'Necə işləyir?', how: 'Kamera icazəsi lazımdır. iPhone-da Safari, Android-də Chrome tövsiyə olunur. "Masana qoy" iPhone-da Quick Look, Android-də Scene Viewer ilə açılır.',
     qr: 'Kompüterdəsən? QR kodu telefonla skan et.', note: 'Konsept / test işi. MOKA Coffee Roastery-nin rəsmi tətbiqi deyil.' },
   en: { back: 'Back to site', eyebrow: 'WebAR · no app needed', title: 'MOKA in your phone camera', lead: 'Three experiences, all in the browser. Scan the card and watch the coffee pour, put the cup and the bag on your own table, or take a coffee selfie with a MOKA filter.',
     c1t: 'Scan the card', c1p: 'Point the camera at the AR card or the cup sleeve: four letters rise from the card, a Chemex appears and fills to the signature line.',
     c2t: 'On your table', c2p: 'Place the cup, the Chemex, the bag and the 3D logo on your table at real size. Change the sleeve colour by the time of day.',
     c3t: 'Coffee selfie', c3p: 'Three MOKA filters for the front camera: a foam moustache, the signature line and a crown of letters. Take a photo and share it.',
-    open: 'Open', new: 'New', howT: 'How it works:', how: 'Camera access is needed. Use Safari on iPhone and Chrome on Android. "On your table" opens in Quick Look on iPhone and Scene Viewer on Android.',
+    open: 'Open', new: 'New', club: 'Each AR experience earns +25 points. Collect points, earn a discount code →', howT: 'How it works:', how: 'Camera access is needed. Use Safari on iPhone and Chrome on Android. "On your table" opens in Quick Look on iPhone and Scene Viewer on Android.',
     qr: 'On a computer? Scan the QR code with your phone.', note: 'Concept / test project. Not an official MOKA Coffee Roastery app.' },
   ru: { back: 'На сайт', eyebrow: 'WebAR · без приложения', title: 'MOKA в камере телефона', lead: 'Три сценария, всё в браузере. Наведите камеру на карточку и смотрите, как наливается кофе, поставьте стакан и пачку на свой стол или сделайте кофейное селфи с фильтром MOKA.',
     c1t: 'Сканируйте карточку', c1p: 'Наведите камеру на AR-карточку или манжету стакана: четыре буквы поднимаются с карточки, появляется Chemex и наполняется до фирменной линии.',
     c2t: 'На вашем столе', c2p: 'Поставьте стакан, Chemex, пачку и 3D-логотип на стол в натуральную величину. Меняйте цвет манжеты по времени дня.',
     c3t: 'Кофейное селфи', c3p: 'Три фильтра MOKA для фронтальной камеры: усы из пенки, фирменная линия и корона из букв. Сделайте фото и поделитесь.',
-    open: 'Открыть', new: 'Новое', howT: 'Как это работает:', how: 'Нужен доступ к камере. На iPhone — Safari, на Android — Chrome. «На вашем столе» открывается в Quick Look на iPhone и в Scene Viewer на Android.',
+    open: 'Открыть', new: 'Новое', club: 'Каждый AR-сценарий даёт +25 баллов. Копите баллы, получайте код скидки →', howT: 'Как это работает:', how: 'Нужен доступ к камере. На iPhone — Safari, на Android — Chrome. «На вашем столе» открывается в Quick Look на iPhone и в Scene Viewer на Android.',
     qr: 'Вы за компьютером? Отсканируйте QR-код телефоном.', note: 'Концепт / тестовый проект. Не официальное приложение MOKA Coffee Roastery.' },
 };
 initLang(T, { home: '../' });
+if (window.MokaClub) document.getElementById('pts').textContent = MokaClub.state().points;
 </script>
 </body>
 </html>

@@ -11,6 +11,9 @@
   :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
   html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
   a-scene{position:fixed;inset:0}
+  /* the camera <video> sits at z-index -2: keep the page see-through while AR runs */
+  html.running{background:#000}
+  html.running body{background:transparent}
   .ui{position:fixed;left:0;right:0;z-index:10;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
   .ui.top{top:env(safe-area-inset-top,0px)}
   .ui > *{pointer-events:auto}
@@ -122,18 +125,19 @@
   </a-entity>
 </a-scene>
 
+<script src="../../club/club.js"></script>
 <script>
 (function(){
   var T={
     az:{back:'AR menyusu',site:'Sayt',title:'Stəkanı skan et, qəhvə tökülsün',s1:'Kameraya icazə ver.',s2a:'Telefonu stəkan qoluna və ya',s2b:'AR kartına',s2c:' tut.',s3:'Dörd hərf kartdan qalxır, Chemex peyda olur və qəhvə imza xəttinə qədər dolur.',start:'Kameranı aç',note:'Kartı başqa ekranda açıb ona da tuta bilərsən. Konsept / test işi.',
       searching:'Kart axtarılır…',found:'Tapıldı',camErr:'Kamera açılmadı',tip:'Kartı tam kadra sal, işıqlı yerdə saxla və telefonu 20–40 sm məsafədə tut.',camTip:'Brauzerin parametrlərində bu sayta kamera icazəsi ver və səhifəni yenilə.',
-      cupEb:'Bu fincanda',origin:'Kolumbiya',notes:'Orta qovurma · karamel · qırmızı alma (nümunə)',replay:'Yenidən tök'},
+      cupEb:'Bu fincanda',clubPts:'xal',origin:'Kolumbiya',notes:'Orta qovurma · karamel · qırmızı alma (nümunə)',replay:'Yenidən tök'},
     en:{back:'AR menu',site:'Site',title:'Scan the cup, watch the coffee pour',s1:'Allow camera access.',s2a:'Point your phone at the cup sleeve or the',s2b:'AR card',s2c:'.',s3:'Four letters rise from the card, a Chemex appears and fills to the signature line.',start:'Open camera',note:'You can open the card on another screen and point at it. Concept / test project.',
       searching:'Looking for the card…',found:'Found',camErr:'Camera unavailable',tip:'Fit the whole card in the frame, keep it well lit and hold the phone 20–40 cm away.',camTip:'Allow camera access for this site in your browser settings, then reload the page.',
-      cupEb:'In this cup',origin:'Colombia',notes:'Medium roast · caramel · red apple (sample)',replay:'Pour again'},
+      cupEb:'In this cup',clubPts:'points',origin:'Colombia',notes:'Medium roast · caramel · red apple (sample)',replay:'Pour again'},
     ru:{back:'Меню AR',site:'Сайт',title:'Наведите на стакан — кофе нальётся',s1:'Разрешите доступ к камере.',s2a:'Наведите телефон на рукав стакана или на',s2b:'AR-карточку',s2c:'.',s3:'С карточки поднимаются четыре буквы, появляется Chemex, и кофе наполняет его до фирменной линии.',start:'Открыть камеру',note:'Карточку можно открыть на другом экране и навести на неё. Концепт / тестовый проект.',
       searching:'Ищу карточку…',found:'Найдено',camErr:'Камера недоступна',tip:'Поместите карточку в кадр целиком, держите её на свету, телефон — на расстоянии 20–40 см.',camTip:'Разрешите сайту доступ к камере в настройках браузера и обновите страницу.',
-      cupEb:'В этой чашке',origin:'Колумбия',notes:'Средняя обжарка · карамель · красное яблоко (пример)',replay:'Налить ещё раз'}
+      cupEb:'В этой чашке',clubPts:'баллов',origin:'Колумбия',notes:'Средняя обжарка · карамель · красное яблоко (пример)',replay:'Налить ещё раз'}
   };
   var LANGS=['az','en','ru'];
   var q=new URLSearchParams(location.search).get('lang'),saved=null;
@@ -164,7 +168,7 @@
   function pour(){parts.forEach(function(p){p.emit('pour')})}
 
   document.getElementById('start').addEventListener('click',function(){
-    intro.classList.add('hidden');
+    intro.classList.add('hidden');document.documentElement.classList.add('running');
     var go=function(){scene.systems['mindar-image-system'].start();armTip()};
     if(scene.hasLoaded)go();else scene.addEventListener('loaded',go);
   });
@@ -174,6 +178,8 @@
     setStatus('found');hideTip();clearTimeout(tipTimer);
     card.classList.add('show');document.querySelectorAll('.lt').forEach(function(e){e.emit('show')});setTimeout(function(){chemex.emit('show');pour()},650);
     try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}
+    // MOKA Club: +25 the first time the card is found in this session
+    try{if(window.MokaClub&&!sessionStorage.getItem('moka-ar-card')){sessionStorage.setItem('moka-ar-card','1');var r=MokaClub.award('arCard',25);if(r.added)MokaClub.toast('+'+r.added+' '+t.clubPts+' · MOKA Club','../../club/'+(lang==='az'?'':'?lang='+lang))}}catch(e){}
   });
   target.addEventListener('targetLost',function(){
     setStatus('searching');card.classList.remove('show');chemex.emit('hide');document.querySelectorAll('.lt').forEach(function(e){e.emit('hide')});armTip();

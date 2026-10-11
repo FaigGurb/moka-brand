@@ -66,6 +66,7 @@
     <small style="color:var(--muted)" data-t="note"></small>
   </section>
 </main>
+<script src="../../club/club.js"></script>
 <script type="module">
 import { initLang } from '../shared/lang.js';
 import { paintSleeve, DAY } from '../shared/moka-art.js';
@@ -77,17 +78,17 @@ const MODELS = [
   { id: 'wordmark', orbit: '0deg 80deg auto' },
 ];
 const T = {
-  az: { back: 'AR menyusu', eyebrow: 'AR · Masana qoy', title: 'Real ölçüdə, öz masanda', lead: 'Modeli seç, barmaqla fırlat, sonra "Masana qoy" düyməsinə bas: kamera açılır və obyekt döşəməyə və ya masaya yerləşir.',
+  az: { back: 'AR menyusu', clubPts: 'xal', eyebrow: 'AR · Masana qoy', title: 'Real ölçüdə, öz masanda', lead: 'Modeli seç, barmaqla fırlat, sonra "Masana qoy" düyməsinə bas: kamera açılır və obyekt döşəməyə və ya masaya yerləşir.',
     ar: 'Masana qoy', sleeve: 'Qolun rəngi', hot: 'Xətt ölçünü göstərir', noar: 'Bu cihazda AR açılmadı. 3D modeli burada fırlada bilərsən; AR üçün telefonda Safari (iPhone) və ya Chrome (Android) ilə aç.',
     qr: 'AR üçün telefonla skan et.', note: 'Konsept / test işi. Paketdəki mənşə və dad notları yer tutucudur.',
     names: ['Stəkan', 'Chemex', 'Paket', 'Loqo'],
     desc: ['Götür stəkanı, M · 350 ml. Qoldakı xətt ölçünü göstərir; rəng günün saatına görə dəyişir.', 'Şüşə Chemex: qəhvə düz imza xəttinə qədər. K hərfi bu alətdir.', 'Əsas çeşid, orta qovurma. Rəngli hissənin hündürlüyü qovurma səviyyəsidir.', 'Dörd hərf, bir xətt: masaüstü heykəl kimi 3D loqo, işıqlı imza xətti ilə.'] },
-  en: { back: 'AR menu', eyebrow: 'AR · On your table', title: 'Real size, on your own table', lead: 'Pick a model, spin it with your finger, then tap "Place on table": the camera opens and the object sits on your floor or desk.',
+  en: { back: 'AR menu', clubPts: 'points', eyebrow: 'AR · On your table', title: 'Real size, on your own table', lead: 'Pick a model, spin it with your finger, then tap "Place on table": the camera opens and the object sits on your floor or desk.',
     ar: 'Place on table', sleeve: 'Sleeve colour', hot: 'The line shows the size', noar: "AR didn't open on this device. You can still spin the 3D model here; for AR open the page in Safari (iPhone) or Chrome (Android).",
     qr: 'Scan with your phone for AR.', note: 'Concept / test project. Origin and tasting notes on the bag are placeholders.',
     names: ['Cup', 'Chemex', 'Bag', 'Logo'],
     desc: ['Takeaway cup, M · 350 ml. The line on the sleeve shows the size; the colour follows the time of day.', 'Glass Chemex: coffee right up to the signature line. The letter K is this brewer.', 'Core range, medium roast. The height of the coloured part is the roast level.', 'Four letters, one line: the 3D logo as a desk sculpture with a glowing signature line.'] },
-  ru: { back: 'Меню AR', eyebrow: 'AR · На вашем столе', title: 'В натуральную величину, на вашем столе', lead: 'Выберите модель, поверните пальцем и нажмите «Поставить на стол»: откроется камера, и предмет встанет на пол или стол.',
+  ru: { back: 'Меню AR', clubPts: 'баллов', eyebrow: 'AR · На вашем столе', title: 'В натуральную величину, на вашем столе', lead: 'Выберите модель, поверните пальцем и нажмите «Поставить на стол»: откроется камера, и предмет встанет на пол или стол.',
     ar: 'Поставить на стол', sleeve: 'Цвет манжеты', hot: 'Линия показывает размер', noar: 'AR не запустился на этом устройстве. 3D-модель можно вращать здесь; для AR откройте страницу в Safari (iPhone) или Chrome (Android).',
     qr: 'Отсканируйте телефоном для AR.', note: 'Концепт / тестовый проект. Происхождение и ноты на пачке — заглушки.',
     names: ['Стакан', 'Chemex', 'Пачка', 'Логотип'],
@@ -140,7 +141,20 @@ DAY.forEach((d, i) => {
   sw.appendChild(b);
 });
 mv.addEventListener('load', () => { if (current === 0 && sleeveIdx !== 0) applySleeve(); });
-mv.addEventListener('ar-status', (e) => { if (e.detail.status === 'failed') document.getElementById('noar').classList.remove('hidden'); });
+mv.addEventListener('ar-status', (e) => {
+  if (e.detail.status === 'failed') document.getElementById('noar').classList.remove('hidden');
+  if (e.detail.status === 'session-started') clubAward();
+});
+// Quick Look / Scene Viewer leave the page: award when the AR button is pressed there
+document.querySelector('.arbtn').addEventListener('click', () => setTimeout(clubAward, 400));
+function clubAward() {
+  try {
+    if (!window.MokaClub || sessionStorage.getItem('moka-ar-table')) return;
+    sessionStorage.setItem('moka-ar-table', '1');
+    const r = MokaClub.award('arTable', 25);
+    if (r.added) MokaClub.toast(`+${r.added} ${L.t.clubPts} · MOKA Club`, '../../club/' + (L.lang === 'az' ? '' : '?lang=' + L.lang));
+  } catch (e) {}
+}
 L = initLang(T, { home: '../../', onChange: () => renderTabs() });
 renderTabs();
 // default sleeve: the colour of the current time of day in Baku

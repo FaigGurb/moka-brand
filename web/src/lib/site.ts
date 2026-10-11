@@ -12,6 +12,10 @@ export function links(locale: Locale) {
     arSelfie: `${base}/ar/selfie/${q}`,
     arCard: `${base}/ar/target.png`,
     game: `${base}/game/${q}`,
+    gameLine: `${base}/game/line/${q}`,
+    gameRain: `${base}/game/rain/${q}`,
+    gameMemory: `${base}/game/memory/${q}`,
+    club: `${base}/club/${q}`,
     v1: `${base}/v1/`,
     repo: "https://github.com/FaigGurb/moka-brand",
   };

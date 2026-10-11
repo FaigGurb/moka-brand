@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dən yağışı — MOKA</title>
+<meta name="theme-color" content="#1B1714">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600&family=Montserrat:wght@500;600&family=Mulish:wght@400;700&display=swap">
+<link rel="stylesheet" href="../shared/game.css">
+<style>
+  .stage{transition:background-color 1.2s linear}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:#D6D2CB}
+  .legend span{display:inline-flex;align-items:center;gap:8px}
+  .legend i{display:inline-block;width:14px;height:20px;border-radius:50%}
+  .timebar{height:4px;background:rgba(245,241,234,.15);position:relative;margin-top:4px}
+  .timebar i{position:absolute;left:0;top:0;bottom:0;background:var(--glow);width:100%}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <a class="back" id="back" href="../"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="back"></span></a>
+    <div class="hud"><span><span data-t="time"></span> <b id="time">45</b></span><span><span data-t="score"></span> <b id="score">0</b></span></div>
+  </header>
+  <div class="timebar" aria-hidden="true"><i id="tbar"></i></div>
+  <div class="stage" id="stage">
+    <canvas id="c" role="img" aria-label=""></canvas>
+    <div class="msg" id="msg" aria-live="polite"></div>
+    <div class="panel" id="intro">
+      <div class="langs" role="group" aria-label="Language"><button type="button" data-lang="az">AZ</button><button type="button" data-lang="en">EN</button><button type="button" data-lang="ru">RU</button></div>
+      <h1 data-t="title"></h1>
+      <div class="line"></div>
+      <p data-t="rule1"></p>
+      <div class="legend">
+        <span><i style="background:#5E3B26"></i><span data-t="lRoast"></span></span>
+        <span><i style="background:#FFE2A6;box-shadow:0 0 10px #FFE2A6"></i><span data-t="lGold"></span></span>
+        <span><i style="background:#8C9A5B"></i><span data-t="lGreen"></span></span>
+      </div>
+      <p data-t="rule2"></p>
+      <button class="btn" id="go" type="button" data-t="start"></button>
+    </div>
+    <div class="panel hidden" id="end">
+      <p style="letter-spacing:.2em;font-weight:700;font-size:13px;text-transform:uppercase" data-t="result"></p>
+      <span class="big" id="total">0</span>
+      <p id="verdict"></p>
+      <div class="rows" id="rows"></div>
+      <p id="best"></p>
+      <a class="club" id="clubBox" href="../../club/"><span id="clubText"></span><span>Club →</span></a>
+      <div class="row">
+        <button class="btn" id="again" type="button" data-t="again"></button>
+        <button class="btn ghost" id="share" type="button" data-t="share"></button>
+      </div>
+      <a class="btn ghost" id="back2" href="../../" data-t="backLong"></a>
+      <p class="toast" id="toast" aria-live="polite"></p>
+    </div>
+  </div>
+  <p class="hint" data-t="hint"></p>
+</div>
+<script src="../../club/club.js"></script>
+<script>
+(function(){
+  var T={
+    az:{back:'Oyunlar',backLong:'MOKA saytına qayıt',time:'Vaxt',score:'Xal',title:'Dən yağışı',
+      rule1:'Bakıda bir gün, 45 saniyə: səhərdən gecəyə qədər dənlər yağır. Stəkanı barmaqla və ya siçanla sürüşdür, qovrulmuş dənləri tut.',
+      lRoast:'Qovrulmuş +10',lGold:'Qızıl dən +30',lGreen:'Yaşıl dən −15',
+      rule2:'Ardıcıl tutduqca vurğu artır (×2, ×3). Yaşıl dən seriyanı sıfırlayır. Rəng fonu günün saatına görə dəyişir.',
+      start:'Başla',result:'Nəticə',again:'Yenidən',share:'Paylaş',hint:'Sürüşdür: stəkan · ← → klaviatura',
+      caught:'Tutuldu',gold:'Qızıl',green:'Yaşıl',combo:'Ən uzun seriya',
+      v:['Bakının ən sürətli baristası!','Əla reaksiya.','Yaxşı tutdun.','Dənlər qaçdı. Yenidən cəhd et.'],
+      best:'Ən yaxşı nəticən',copied:'Nəticə kopyalandı',shareText:'MOKA "Dən yağışı" oyununda nəticəm: ',
+      clubPts:'xal qazandın',clubCap:'Bu gün bu oyunun xal limiti dolub',canvas:'Yağan qəhvə dənələri və stəkan',
+      day:['Səhər','Günorta','Axşam','Şəhər']},
+    en:{back:'Games',backLong:'Back to the MOKA site',time:'Time',score:'Score',title:'Bean rain',
+      rule1:'A day in Baku in 45 seconds: beans fall from morning to night. Slide the cup with your finger or mouse and catch the roasted beans.',
+      lRoast:'Roasted +10',lGold:'Golden bean +30',lGreen:'Green bean −15',
+      rule2:'Catch in a row to raise the multiplier (×2, ×3). A green bean resets the streak. The background follows the time of day.',
+      start:'Start',result:'Result',again:'Play again',share:'Share',hint:'Slide: cup · ← → keys',
+      caught:'Caught',gold:'Golden',green:'Green',combo:'Longest streak',
+      v:['The fastest barista in Baku!','Great reflexes.','Nice catching.','The beans got away. Try again.'],
+      best:'Your best',copied:'Result copied',shareText:'My score in MOKA "Bean rain": ',
+      clubPts:'points earned',clubCap:"Today's points limit for this game is reached",canvas:'Falling coffee beans and a cup',
+      day:['Morning','Noon','Evening','City']},
+    ru:{back:'Игры',backLong:'Вернуться на сайт MOKA',time:'Время',score:'Очки',title:'Зерновой дождь',
+      rule1:'День в Баку за 45 секунд: с утра до ночи падают зёрна. Двигайте стакан пальцем или мышью и ловите обжаренные зёрна.',
+      lRoast:'Обжаренное +10',lGold:'Золотое +30',lGreen:'Зелёное −15',
+      rule2:'Ловите подряд — растёт множитель (×2, ×3). Зелёное зерно обнуляет серию. Фон меняется по времени дня.',
+      start:'Начать',result:'Результат',again:'Ещё раз',share:'Поделиться',hint:'Ведите: стакан · ← → клавиши',
+      caught:'Поймано',gold:'Золотые',green:'Зелёные',combo:'Лучшая серия',
+      v:['Самый быстрый бариста Баку!','Отличная реакция.','Хорошо ловите.','Зёрна убежали. Попробуйте ещё.'],
+      best:'Ваш лучший результат',copied:'Результат скопирован',shareText:'Мой результат в MOKA «Зерновой дождь»: ',
+      clubPts:'баллов получено',clubCap:'Дневной лимит баллов за эту игру исчерпан',canvas:'Падающие кофейные зёрна и стакан',
+      day:['Утро','День','Вечер','Город']}
+  };
+  var LANGS=['az','en','ru'];
+  var q=new URLSearchParams(location.search).get('lang'),saved=null;try{saved=localStorage.getItem('moka-lang')}catch(e){}
+  var lang=LANGS.indexOf(q)>-1?q:LANGS.indexOf(saved)>-1?saved:'az',t=T[lang];
+  var c=document.getElementById('c'),ctx=c.getContext('2d'),stage=document.getElementById('stage');
+  var msg=document.getElementById('msg'),scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),tbar=document.getElementById('tbar');
+  var intro=document.getElementById('intro'),end=document.getElementById('end'),toast=document.getElementById('toast');
+  function applyLang(l){
+    lang=l;t=T[l];try{localStorage.setItem('moka-lang',l)}catch(e){}
+    document.documentElement.lang=l;document.title=t.title+' — MOKA';
+    document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t[el.getAttribute('data-t')]});
+    document.querySelectorAll('.langs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false')});
+    var sfx=l==='az'?'':'?lang='+l;
+    document.getElementById('back').href='../'+sfx;
+    document.getElementById('back2').href=l==='az'?'../../':'../../'+l+'/';
+    document.getElementById('clubBox').href='../../club/'+sfx;
+    c.setAttribute('aria-label',t.canvas);
+  }
+  document.querySelectorAll('.langs button').forEach(function(b){b.addEventListener('click',function(){applyLang(b.dataset.lang)})});
+  applyLang(lang);
+
+  // the day palette: background moves through the day as the timer runs
+  var DAY=[[200,155,109],[217,181,106],[168,100,58],[60,57,53]];
+  var DUR=45;
+  var W=0,H=0,dpr=1;
+  var st={phase:'idle',time:DUR,score:0,beans:[],pops:[],cupX:.5,targetX:.5,combo:0,best:0,caught:0,gold:0,green:0,spawn:0};
+  function buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}}
+  function resize(){dpr=Math.min(window.devicePixelRatio||1,2);W=stage.clientWidth;H=stage.clientHeight;c.width=W*dpr;c.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+  window.addEventListener('resize',resize);resize();
+
+  function say(big,small){
+    msg.innerHTML='';msg.appendChild(document.createTextNode(big));
+    if(small){var s=document.createElement('small');s.textContent=small;msg.appendChild(s)}
+    msg.classList.add('show');clearTimeout(say.t);say.t=setTimeout(function(){msg.classList.remove('show')},900);
+  }
+  function setX(clientX){var r=stage.getBoundingClientRect();st.targetX=Math.min(.95,Math.max(.05,(clientX-r.left)/r.width))}
+  stage.addEventListener('pointerdown',function(e){if(st.phase==='play'){setX(e.clientX)}});
+  stage.addEventListener('pointermove',function(e){if(st.phase==='play'&&(e.pointerType==='mouse'||e.buttons))setX(e.clientX)});
+  var keys={};
+  window.addEventListener('keydown',function(e){keys[e.key]=true});window.addEventListener('keyup',function(e){keys[e.key]=false});
+
+  function spawn(){
+    var p=1-st.time/DUR,r=Math.random();
+    var type=r<.08?'gold':r<.08+.18+p*.12?'green':'roast';
+    st.beans.push({x:.06+Math.random()*.88,y:-.05,vy:.22+p*.35+Math.random()*.12,rot:Math.random()*6.28,vr:(Math.random()-.5)*5,type:type});
+  }
+  function cupRect(){var w=Math.min(W*.22,120),h=w*1.15;return {x:st.cupX*W-w/2,y:H-h-8,w:w,h:h}}
+  function hit(b){
+    if(b.type==='green'){st.score=Math.max(0,st.score-15);st.combo=0;st.green++;buzz(120);pop(b,'−15','#8C9A5B');return}
+    st.combo++;st.best=Math.max(st.best,st.combo);
+    var mult=st.combo>=12?3:st.combo>=6?2:1,base=b.type==='gold'?30:10,pts=base*mult;
+    st.score+=pts;st.caught++;if(b.type==='gold'){st.gold++;buzz([20,30,20])}else buzz(8);
+    pop(b,'+'+pts+(mult>1?' ×'+mult:''),b.type==='gold'?'#FFE2A6':'#F5F1EA');
+    if(st.combo===6||st.combo===12)say('×'+mult,'');
+  }
+  function pop(b,text,color){st.pops.push({x:b.x*W,y:H-cupRect().h-20,text:text,color:color,life:1})}
+
+  function start(){
+    st={phase:'play',time:DUR,score:0,beans:[],pops:[],cupX:.5,targetX:.5,combo:0,best:0,caught:0,gold:0,green:0,spawn:0};
+    intro.classList.add('hidden');end.classList.add('hidden');scoreEl.textContent='0';
+    say(t.day[0],'');
+  }
+  function finish(){
+    st.phase='idle';
+    document.getElementById('total').textContent=st.score;
+    var s=st.score;document.getElementById('verdict').textContent=s>=700?t.v[0]:s>=450?t.v[1]:s>=250?t.v[2]:t.v[3];
+    var rows=document.getElementById('rows');rows.innerHTML='';
+    [[t.caught,st.caught],[t.gold,st.gold],[t.green,st.green],[t.combo,st.best]].forEach(function(r){var d=document.createElement('div');d.innerHTML='<span></span><span></span>';d.children[0].textContent=r[0];d.children[1].textContent=r[1];rows.appendChild(d)});
+    var best=0;try{best=+(localStorage.getItem('moka-rain-best')||0);if(s>best){best=s;localStorage.setItem('moka-rain-best',best)}}catch(e){best=Math.max(best,s)}
+    document.getElementById('best').textContent=t.best+': '+best;
+    var res=window.MokaClub?MokaClub.award('rain',s/7):{added:0,total:0,capped:false};
+    var ct=document.getElementById('clubText');ct.innerHTML='';var b1=document.createElement('b');b1.textContent='+'+res.added;
+    ct.append(b1,' '+(res.added||!res.capped?t.clubPts:t.clubCap)+' · '+res.total);
+    toast.textContent='';end.classList.remove('hidden');document.getElementById('again').focus();
+  }
+  document.getElementById('go').addEventListener('click',start);
+  document.getElementById('again').addEventListener('click',start);
+  document.getElementById('share').addEventListener('click',function(){
+    var url=location.origin+location.pathname+'?lang='+lang,text=t.shareText+st.score;
+    if(navigator.share){navigator.share({title:'MOKA',text:text,url:url}).catch(function(){});return}
+    (navigator.clipboard?navigator.clipboard.writeText(text+' '+url):Promise.reject()).then(function(){toast.textContent=t.copied},function(){toast.textContent=text+' '+url});
+  });
+
+  function bean(x,y,s,rot,type){
+    ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+    if(type==='gold'){ctx.shadowColor='#FFE2A6';ctx.shadowBlur=18}
+    ctx.fillStyle=type==='gold'?'#F2C76E':type==='green'?'#8C9A5B':'#5E3B26';
+    ctx.beginPath();ctx.ellipse(0,0,s*.62,s,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    // the crease — the brand's line on every bean
+    ctx.strokeStyle=type==='gold'?'#A8643A':type==='green'?'#5f6b3a':'#2B1D15';ctx.lineWidth=Math.max(1.5,s*.14);
+    ctx.beginPath();ctx.moveTo(0,-s*.8);ctx.bezierCurveTo(s*.25,-s*.3,-s*.25,s*.3,0,s*.8);ctx.stroke();
+    ctx.restore();
+  }
+  var last=performance.now();
+  function frame(now){
+    var dt=Math.min((now-last)/1000,.05);last=now;
+    if(st.phase==='play'){
+      st.time-=dt;
+      if(keys.ArrowLeft)st.targetX=Math.max(.05,st.targetX-dt*1.2);
+      if(keys.ArrowRight)st.targetX=Math.min(.95,st.targetX+dt*1.2);
+      st.cupX+=(st.targetX-st.cupX)*Math.min(1,dt*14);
+      st.spawn-=dt;
+      var rate=.55-.3*(1-st.time/DUR);
+      if(st.spawn<=0){spawn();st.spawn=rate*(.7+Math.random()*.6)}
+      var cr=cupRect();
+      st.beans.forEach(function(b){
+        b.y+=b.vy*dt;b.rot+=b.vr*dt;
+        var bx=b.x*W,by=b.y*H;
+        if(!b.done&&by>cr.y&&by<cr.y+cr.h*.4&&bx>cr.x&&bx<cr.x+cr.w){b.done=true;hit(b)}
+        if(!b.done&&by>H+20){b.done=true;if(b.type!=='green')st.combo=0}
+      });
+      st.beans=st.beans.filter(function(b){return !b.done});
+      scoreEl.textContent=st.score;timeEl.textContent=Math.max(0,Math.ceil(st.time));
+      tbar.style.width=Math.max(0,st.time/DUR*100)+'%';
+      var seg=Math.min(3,Math.floor((1-st.time/DUR)*4));
+      if(seg!==st.seg){st.seg=seg;if(seg>0)say(t.day[seg],'')}
+      if(st.time<=0)finish();
+    }
+    st.pops.forEach(function(p){p.life-=dt*1.4;p.y-=dt*40});st.pops=st.pops.filter(function(p){return p.life>0});
+    draw();requestAnimationFrame(frame);
+  }
+  function draw(){
+    // sky colour through the day
+    var k=Math.max(0,Math.min(.999,1-st.time/DUR))*3,i=Math.floor(k),f=k-i,a=DAY[i],b=DAY[Math.min(3,i+1)];
+    var col='rgb('+a.map(function(v,j){return Math.round(v+(b[j]-v)*f)}).join(',')+')';
+    ctx.fillStyle=col;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(27,23,20,.45)';ctx.fillRect(0,0,W,H);
+    var s=Math.max(13,Math.min(W,H)*.04);
+    st.beans.forEach(function(b){bean(b.x*W,b.y*H,s,b.rot,b.type)});
+    // cup with sleeve and the signature line
+    var cr=cupRect();
+    ctx.fillStyle='#F5F1EA';ctx.beginPath();ctx.moveTo(cr.x,cr.y);ctx.lineTo(cr.x+cr.w,cr.y);ctx.lineTo(cr.x+cr.w*.86,cr.y+cr.h);ctx.lineTo(cr.x+cr.w*.14,cr.y+cr.h);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#1B1714';ctx.fillRect(cr.x+cr.w*.05,cr.y+cr.h*.36,cr.w*.9,cr.h*.3);
+    ctx.fillStyle='#FFE2A6';ctx.fillRect(cr.x+cr.w*.05,cr.y+cr.h*.5,cr.w*.9,3);
+    ctx.fillStyle='#F5F1EA';ctx.font='700 '+Math.round(cr.w*.16)+'px "League Spartan", Montserrat, sans-serif';ctx.textAlign='center';ctx.fillText('MOKA',cr.x+cr.w/2,cr.y+cr.h*.47);
+    if(st.combo>=6){ctx.save();ctx.shadowColor='#FFE2A6';ctx.shadowBlur=20;ctx.strokeStyle='#FFE2A6';ctx.lineWidth=2;ctx.strokeRect(cr.x-3,cr.y-3,cr.w+6,4);ctx.restore()}
+    st.pops.forEach(function(p){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.font='700 16px Mulish, sans-serif';ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y)});ctx.globalAlpha=1;
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

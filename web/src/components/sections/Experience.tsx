@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
+import { ClubCard } from "../ClubCard";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
@@ -72,8 +73,8 @@ export function Experience() {
             </div>
           </div>
 
-          <a href={LINKS.game} className="x-card group flex flex-col overflow-hidden bg-seher text-espresso">
-            <div className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#BE8F60]">
+          <div className="x-card group flex flex-col overflow-hidden bg-seher text-espresso">
+            <a href={LINKS.game} tabIndex={-1} aria-hidden="true" className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#BE8F60]">
               <svg viewBox="0 0 400 200" className="h-full w-auto" aria-hidden="true">
                 <polygon points="168,10 232,10 212,52 188,52" fill="#F5F1EA" />
                 <rect x="186" y="46" width="28" height="10" fill="#1B1714" />
@@ -82,19 +83,32 @@ export function Experience() {
                 <path d="M146,126 L254,126 L247,193 L153,193 Z" fill="#5E3B26" />
                 <rect x="118" y="122" width="164" height="4" fill="#F5F1EA" />
               </svg>
-            </div>
+            </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
               <p className="eyebrow text-espresso/70">{t.exp.gameEyebrow}</p>
               <h3 className="text-[30px] leading-tight font-medium">{t.exp.gameTitle}</h3>
               <p className="max-w-[44ch] text-[15px] leading-relaxed text-espresso/80">
                 {t.exp.gameText}
               </p>
-              <span className="mt-auto inline-flex items-center gap-3 text-[13px] font-bold tracking-[0.14em] uppercase">
+              <ul className="grid gap-2 sm:grid-cols-3">
+                {[LINKS.gameLine, LINKS.gameRain, LINKS.gameMemory].map((href, i) => (
+                  <li key={href}>
+                    <a
+                      href={href}
+                      className="flex h-full min-h-12 items-center justify-between gap-2 border border-espresso/25 px-3 py-2.5 text-[13px] font-bold transition-colors hover:border-espresso hover:bg-espresso hover:text-paper"
+                    >
+                      {t.exp.gameModes[i]} <span aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a href={LINKS.game} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-bold tracking-[0.14em] uppercase">
                 {t.exp.gameCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
-              </span>
+              </a>
             </div>
-          </a>
+          </div>
         </div>
+        <ClubCard />
       </div>
     </section>
   );

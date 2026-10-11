@@ -100,3 +100,32 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
+
+/* ---------- effects ---------- */
+html.is-loading, html.is-loading body { overflow: hidden; }
+/* without JS the intro still clears itself */
+.preloader { animation: preloader-out 0s linear 3.2s forwards; }
+@keyframes preloader-out { to { visibility: hidden; } }
+
+.cursor-ring {
+  position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none;
+  width: 34px; height: 34px; border-radius: 9999px;
+  border: 1.5px solid #fff; mix-blend-mode: difference; opacity: 0;
+  transition: opacity .3s, background-color .3s, border-color .3s;
+  display: flex; align-items: center; justify-content: center;
+}
+.cursor-ring span { font: 700 8px/1 var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: #000; opacity: 0; transition: opacity .2s; white-space: nowrap; }
+.cursor-ring.has-label { background: #fff; }
+.cursor-ring.has-label span { opacity: 1; }
+
+/* film grain: a tiny tiled noise that jitters, for a printed, tactile feel */
+.grain {
+  position: fixed; inset: -50%; z-index: 45; pointer-events: none; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } 100% { transform: translate(0, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .grain { animation: none; } .preloader { display: none; } }

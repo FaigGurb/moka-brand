@@ -13,7 +13,11 @@ MOKA Coffee Roastery-nin rəsmi saytı deyil. Dizayn və kod: Faig Gurbanli.
 | `/ar/table/` | Masana qoy (model-viewer): stəkan, Chemex, paket və 3D loqo real ölçüdə; iPhone-da Quick Look, Android-də Scene Viewer |
 | `/ar/selfie/` | Qəhvə selfisi (MindAR face): köpük bığ, imza xətti, hərflərdən tac; şəkil çəkmə və paylaşma |
 | `/ar/target.png` | AR kartı (stəkan qolu dizaynı) |
-| `/game/` | "Xətti tut" mini oyunu (seriya bonusu, vibrasiya, nəticəni paylaşma); `?lang=en|ru` |
+| `/game/` | Oyun mərkəzi: üç mini oyun və MOKA Club balansı |
+| `/game/line/` | Xətti tut: fincanı imza xəttinə qədər doldur (5 raund, seriya bonusu) |
+| `/game/rain/` | Dən yağışı: 45 saniyəlik "Bakıda bir gün", stəkanla qovrulmuş və qızıl dənləri tut |
+| `/game/memory/` | Hərf yaddaşı: hərfi aləti ilə, günün rəngini adı ilə cütlə (16 kart) |
+| `/club/` | MOKA Club (konsept): xallar, Dəmləmə pasportu (6 möhür), QR-lı endirim kodları |
 | `/v1/` | Saytın əvvəlki, tək fayllı versiyası |
 
 ## Layihə quruluşu
@@ -30,7 +34,9 @@ web/                      Next.js layihəsi (mənbə kodu)
   src/lib/                loqo həndəsəsi (logo.ts), GSAP qeydiyyatı, hook-lar, linklər
   scripts/deploy.mjs      statik exportu repo kökünə köçürür
 ar/                       AR mərkəzi: card/, table/, selfie/, shared/ (rəsm və dil köməkçiləri), models/ (.glb + generator)
-game/  v1/                ayrıca statik səhifələr (build onlara toxunmur)
+game/                     oyun mərkəzi + line/, rain/, memory/; shared/game.css
+club/                     MOKA Club: club.js (ortaq xal modulu, localStorage), index.html, vendor/qrcode.js (MIT)
+v1/                       köhnə sayt (build bu qovluqlara toxunmur)
 index.html, _next/, 404*  web/-dən generasiya olunan fayllar — əllə redaktə etməyin
 ```
 
@@ -78,6 +84,19 @@ Pinned 3D hekayə, bir scroll dəyəri (0–1) ilə idarə olunur: yaşıl dənl
 
 - **Tətbiqlər** (`sections/Apps.tsx`): 3D götür stəkanı (sürüşdürüb fırlatmaq, S/M/L ölçü, günün rəngləri ilə qol) və Instagram profili kimi qurulmuş qalereya. Lövhələr dizayn kanvasından render olunub (`public/brand/*.webp`); şəkilə basanda böyüdülür.
 - **Dəmləmə bələdçisi** (`sections/BrewGuide.tsx`): M/O/K/A = Moka pot, Espresso, Chemex, V60. Porsiyaya görə qəhvə və su hesablanır, taymer addımları göstərir və hərf qəhvə ilə imza xəttinə qədər dolur. Rəqəmlər ümumi tövsiyədir.
+
+### MOKA Club (konsept loyallıq)
+
+`club/club.js` oyunlar, AR səhifələri və saytın paylaşdığı kiçik moduldur (`window.MokaClub`). Xallar yalnız brauzerdə (`localStorage['moka-club-v1']`) saxlanılır:
+- oyunlar: nəticə xala çevrilir, gündə hər oyundan ən çox 100 xal;
+- AR: kart tapılanda, AR-da masaya qoyanda, selfi çəkəndə +25 (sessiyada bir dəfə);
+- Dəmləmə pasportu: 6 təcrübənin hamısı → +100 bonus;
+- hədiyyələr: 150 ölçü artımı, 300 — 10% endirim, 600 — filtr qəhvə; kod `MOKA-XXXX-XX` formatında, QR ilə, 7 gün.
+Hamısı demo: real proqramda hesab, kassa yoxlaması və saxtakarlıq limitləri lazımdır.
+
+### Effektlər
+
+Preloader (sessiyada bir dəfə: imza xətti çəkilir və ekran xətt boyunca açılır), siçan üçün izləyici halqa (`data-cursor` etiketi ilə), yuxarıda oxuma xətti, yüngül "film grain", scroll sürətinə reaksiya verən marquee. Hamısı `components/fx/`-dədir; reduced-motion rejimində söndürülür.
 
 ### Hamar scroll
 
