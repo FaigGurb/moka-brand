@@ -75,7 +75,7 @@ const az = {
     eyebrow: "Öz qovurmamız · Qovurma xətti",
     title: "Xəttin hündürlüyü qovurmanı göstərir",
     text: "Paket dəyişmir: hər paketin yanında kiçik bir dən kartı verilir. Kartda xətt açıq qovurmada yuxarıda, tünddə aşağıda olur. Rəfdə yan-yana duran kartlar bir şkala yaradır: müştəri oxumadan seçir. Dad rəngi isə nə dadacağını göstərir.",
-    house: { title: "MOKA-da qovrulur", text: "MOKA öz qovurmasına yenicə başlayıb: seçilmiş yaşıl dənlər Bakıda, öz aparatında qovrulur və MOKA adı ilə satılır. Barda həm öz qovurması, həm də Pitti Caffè dəmlənir.", roaster: "Qovurma aparatı", roasterName: "Besca BSC-05 · 5 kq-lıq partiya", card: "DƏN KARTI" },
+    house: { title: "MOKA-da qovrulur", text: "MOKA öz qovurmasına yenicə başlayıb: seçilmiş yaşıl dənlər Bakıda, öz aparatında qovrulur və MOKA adı ilə satılır. Barda həm öz qovurması, həm də Pitti Caffè dəmlənir.", roaster: "Qovurma aparatı", roasterName: "Besca BSC-05 · 5 kq-lıq partiya", drawing: "Qovurma aparatının sxemi: barabanda dənlər fırlanır və yaşıldan tünd qəhvəyiyə qədər qovrulur", drawingNote: "Sxem", card: "DƏN KARTI" },
     legend: "Qovurma səviyyəsini seçin",
     line: "xətt",
     levels: [
@@ -144,6 +144,8 @@ const az = {
     b2b: "Kafeniz, restoranınız və ya ofisiniz üçün avadanlıq və məhsul lazımdır?",
     call: "Zəng et",
     pending: "Loqo gözlənilir",
+    more: "ətraflı",
+    page: "Tərəfdaşlar haqqında ətraflı",
     note: "Brend adları, loqolar və saytlar sahiblərinə məxsusdur.",
   },
   store: {
@@ -293,6 +295,7 @@ const az = {
     repo: "Mənbə kodu — GitHub",
     menu: "Menyu",
     brand: "Brend kitabı",
+    partners: "Tərəfdaşlar",
     privacy: "Məxfilik",
     club: "MOKA Club",
     dayNow: "Saytın rəngi Bakı vaxtı ilə dəyişir. İndi:",
@@ -371,7 +374,7 @@ const en: Dict = {
     eyebrow: "Roasted in-house · The roast line",
     title: "The height of the line shows the roast",
     text: "The bag stays as it is: every bag comes with a small bean card. On the card the line sits high for light roasts and low for dark ones. Cards standing side by side on the shelf become a scale: customers choose without reading. The flavour colour shows what you will taste.",
-    house: { title: "Roasted at MOKA", text: "MOKA has just started roasting its own: selected green coffee is roasted in Baku, on its own roaster, and sold under the MOKA name. The bar brews both its own roasts and Pitti Caffè.", roaster: "Roaster", roasterName: "Besca BSC-05 · 5 kg batches", card: "BEAN CARD" },
+    house: { title: "Roasted at MOKA", text: "MOKA has just started roasting its own: selected green coffee is roasted in Baku, on its own roaster, and sold under the MOKA name. The bar brews both its own roasts and Pitti Caffè.", roaster: "Roaster", roasterName: "Besca BSC-05 · 5 kg batches", drawing: "Roaster diagram: beans tumble in the drum and roast from green to dark brown", drawingNote: "Diagram", card: "BEAN CARD" },
     legend: "Choose a roast level",
     line: "line",
     levels: [
@@ -440,6 +443,8 @@ const en: Dict = {
     b2b: "Need equipment and products for your café, restaurant or office?",
     call: "Call us",
     pending: "Logo coming soon",
+    more: "details",
+    page: "More about our partners",
     note: "Brand names, logos and websites belong to their owners.",
   },
   store: {
@@ -589,6 +594,7 @@ const en: Dict = {
     repo: "Source code — GitHub",
     menu: "Menu",
     brand: "Brand book",
+    partners: "Partners",
     privacy: "Privacy",
     club: "MOKA Club",
     dayNow: "The site colour follows the time in Baku. Now:",
@@ -665,7 +671,7 @@ const ru: Dict = {
     eyebrow: "Своя обжарка · Линия обжарки",
     title: "Высота линии показывает обжарку",
     text: "Пачка остаётся прежней: к каждой пачке прилагается маленькая карточка зерна. На карточке линия у светлой обжарки высоко, у тёмной — низко. Карточки на полке складываются в шкалу: покупатель выбирает, не читая. Цвет вкуса подсказывает, что вы почувствуете.",
-    house: { title: "Обжарено в MOKA", text: "MOKA недавно начала обжаривать сама: отборное зелёное зерно обжаривают в Баку, на собственном ростере, и продают под именем MOKA. В баре варят и собственную обжарку, и Pitti Caffè.", roaster: "Ростер", roasterName: "Besca BSC-05 · партии по 5 кг", card: "КАРТОЧКА ЗЕРНА" },
+    house: { title: "Обжарено в MOKA", text: "MOKA недавно начала обжаривать сама: отборное зелёное зерно обжаривают в Баку, на собственном ростере, и продают под именем MOKA. В баре варят и собственную обжарку, и Pitti Caffè.", roaster: "Ростер", roasterName: "Besca BSC-05 · партии по 5 кг", drawing: "Схема ростера: зёрна вращаются в барабане и обжариваются от зелёного до тёмно-коричневого", drawingNote: "Схема", card: "КАРТОЧКА ЗЕРНА" },
     legend: "Выберите уровень обжарки",
     line: "линия",
     levels: [
@@ -734,6 +740,8 @@ const ru: Dict = {
     b2b: "Нужно оборудование и продукты для кофейни, ресторана или офиса?",
     call: "Позвонить",
     pending: "Логотип скоро",
+    more: "подробнее",
+    page: "Подробнее о партнёрах",
     note: "Названия брендов, логотипы и сайты принадлежат их владельцам.",
   },
   store: {
@@ -883,6 +891,7 @@ const ru: Dict = {
     repo: "Исходный код — GitHub",
     menu: "Меню",
     brand: "Брендбук",
+    partners: "Партнёры",
     privacy: "Конфиденциальность",
     club: "MOKA Club",
     dayNow: "Цвет сайта меняется по времени Баку. Сейчас:",

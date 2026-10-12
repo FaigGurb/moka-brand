@@ -19,6 +19,12 @@
 <xhtml:link rel="alternate" hreflang="ru" href="https://faiggurb.github.io/moka-brand/ru/brand/" />
 </url>
 <url>
+<loc>https://faiggurb.github.io/moka-brand/partners/</loc>
+<xhtml:link rel="alternate" hreflang="az" href="https://faiggurb.github.io/moka-brand/partners/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://faiggurb.github.io/moka-brand/en/partners/" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://faiggurb.github.io/moka-brand/ru/partners/" />
+</url>
+<url>
 <loc>https://faiggurb.github.io/moka-brand/privacy/</loc>
 <xhtml:link rel="alternate" hreflang="az" href="https://faiggurb.github.io/moka-brand/privacy/" />
 <xhtml:link rel="alternate" hreflang="en" href="https://faiggurb.github.io/moka-brand/en/privacy/" />

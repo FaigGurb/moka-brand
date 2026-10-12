@@ -24,3 +24,11 @@ test("CMYK conversion", () => {
   assert.deepEqual(cmyk("#FFFFFF"), [0, 0, 0, 0]);
   assert.deepEqual(cmyk("#FF0000"), [0, 100, 100, 0]);
 });
+
+test("partners page copy has the same shape in every language and one entry per partner", async () => {
+  const { PARTNER_PAGE } = await import("../src/i18n/partners.ts");
+  const { PARTNERS } = await import("../src/lib/site.ts");
+  assert.deepEqual(shape(PARTNER_PAGE.en), shape(PARTNER_PAGE.az));
+  assert.deepEqual(shape(PARTNER_PAGE.ru), shape(PARTNER_PAGE.az));
+  for (const l of ["az", "en", "ru"] as const) assert.equal(PARTNER_PAGE[l].brands.length, PARTNERS.length);
+});

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { RoasterDrum } from "@/components/roast/RoasterDrum";
 import { useI18n } from "@/i18n/context";
 
 // Sample origins and notes for the concept (text in the dictionary); real assortment to be supplied by MOKA.
@@ -90,12 +91,18 @@ export function Roast() {
           <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted">
             {t.roast.text}
           </p>
-          <div className="flex max-w-[48ch] flex-col gap-1.5 border-l-[3px] border-axsam bg-paper-2/70 px-5 py-4">
-            <b className="font-[family-name:var(--font-display)] text-xl font-medium">{t.roast.house.title}</b>
-            <p className="text-[15px] leading-relaxed text-muted">{t.roast.house.text}</p>
-            <p className="text-[13px] font-bold tracking-[0.04em]">
-              {t.roast.house.roaster}: <span className="font-normal text-muted">{t.roast.house.roasterName}</span>
-            </p>
+          <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-axsam bg-paper-2/70 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">
+            <div className="flex flex-col gap-1.5">
+              <b className="font-[family-name:var(--font-display)] text-xl font-medium">{t.roast.house.title}</b>
+              <p className="text-[15px] leading-relaxed text-muted">{t.roast.house.text}</p>
+              <p className="text-[13px] font-bold tracking-[0.04em]">
+                {t.roast.house.roaster}: <span className="font-normal text-muted">{t.roast.house.roasterName}</span>
+              </p>
+            </div>
+            <figure className="flex flex-col items-center gap-1 text-espresso">
+              <RoasterDrum label={t.roast.house.drawing} className="w-[168px] max-w-full" />
+              <figcaption className="text-[10px] font-bold tracking-[0.14em] text-muted uppercase">{t.roast.house.drawingNote}</figcaption>
+            </figure>
           </div>
           <fieldset className="mt-2 flex flex-col gap-3">
             <legend className="mb-3 text-sm font-bold tracking-[0.06em]">{t.roast.legend}</legend>

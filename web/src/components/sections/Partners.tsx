@@ -3,28 +3,14 @@
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
-import { CONTACT, PARTNERS } from "@/lib/site";
-
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-
-/**
- * Logo files in `public/partners/`, taken from each partner's official website (October 2026) and
- * kept untouched apart from trimming empty margins (ODK) and resizing (Pitti, Elektra). They are
- * stand-ins until MOKA sends the official files. Width/height are the files' intrinsic sizes (no
- * layout shift); `fit` balances the optical size of very different shapes inside equal plates.
- * ISA has no asset yet (its site was under maintenance), so it gets a clearly marked placeholder.
- */
-const LOGOS: Partial<Record<(typeof PARTNERS)[number]["id"], { src: string; w: number; h: number; fit: string }>> = {
-  pitti: { src: "pitti.webp", w: 400, h: 329, fit: "h-[74%] w-auto" },
-  mazzer: { src: "mazzer.svg", w: 150, h: 16, fit: "w-[70%] h-auto" },
-  elektra: { src: "elektra.png", w: 640, h: 65, fit: "w-[84%] h-auto" },
-  odk: { src: "odk.svg", w: 762, h: 503, fit: "h-[60%] w-auto" },
-};
+import { CONTACT, PARTNERS, links } from "@/lib/site";
+import { PartnerLogo, plateTone } from "@/components/partners/PartnerLogo";
 
 /**
  * The five Italian brands MOKA distributes, set on the signature line in the order of a cup's path
  * (coffee, grinding, espresso, syrup, display). Each station is a paper plate carrying the partner's
- * own logo in its own colours, linking to the official site.
+ * own logo in its own colours; the plate opens that brand on the partners page, the host link goes
+ * to the official site.
  *
  * Motion (off for reduced motion, plays once): heading, then the line draws and lights each station
  * as its plate rises in. Desktop runs it as one sequence along the horizontal line; on narrower
@@ -32,8 +18,9 @@ const LOGOS: Partial<Record<(typeof PARTNERS)[number]["id"], { src: string; w: n
  * No marquee: five logos fit at full size, and a looping strip would compete with the line.
  */
 export function Partners() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const p = t.partners;
+  const L = links(locale);
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -115,7 +102,15 @@ export function Partners() {
             <p className="p-reveal eyebrow text-seher">{p.eyebrow}</p>
             <h2 className="p-reveal text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">{p.title}</h2>
           </div>
-          <p className="p-reveal max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">{p.text}</p>
+          <div className="p-reveal flex flex-col items-start gap-5">
+            <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">{p.text}</p>
+            <a
+              href={L.partners}
+              className="inline-flex items-center gap-2 border-b border-glow/60 pb-1 text-[13px] font-bold tracking-[0.14em] text-glow uppercase transition-colors hover:border-glow hover:text-paper"
+            >
+              {p.page} <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
 
         <ol className="p-track relative mt-16 grid gap-12 pl-10 md:mt-24 lg:grid-cols-5 lg:gap-6 lg:pt-12 lg:pl-0">
@@ -128,7 +123,6 @@ export function Partners() {
           </li>
           {PARTNERS.map((b, i) => {
             const it = p.items[i];
-            const logo = LOGOS[b.id];
             return (
               <li key={b.id} className="p-st is-on group relative">
                 <span
@@ -138,35 +132,11 @@ export function Partners() {
                 <div className="p-item grid gap-5 sm:grid-cols-[minmax(0,240px)_minmax(0,1fr)] sm:items-center sm:gap-8 lg:flex lg:flex-col lg:items-stretch lg:gap-5">
                   <h3 className="sr-only">{b.name}</h3>
                   <a
-                    href={b.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`group/plate relative grid aspect-[16/10] w-full max-w-[320px] place-items-center overflow-hidden transition-[transform,box-shadow] duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_0_0_1px_var(--color-glow),0_16px_36px_-16px_rgba(255,226,166,0.55)] focus-visible:-translate-y-1 focus-visible:shadow-[0_0_0_3px_var(--color-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:max-w-none ${
-                      logo ? "bg-paper" : "border border-dashed border-paper/35 bg-espresso-2"
-                    }`}
+                    href={`${L.partners}#${b.id}`}
+                    className={`group/plate relative grid aspect-[16/10] w-full max-w-[320px] place-items-center overflow-hidden transition-[transform,box-shadow] duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_0_0_1px_var(--color-glow),0_16px_36px_-16px_rgba(255,226,166,0.55)] focus-visible:-translate-y-1 focus-visible:shadow-[0_0_0_3px_var(--color-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:max-w-none ${plateTone(b.id)}`}
                   >
-                    {logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- static export, files are already sized
-                      <img
-                        src={`${BASE}/partners/${logo.src}`}
-                        width={logo.w}
-                        height={logo.h}
-                        alt={b.name}
-                        decoding="async"
-                        className={`${logo.fit} max-h-[74%] max-w-[86%] object-contain transition-transform duration-300 ease-out group-hover/plate:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/plate:scale-100`}
-                      />
-                    ) : (
-                      <span className="flex flex-col items-center gap-2 text-center">
-                        <span className="font-[family-name:var(--font-display)] text-[clamp(30px,2.6vw,40px)] leading-none font-medium tracking-[0.04em] text-paper">
-                          {b.name}
-                        </span>
-                        <span className="text-[11px] font-bold tracking-[0.18em] text-muted-dark uppercase">{p.pending}</span>
-                      </span>
-                    )}
-                    <span className="sr-only">
-                      {" "}
-                      — {p.site} ({b.host})
-                    </span>
+                    <PartnerLogo id={b.id} name={b.name} pending={p.pending} />
+                    <span className="sr-only"> — {p.more}</span>
                   </a>
                   <div className="flex flex-col gap-2">
                     <span className="text-[12px] font-bold tracking-[0.2em] text-muted-dark uppercase transition-colors duration-500 group-[.is-on]:text-seher">
@@ -179,12 +149,11 @@ export function Partners() {
                       href={b.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      tabIndex={-1}
-                      aria-hidden="true"
                       className="mt-1 inline-flex items-center gap-1.5 self-start border-b border-paper/25 pb-0.5 text-[13px] font-bold text-paper/90 transition-colors hover:border-glow hover:text-glow"
                     >
                       {b.host}
-                      <span>↗</span>
+                      <span aria-hidden="true">↗</span>
+                      <span className="sr-only"> — {p.site}: {b.name}</span>
                     </a>
                   </div>
                 </div>

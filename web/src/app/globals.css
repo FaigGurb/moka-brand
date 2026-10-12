@@ -191,3 +191,30 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .pack-line rect { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); transition: transform 0.9s var(--ease-brand); }
 .pack-line[data-on="true"] rect { transform: scaleX(1); }
 @media (prefers-reduced-motion: reduce) { .pack-line rect { transition: none; } }
+
+/* ---------- roaster drum (sections/Roast): beans tumble and roast, tray arm turns, smoke rises ---------- */
+.rd-bean { fill: var(--color-roast-0); }
+.rd-beans { transform-box: view-box; transform-origin: 84px 72px; }
+.rd-arm { transform-box: view-box; transform-origin: 0 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .rd-beans { animation: rd-tumble 2.8s linear infinite; }
+  .rd-bean { animation: rd-roast 12s ease-in-out infinite; }
+  .rd-arm { animation: rd-tumble 4s linear infinite; }
+  .rd-smoke { animation: rd-smoke 3.2s ease-out infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-bean { fill: var(--color-roast-2); }
+}
+@keyframes rd-tumble { to { transform: rotate(360deg); } }
+@keyframes rd-roast {
+  0%, 8% { fill: var(--color-roast-0); }
+  35% { fill: var(--color-roast-1); }
+  60% { fill: var(--color-roast-2); }
+  80%, 92% { fill: var(--color-roast-3); }
+  100% { fill: var(--color-roast-0); }
+}
+@keyframes rd-smoke {
+  0% { opacity: 0; transform: translateY(4px); }
+  40% { opacity: 0.55; }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
