@@ -63,7 +63,6 @@ export function Nav({ sub = "" }: { sub?: string }) {
 
   return (
     <header
-      data-tone={!sub && !scrolled && !open ? "light" : undefined}
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
         scrolled || open ? "bg-espresso/95 [@media(hover:hover)]:bg-espresso/90 [@media(hover:hover)]:backdrop-blur-md" : "bg-transparent"
       }`}

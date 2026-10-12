@@ -68,28 +68,28 @@ export function Hero() {
     <section
       id="top"
       ref={root}
-      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-paper text-espresso"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-espresso text-paper"
     >
       {/* warm wash behind the wordmark, echoing the café's LED line */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgb(var(--day-rgb)/0.16),transparent_65%)] transition-[background] duration-1000"
+        className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgb(var(--day-rgb)/0.2),transparent_65%)] transition-[background] duration-1000"
       />
       <div className="relative mx-auto flex w-full max-w-[1320px] flex-1 flex-col px-5 pt-24 pb-10 md:px-10 md:pt-28">
-        <p className="hero-fade eyebrow text-axsam-ink">{t.hero.eyebrow}</p>
+        <p className="hero-fade eyebrow text-muted-dark">{t.hero.eyebrow}</p>
 
         <div className="relative my-6 flex flex-1 items-center justify-center md:my-4">
           <div className="relative aspect-[675/330] w-full max-w-[1100px] sm:aspect-[675/240]">
             {/* SVG wordmark: visible until the 3D scene is ready, and the permanent fallback without WebGL. */}
             <Logo
-              className={`absolute inset-x-[6%] top-1/2 w-[88%] -translate-y-1/2 text-espresso transition-opacity duration-700 ${
+              className={`absolute inset-x-[6%] top-1/2 w-[88%] -translate-y-1/2 text-paper transition-opacity duration-700 ${
                 show3D && ready ? "opacity-0" : "opacity-100"
               }`}
               title={t.hero.logo}
             />
             {show3D && (
               <div className="absolute inset-[-12%_-4%] sm:inset-[-12%_-8%]">
-                <HeroScene progress={progress} reducedMotion={reduced} touch={touch} lite={tier === "low"} active={inView} onReady={() => setReady(true)} light />
+                <HeroScene progress={progress} reducedMotion={reduced} touch={touch} lite={tier === "low"} active={inView} onReady={() => setReady(true)} />
               </div>
             )}
           </div>
@@ -104,12 +104,12 @@ export function Hero() {
             ))}
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
-            <p className="hero-lead max-w-[46ch] text-[17px] leading-relaxed text-muted">
+            <p className="hero-lead max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
               {t.hero.text}
             </p>
             <div className="hero-fade flex flex-wrap gap-3">
-              <MagneticButton href="#konsepsiya" tone="dark">{t.hero.cta}</MagneticButton>
-              <MagneticButton href={L.ar} variant="ghost" tone="dark">
+              <MagneticButton href="#konsepsiya">{t.hero.cta}</MagneticButton>
+              <MagneticButton href={L.ar} variant="ghost">
                 {t.hero.ar}
               </MagneticButton>
             </div>

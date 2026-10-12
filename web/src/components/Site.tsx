@@ -2,7 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/hero/Hero";
 import { Concept } from "@/components/sections/Concept";
-import { Film } from "@/components/sections/Film";
+import { BeanStory } from "@/components/sections/BeanStory";
 import { BrewGuide } from "@/components/sections/BrewGuide";
 import { Apps } from "@/components/sections/Apps";
 import { DayPalette } from "@/components/sections/DayPalette";
@@ -36,7 +36,7 @@ export function Site({ locale }: { locale: Locale }) {
       <main lang={locale}>
         <Hero />
         <Concept />
-        <Film />
+        <BeanStory />
         <DayPalette />
         <Roast />
         <BrewGuide />
