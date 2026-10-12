@@ -174,6 +174,7 @@ export function Partners() {
                     </span>
                     <p className="text-[15px] leading-snug text-paper/85">{it.role}</p>
                     <p className="text-[13px] text-muted-dark">{it.fact}</p>
+                    {it.bar && <p className="text-[13px] font-bold text-glow/90">{it.bar}</p>}
                     <a
                       href={b.url}
                       target="_blank"
