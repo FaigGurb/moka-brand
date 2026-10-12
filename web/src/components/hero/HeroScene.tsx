@@ -74,9 +74,11 @@ type Props = {
   /** false while the hero is off screen: no frames are rendered */
   active?: boolean;
   onReady?: () => void;
+  /** cream page: dark glazed ceramic letters and a copper line instead of light ceramic and a glow */
+  light?: boolean;
 };
 
-function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady" | "active">) {
+function Wordmark({ progress, reducedMotion, touch, lite, light }: Omit<Props, "onReady" | "active">) {
   const group = useRef<THREE.Group>(null);
   const tops = useRef<(THREE.Object3D | null)[]>([]);
   const bottoms = useRef<(THREE.Object3D | null)[]>([]);
@@ -104,16 +106,16 @@ function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady
   const ceramic = useMemo(
     () =>
       lite
-        ? new THREE.MeshStandardMaterial({ color: "#efe8dc", roughness: 0.36, metalness: 0 })
+        ? new THREE.MeshStandardMaterial({ color: light ? "#2a201a" : "#efe8dc", roughness: light ? 0.3 : 0.36, metalness: 0 })
         : new THREE.MeshPhysicalMaterial({
-            color: "#efe8dc",
-            roughness: 0.38,
+            color: light ? "#2a201a" : "#efe8dc",
+            roughness: light ? 0.32 : 0.38,
             metalness: 0,
-            clearcoat: 0.55,
-            clearcoatRoughness: 0.28,
-            sheen: 0.2,
+            clearcoat: light ? 0.9 : 0.55,
+            clearcoatRoughness: light ? 0.18 : 0.28,
+            sheen: light ? 0 : 0.2,
           }),
-    [lite],
+    [lite, light],
   );
 
   // Free GPU memory when the hero unmounts.
@@ -172,7 +174,7 @@ function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady
     }
     if (glow.current) {
       const m = glow.current.material as THREE.MeshBasicMaterial;
-      m.opacity = (0.35 + p * 0.9) * k;
+      m.opacity = (0.35 + p * 0.9) * k * (light ? 0.35 : 1);
       glow.current.scale.set(1, 1 + open * 10, 1);
     }
   });
@@ -201,11 +203,18 @@ function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady
       ))}
       <mesh ref={line} position={[0, 0, DEPTH / 2]}>
         <boxGeometry args={[7.4, 0.022, 0.05]} />
-        <meshBasicMaterial color="#ffe2a6" transparent toneMapped={false} />
+        <meshBasicMaterial color={light ? "#b06a38" : "#ffe2a6"} transparent toneMapped={false} />
       </mesh>
       <mesh ref={glow} position={[0, 0, DEPTH / 2 - 0.25]}>
         <planeGeometry args={[9.5, 0.9]} />
-        <meshBasicMaterial map={glowTex} transparent blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+        <meshBasicMaterial
+          map={glowTex}
+          transparent
+          color={light ? "#c98a55" : "#ffffff"}
+          blending={light ? THREE.NormalBlending : THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
       </mesh>
     </group>
   );
@@ -293,7 +302,7 @@ function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady" 
   return <instancedMesh ref={mesh} args={[geo, mat, COUNT]} frustumCulled={false} />;
 }
 
-export default function HeroScene({ progress, reducedMotion, touch, lite = false, active = true, onReady }: Props) {
+export default function HeroScene({ progress, reducedMotion, touch, lite = false, active = true, onReady, light = false }: Props) {
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
@@ -314,7 +323,7 @@ export default function HeroScene({ progress, reducedMotion, touch, lite = false
         <Lightformer intensity={0.8} position={[5, -1, 2]} rotation-y={-Math.PI / 2} scale={[4, 2, 1]} color="#a8643a" />
       </Environment>
       <AmbientBeans progress={progress} reducedMotion={reducedMotion} touch={touch} />
-      <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} />
+      <Wordmark progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} light={light} />
     </Canvas>
   );
 }

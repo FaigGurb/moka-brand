@@ -40,6 +40,18 @@ const az = {
       { tool: "V60", text: "Konus dripper. Dənin dad notlarını ən aydın göstərən damla üsulu." },
     ],
   },
+  film: {
+    eyebrow: "Proses · Dəndən fincana",
+    chapters: [
+      { kicker: "Dən", title: "Hər şey dəndən başlayır", text: "Bakıda, MOKA-nın öz Besca aparatında qovrulur və MOKA adı ilə satılır.", alt: "Qovrulmuş qəhvə dənələri yavaş çəkilişdə dən yığınının üzərinə düşür" },
+      { kicker: "M · Moka pot", title: "Ocaqda, güclü və sıx", text: "Evlərin klassik aləti. M hərfinin çentiyi qazanın qapağıdır.", alt: "Moka pot-un borusundan tünd qəhvə yuxarı qalxır" },
+      { kicker: "O · Espresso", title: "Fincan xəttə qədər", text: "Elektra Indie-də espresso: stəkan imza xəttinin hündürlüyünə qədər dolur.", alt: "Espresso maşınından iki şüşə stəkana qəhvə axır, stəkanlar dolur" },
+      { kicker: "K · Chemex", title: "Təmiz, şəffaf damla", text: "Filtrdən yavaş süzülən qəhvə fincanı təmiz edir. K hərfinin qulpu Chemex-in qulpudur.", alt: "Filtrə su tökülür, qəhvə köpüklənir və aşağı süzülür" },
+      { kicker: "A · V60", title: "Dənin dadını göstərən üsul", text: "Konus dripper: yavaş, spiral tökmə, dad notları ən aydın burada eşidilir.", alt: "Qırmızı V60 dripperinə kağız filtrin üstündən isti su tökülür" },
+    ],
+    final: { title: "Xəttə qədər.", text: "Dörd hərf, dörd dəmləmə, bir xətt. Hər fincan düz xəttə qədər doldurulur." },
+    credit: "Görüntülər: Pexels, pulsuz lisenziya · nümunədir, real çəkiliş MOKA-da planlaşdırılır",
+  },
   beans: {
     eyebrow: "Proses · Dəndən fincana",
     title: "Bir fincanın yolu",
@@ -340,6 +352,18 @@ const en: Dict = {
       { tool: "V60", text: "A cone dripper. The pour-over method that shows a bean's tasting notes most clearly." },
     ],
   },
+  film: {
+    eyebrow: "Process · From bean to cup",
+    chapters: [
+      { kicker: "Bean", title: "It all starts with the bean", text: "Roasted in Baku on MOKA’s own Besca roaster and sold under the MOKA name.", alt: "Roasted coffee beans falling in slow motion onto a bed of beans" },
+      { kicker: "M · Moka pot", title: "On the stove, strong and dense", text: "The classic home tool. The notch in the M is the pot’s lid.", alt: "Dark coffee rising from the moka pot’s spout" },
+      { kicker: "O · Espresso", title: "The cup, to the line", text: "Espresso on the Elektra Indie: the glass fills to the height of the signature line.", alt: "Espresso pouring from a machine into two glasses as they fill" },
+      { kicker: "K · Chemex", title: "A clean, clear drip", text: "Coffee dripping slowly through a filter keeps the cup clean. The handle of the K is the Chemex handle.", alt: "Water poured into a filter, the coffee blooms and drips through" },
+      { kicker: "A · V60", title: "The method that shows the bean", text: "The cone dripper: a slow spiral pour, where tasting notes come through most clearly.", alt: "Hot water poured over a paper filter in a red V60 dripper" },
+    ],
+    final: { title: "To the line.", text: "Four letters, four brews, one line. Every cup is filled exactly to the line." },
+    credit: "Footage: Pexels, free licence · samples; a real shoot at MOKA is planned",
+  },
   beans: {
     eyebrow: "Process · From bean to cup",
     title: "The journey of a cup",
@@ -636,6 +660,18 @@ const ru: Dict = {
       { tool: "Chemex", text: "Форма песочных часов и ручка. Чистая, прозрачная чашка; эта же иконка — на стаканах." },
       { tool: "V60", text: "Воронка-дриппер. Способ, который ярче всего раскрывает вкусовые ноты зерна." },
     ],
+  },
+  film: {
+    eyebrow: "Процесс · От зерна до чашки",
+    chapters: [
+      { kicker: "Зерно", title: "Всё начинается с зерна", text: "Обжаривается в Баку на собственном ростере Besca и продаётся под именем MOKA.", alt: "Обжаренные кофейные зёрна в замедленной съёмке падают на слой зёрен" },
+      { kicker: "M · Мока", title: "На плите, крепко и плотно", text: "Классика для дома. Вырез в букве M — крышка кофеварки.", alt: "Тёмный кофе поднимается из носика кофеварки мока" },
+      { kicker: "O · Эспрессо", title: "Чашка — до линии", text: "Эспрессо на Elektra Indie: стакан наполняется до высоты фирменной линии.", alt: "Эспрессо льётся из машины в два стеклянных стакана, они наполняются" },
+      { kicker: "K · Кемекс", title: "Чистая, прозрачная капля", text: "Медленная фильтрация делает чашку чистой. Ручка буквы K — ручка кемекса.", alt: "Вода льётся в фильтр, кофе раскрывается и стекает вниз" },
+      { kicker: "A · V60", title: "Способ, который раскрывает зерно", text: "Конусный дриппер: медленная спиральная проливка, ноты вкуса звучат яснее всего.", alt: "Горячая вода льётся на бумажный фильтр в красном дриппере V60" },
+    ],
+    final: { title: "До линии.", text: "Четыре буквы, четыре способа, одна линия. Каждую чашку наполняют ровно до линии." },
+    credit: "Видео: Pexels, бесплатная лицензия · примеры; реальная съёмка в MOKA планируется",
   },
   beans: {
     eyebrow: "Процесс · От зерна до чашки",
