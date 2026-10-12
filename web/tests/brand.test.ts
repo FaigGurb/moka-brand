@@ -32,3 +32,9 @@ test("partners page copy has the same shape in every language and one entry per 
   assert.deepEqual(shape(PARTNER_PAGE.ru), shape(PARTNER_PAGE.az));
   for (const l of ["az", "en", "ru"] as const) assert.equal(PARTNER_PAGE[l].brands.length, PARTNERS.length);
 });
+
+test("flow page copy has the same shape in every language", async () => {
+  const { FLOW } = await import("../src/i18n/flow.ts");
+  assert.deepEqual(shape(FLOW.en), shape(FLOW.az));
+  assert.deepEqual(shape(FLOW.ru), shape(FLOW.az));
+});
