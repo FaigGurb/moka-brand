@@ -75,7 +75,7 @@ const az = {
     eyebrow: "Öz qovurmamız · Qovurma xətti",
     title: "Xəttin hündürlüyü qovurmanı göstərir",
     text: "Paket dəyişmir: hər paketin yanında kiçik bir dən kartı verilir. Kartda xətt açıq qovurmada yuxarıda, tünddə aşağıda olur. Rəfdə yan-yana duran kartlar bir şkala yaradır: müştəri oxumadan seçir. Dad rəngi isə nə dadacağını göstərir.",
-    house: { title: "MOKA-da qovrulur", text: "Yaşıl dən Bakıda, MOKA-nın öz qovurma aparatında qovrulur və MOKA adı ilə satılır.", roaster: "Qovurma aparatı", roasterName: "[aparatın adı]", card: "DƏN KARTI" },
+    house: { title: "MOKA-da qovrulur", text: "MOKA öz qovurmasına yenicə başlayıb: seçilmiş yaşıl dənlər Bakıda, öz aparatında qovrulur və MOKA adı ilə satılır. Barda həm öz qovurması, həm də Pitti Caffè dəmlənir.", roaster: "Qovurma aparatı", roasterName: "[aparatın adı]", card: "DƏN KARTI" },
     legend: "Qovurma səviyyəsini seçin",
     line: "xətt",
     levels: [
@@ -131,7 +131,7 @@ const az = {
   partners: {
     eyebrow: "Rəsmi distribyutor · İtaliyadan Bakıya",
     title: "Dəndən vitrinə qədər bütün bar",
-    text: "MOKA Azərbaycanda beş İtaliya brendinin rəsmi distribyutorudur. Xətt bir fincanın yolunu izləyir: qəhvə, üyütmə, espresso, sirop, vitrin.",
+    text: "MOKA Azərbaycanda beş İtaliya brendinin rəsmi distribyutorudur və hamısı MOKA-nın öz barında da işləyir. Xətt bir fincanın yolunu izləyir: qəhvə, üyütmə, espresso, sirop, vitrin.",
     site: "Rəsmi sayt",
     items: [
       { step: "Qəhvə", role: "Dən və üyüdülmüş qəhvə", fact: "Milan, İtaliya" },
@@ -371,7 +371,7 @@ const en: Dict = {
     eyebrow: "Roasted in-house · The roast line",
     title: "The height of the line shows the roast",
     text: "The bag stays as it is: every bag comes with a small bean card. On the card the line sits high for light roasts and low for dark ones. Cards standing side by side on the shelf become a scale: customers choose without reading. The flavour colour shows what you will taste.",
-    house: { title: "Roasted at MOKA", text: "Green coffee is roasted in Baku, on MOKA’s own roaster, and sold under the MOKA name.", roaster: "Roaster", roasterName: "[roaster model]", card: "BEAN CARD" },
+    house: { title: "Roasted at MOKA", text: "MOKA has just started roasting its own: selected green coffee is roasted in Baku, on its own roaster, and sold under the MOKA name. The bar brews both its own roasts and Pitti Caffè.", roaster: "Roaster", roasterName: "[roaster model]", card: "BEAN CARD" },
     legend: "Choose a roast level",
     line: "line",
     levels: [
@@ -427,7 +427,7 @@ const en: Dict = {
   partners: {
     eyebrow: "Official distributor · From Italy to Baku",
     title: "The whole bar, from bean to showcase",
-    text: "MOKA is the official distributor of five Italian brands in Azerbaijan. The line follows the path of a cup: coffee, grinding, espresso, syrup, showcase.",
+    text: "MOKA is the official distributor of five Italian brands in Azerbaijan, and all of them work in MOKA’s own bar too. The line follows the path of a cup: coffee, grinding, espresso, syrup, showcase.",
     site: "Official site",
     items: [
       { step: "Coffee", role: "Beans and ground coffee", fact: "Milan, Italy" },
@@ -665,7 +665,7 @@ const ru: Dict = {
     eyebrow: "Своя обжарка · Линия обжарки",
     title: "Высота линии показывает обжарку",
     text: "Пачка остаётся прежней: к каждой пачке прилагается маленькая карточка зерна. На карточке линия у светлой обжарки высоко, у тёмной — низко. Карточки на полке складываются в шкалу: покупатель выбирает, не читая. Цвет вкуса подсказывает, что вы почувствуете.",
-    house: { title: "Обжарено в MOKA", text: "Зелёное зерно обжаривают в Баку, на собственном ростере MOKA, и продают под именем MOKA.", roaster: "Ростер", roasterName: "[модель ростера]", card: "КАРТОЧКА ЗЕРНА" },
+    house: { title: "Обжарено в MOKA", text: "MOKA недавно начала обжаривать сама: отборное зелёное зерно обжаривают в Баку, на собственном ростере, и продают под именем MOKA. В баре варят и собственную обжарку, и Pitti Caffè.", roaster: "Ростер", roasterName: "[модель ростера]", card: "КАРТОЧКА ЗЕРНА" },
     legend: "Выберите уровень обжарки",
     line: "линия",
     levels: [
@@ -721,7 +721,7 @@ const ru: Dict = {
   partners: {
     eyebrow: "Официальный дистрибьютор · Из Италии в Баку",
     title: "Весь бар — от зерна до витрины",
-    text: "MOKA — официальный дистрибьютор пяти итальянских брендов в Азербайджане. Линия повторяет путь чашки: кофе, помол, эспрессо, сироп, витрина.",
+    text: "MOKA — официальный дистрибьютор пяти итальянских брендов в Азербайджане, и все они работают в собственном баре MOKA. Линия повторяет путь чашки: кофе, помол, эспрессо, сироп, витрина.",
     site: "Официальный сайт",
     items: [
       { step: "Кофе", role: "Зерно и молотый кофе", fact: "Милан, Италия" },
