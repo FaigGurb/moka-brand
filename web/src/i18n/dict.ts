@@ -275,7 +275,7 @@ const az = {
   contact: {
     title: "Kafelər",
     places: [
-      { name: "Nizami parkı", address: "Azərbaycan pr. 4, Bakı AZ1005", near: "Nizami parkının yanında", hours: "Hər gün · 07:30–00:00" },
+      { name: "Nizami parkı", address: "Azərbaycan pr. 4, Bakı AZ1005", near: "Nizami parkının yanında", hours: "Hər gün · 24 saat" },
       { name: "Parkview", address: "Füzuli küç. 37, Bakı AZ1014", near: "Qış parkı ilə üzbəüz, Parkview Business Centre-in yanında", hours: "Hər gün · 07:30–00:00" },
     ],
     map: "Xəritədə aç",
@@ -571,7 +571,7 @@ const en: Dict = {
   contact: {
     title: "Cafés",
     places: [
-      { name: "Nizami Park", address: "4 Azerbaijan Ave, Baku AZ1005", near: "Next to Nizami Park", hours: "Every day · 07:30–00:00" },
+      { name: "Nizami Park", address: "4 Azerbaijan Ave, Baku AZ1005", near: "Next to Nizami Park", hours: "Every day · 24 hours" },
       { name: "Parkview", address: "37 Fuzuli St, Baku AZ1014", near: "Opposite the Winter Park, next to Parkview Business Centre", hours: "Every day · 07:30–00:00" },
     ],
     map: "Open in Maps",
@@ -865,7 +865,7 @@ const ru: Dict = {
   contact: {
     title: "Кофейни",
     places: [
-      { name: "Парк Низами", address: "пр. Азербайджан, 4, Баку AZ1005", near: "Рядом с парком Низами", hours: "Каждый день · 07:30–00:00" },
+      { name: "Парк Низами", address: "пр. Азербайджан, 4, Баку AZ1005", near: "Рядом с парком Низами", hours: "Каждый день · круглосуточно" },
       { name: "Parkview", address: "ул. Физули, 37, Баку AZ1014", near: "Напротив Зимнего парка, рядом с Parkview Business Centre", hours: "Каждый день · 07:30–00:00" },
     ],
     map: "Открыть на карте",

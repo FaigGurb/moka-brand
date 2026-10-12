@@ -224,7 +224,7 @@ def menu():
     s += f'<rect x="-3" y="352" width="303" height="1.6" fill="{GLOW}"/>'
     s += t(20, 372, "Hərf alətdir, xətt səviyyədir.", pt(16), PAPER, font=DISPLAY, weight=500)
     s += t(20, 381, "O fincan · M moka pot · K Chemex · A V60", pt(9), "#D6D2CB")
-    s += t(20, 391, f"Nizami parkı · {ADDRESS} · {PHONE} · hər gün, 07:30–00:00", pt(8.5), "#D6D2CB")
+    s += t(20, 391, f"Nizami parkı · {ADDRESS} · {PHONE} · hər gün, 24 saat", pt(8.5), "#D6D2CB")
     s += t(20, 397, f"Parkview · {ADDRESS_2} · {PHONE_2} · hər gün, 07:30–00:00 · @mokacoffeebaku", pt(8.5), "#D6D2CB")
     s += t(20, 403, "Nümunə menyu: siyahı və qiymətlər yer tutucudur ([₼]).", pt(7.5), "#B8B0A6")
     s += f'<rect x="242" y="362" width="35" height="35" fill="{PAPER}"/>' + qr(SITE + "menu/", 244.5, 364.5, 30, ESP)
