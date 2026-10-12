@@ -152,7 +152,6 @@ export function Partners() {
                         width={logo.w}
                         height={logo.h}
                         alt={b.name}
-                        loading="lazy"
                         decoding="async"
                         className={`${logo.fit} max-h-[74%] max-w-[86%] object-contain transition-transform duration-300 ease-out group-hover/plate:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/plate:scale-100`}
                       />

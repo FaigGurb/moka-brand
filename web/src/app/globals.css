@@ -41,6 +41,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 80px;
+  /* GSAP pin spacers take window.innerWidth, which includes a classic (Windows) scrollbar: clip the 15px */
+  overflow-x: clip;
 }
 
 body {
