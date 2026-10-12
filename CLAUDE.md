@@ -44,7 +44,7 @@ Follow `docs/ENGINEERING.md` (audit → prioritise → implement → verify; hon
 ## Official brand (from MOKA, October 2026)
 - MOKA sent its official brand book: lockup = wordmark + "ROASTERY & EATERY" (same width; `Lockup` in `Logo.tsx`, `lockup()` in `docs/tools/render_print.py`), black-and-white grey scale, Yume (display) + Avenir (text), slogans "In coffee we trust." / "Good to the last drop!". Our concept is the "system" layer on top of that "foundation" (brand book section `base`).
 - Packaging stays exactly as in their book: black bag with the light K, white cup with black K and black lid, cold brew label, grey paper bag. Vector redraws in `components/packs/Packs.tsx` (used by the packaging gallery `sections/Tiers.tsx`, the brand book and the 3D/AR cup and bag). Never redesign the packs; the concept only overlays the glow line (`line` prop). The roast line lives on the separate bean card (print file), not on the bag.
-- MOKA is the official distributor in Azerbaijan of Pitti Caffè, Mazzer, Elektra, ODK (Orsadrinks) and ISA: `PARTNERS` in `lib/site.ts`, section `sections/Partners.tsx` (#terefdas). Names are typeset, no third-party logos.
+- MOKA is the official distributor in Azerbaijan of Pitti Caffè, Mazzer, Elektra, ODK (Orsadrinks) and ISA: `PARTNERS` in `lib/site.ts`, section `sections/Partners.tsx` (#terefdas). Each station shows the partner's logo from `web/public/partners/` (taken from their official sites, temporary until MOKA sends official files; ISA has a marked placeholder). Never redraw or recolour a partner logo.
 - Contact data (`CONTACT` in `lib/site.ts`): Əhməd Cavad küç., Bakı AZ1005; +994 51 244 13 01; open 24 h (Google profile). The roaster model is still unknown: `[placeholder]`.
 - OG images: `docs/tools/render_og.py`.
 

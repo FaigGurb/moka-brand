@@ -142,7 +142,8 @@ const az = {
     ],
     b2b: "Kafeniz, restoranınız və ya ofisiniz üçün avadanlıq və məhsul lazımdır?",
     call: "Zəng et",
-    note: "Brend adları və saytlar sahiblərinə məxsusdur; loqolar saytda istifadə olunmur.",
+    pending: "Loqo gözlənilir",
+    note: "Brend adları, loqolar və saytlar sahiblərinə məxsusdur.",
   },
   store: {
     eyebrow: "Kafedə",
@@ -437,7 +438,8 @@ const en: Dict = {
     ],
     b2b: "Need equipment and products for your café, restaurant or office?",
     call: "Call us",
-    note: "Brand names and websites belong to their owners; their logos are not used on this site.",
+    pending: "Logo coming soon",
+    note: "Brand names, logos and websites belong to their owners.",
   },
   store: {
     eyebrow: "In the café",
@@ -730,7 +732,8 @@ const ru: Dict = {
     ],
     b2b: "Нужно оборудование и продукты для кофейни, ресторана или офиса?",
     call: "Позвонить",
-    note: "Названия брендов и сайты принадлежат их владельцам; их логотипы на сайте не используются.",
+    pending: "Логотип скоро",
+    note: "Названия брендов, логотипы и сайты принадлежат их владельцам.",
   },
   store: {
     eyebrow: "В кофейне",
