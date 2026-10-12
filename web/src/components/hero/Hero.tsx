@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
@@ -9,6 +9,7 @@ import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import { links } from "@/lib/site";
 import { useIdle, useInView, usePerfTier } from "@/lib/perf";
 import { useI18n } from "@/i18n/context";
+import { requestTilt, stopTilt, tiltNeedsPermission, tiltSupported } from "@/lib/tilt";
 
 // Three.js loads only in the browser and only for the hero.
 const HeroScene = dynamic(() => import("./HeroScene"), { ssr: false });
@@ -26,6 +27,15 @@ export function Hero() {
   const idle = useIdle();
   // render the 3D only while the hero is (nearly) on screen
   const inView = useInView(root, "100px");
+  // Phone tilt: starts by itself where no permission is needed (Android); iOS shows a button, since its
+  // permission prompt may only follow a tap. Off for reduced motion and on non-touch screens.
+  const [askTilt, setAskTilt] = useState(false);
+  useEffect(() => {
+    if (!touch || reduced || !tiltSupported()) return;
+    if (tiltNeedsPermission()) setAskTilt(true);
+    else void requestTilt();
+    return () => stopTilt();
+  }, [touch, reduced]);
 
   useGSAP(
     () => {
@@ -87,6 +97,22 @@ export function Hero() {
               }`}
               title={t.hero.logo}
             />
+            {askTilt && show3D && (
+              <button
+                type="button"
+                onClick={async () => {
+                  await requestTilt();
+                  setAskTilt(false);
+                }}
+                className="absolute bottom-[-6px] left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full border border-paper/35 bg-espresso/70 px-4 py-2 text-[11px] font-bold tracking-[0.16em] text-paper uppercase"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <rect x="7" y="3" width="10" height="18" rx="2" transform="rotate(-14 12 12)" />
+                  <path d="M3 9c-1 2-1 4 0 6M21 9c1 2 1 4 0 6" strokeLinecap="round" />
+                </svg>
+                {t.hero.tilt}
+              </button>
+            )}
             {show3D && (
               <div className="absolute inset-[-12%_-4%] sm:inset-[-12%_-8%]">
                 <HeroScene progress={progress} reducedMotion={reduced} touch={touch} lite={tier === "low"} active={inView} onReady={() => setReady(true)} />

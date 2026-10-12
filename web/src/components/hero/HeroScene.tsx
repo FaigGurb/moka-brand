@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
+import { tilt } from "@/lib/tilt";
 import { CUT_BOTTOM, CUT_TOP, LETTERS, VIEW_W, halves, type Pt } from "@/lib/logo";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
 import { BeanPush } from "@/lib/beanPhysics";
@@ -83,6 +84,8 @@ function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady
   const line = useRef<THREE.Mesh>(null);
   const glow = useRef<THREE.Mesh>(null);
   const start = useRef<number | null>(null);
+  // the line behaves like the coffee level in a cup: it stays level while the letters tilt, with a little slosh
+  const level = useRef({ angle: 0, vel: 0 });
   const { viewport, size } = useThree();
   const glowTex = useGlowTexture();
 
@@ -144,10 +147,21 @@ function Wordmark({ progress, reducedMotion, touch, lite }: Omit<Props, "onReady
     // Pointer-driven tilt with eased follow; frozen for reduced motion.
     if (group.current) {
       // Desktop follows the mouse; touch screens get a slow, continuous sway plus a turn as you scroll.
-      const tx = reducedMotion ? 0 : touch ? Math.sin(t * 0.5) * 0.08 + p * 0.35 : -state.pointer.y * 0.16 + p * 0.25;
-      const ty = reducedMotion ? 0 : touch ? Math.sin(t * 0.35) * 0.32 + p * 0.5 : state.pointer.x * 0.28;
+      // With phone tilt on, the device angle replaces the automatic sway.
+      const tilted = touch && tilt.active && !reducedMotion;
+      const tx = reducedMotion ? 0 : tilted ? tilt.x * 0.38 + p * 0.25 : touch ? Math.sin(t * 0.5) * 0.08 + p * 0.35 : -state.pointer.y * 0.16 + p * 0.25;
+      const ty = reducedMotion ? 0 : tilted ? tilt.y * 0.34 : touch ? Math.sin(t * 0.35) * 0.32 + p * 0.5 : state.pointer.x * 0.28;
+      const tz = tilted ? -tilt.y * 0.24 : 0;
       group.current.rotation.x += (tx - group.current.rotation.x) * damp;
       group.current.rotation.y += (ty - group.current.rotation.y) * damp;
+      group.current.rotation.z += (tz - group.current.rotation.z) * damp;
+      // spring the line toward world-level (cancel the letters' roll), damped so it sloshes and settles
+      const lv = level.current;
+      const dt = Math.min(delta, 1 / 30);
+      lv.vel += (-group.current.rotation.z - lv.angle) * 60 * dt - lv.vel * 7 * dt;
+      lv.angle += lv.vel * dt;
+      if (line.current) line.current.rotation.z = lv.angle;
+      if (glow.current) glow.current.rotation.z = lv.angle;
       group.current.position.y = -p * 0.35;
     }
 

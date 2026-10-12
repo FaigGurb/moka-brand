@@ -29,6 +29,7 @@ const az = {
     cta: "Konsepsiyanı kəşf et",
     ar: "AR demo",
     logo: "MOKA loqosu",
+    tilt: "Telefonu əy",
   },
   concept: {
     eyebrow: "Konsepsiya",
@@ -329,6 +330,7 @@ const en: Dict = {
     cta: "Explore the concept",
     ar: "AR demo",
     logo: "MOKA logo",
+    tilt: "Tilt your phone",
   },
   concept: {
     eyebrow: "Concept",
@@ -626,6 +628,7 @@ const ru: Dict = {
     cta: "Узнать концепцию",
     ar: "AR-демо",
     logo: "Логотип MOKA",
+    tilt: "Наклоните телефон",
   },
   concept: {
     eyebrow: "Концепция",
