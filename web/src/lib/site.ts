@@ -33,4 +33,26 @@ export const HOME: Record<Locale, string> = {
   ru: `${base}/ru/`,
 };
 
-export const NAV_IDS = ["#konsepsiya", "#reng", "#qovurma", "#demleme", "#paket", "#kafe", "#tetbiq", "#tecrube"] as const;
+export const NAV_IDS = ["#konsepsiya", "#reng", "#qovurma", "#demleme", "#terefdas", "#paket", "#tetbiq", "#tecrube"] as const;
+
+/** Public contact data (Google Business profile, checked October 2026). Address text lives in the dictionary. */
+export const CONTACT = {
+  phone: "+994 51 244 13 01",
+  tel: "+994512441301",
+  instagram: "https://www.instagram.com/mokacoffeebaku/",
+  handle: "@mokacoffeebaku",
+  map: "https://www.google.com/maps/search/?api=1&query=Moka%20Roastery%20%26%20Eatery%20Baku&query_place_id=ChIJL6Brz9F9MEARotxfDuTLpRQ",
+  geo: [40.36972, 49.83465] as const,
+};
+
+/**
+ * Italian brands MOKA distributes officially in Azerbaijan, in the order of a cup's path
+ * (bean → grind → espresso → syrup → showcase). Facts come from each brand's own site.
+ */
+export const PARTNERS = [
+  { id: "pitti", name: "Pitti Caffè", url: "https://www.pitticaffe.com/", host: "pitticaffe.com" },
+  { id: "mazzer", name: "Mazzer", url: "https://www.mazzer.com/", host: "mazzer.com" },
+  { id: "elektra", name: "Elektra", url: "https://elektracoffee.com/", host: "elektracoffee.com" },
+  { id: "odk", name: "ODK", url: "https://orsadrinks.com/en/", host: "orsadrinks.com" },
+  { id: "isa", name: "ISA", url: "https://www.isaitaly.com/en/", host: "isaitaly.com" },
+] as const;

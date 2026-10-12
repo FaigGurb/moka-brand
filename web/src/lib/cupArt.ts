@@ -48,14 +48,14 @@ export function drawK(g: CanvasRenderingContext2D, cx: number, cy: number, heigh
 export type CupSize = "S" | "M" | "L";
 
 /**
- * Paper-cup wrap (u = around, v = bottom→top). The sleeve carries the wordmark twice and the
- * signature line; the line sits higher on bigger sizes, like the coffee level.
+ * MOKA's official takeaway cup (from the brand book), kept exactly as it is: a white paper cup
+ * with the black Chemex letter (K) on the front and the back. u = around, v = bottom→top.
  */
-export function paintCupWrap(c: HTMLCanvasElement, sleeve: string, ink: string, line: string, size: CupSize) {
+export function paintCupWrap(c: HTMLCanvasElement) {
   const W = c.width;
   const H = c.height;
   const g = c.getContext("2d")!;
-  g.fillStyle = "#f5f1ea";
+  g.fillStyle = "#f7f6f3";
   g.fillRect(0, 0, W, H);
   // subtle paper fibre
   g.globalAlpha = 0.05;
@@ -64,20 +64,8 @@ export function paintCupWrap(c: HTMLCanvasElement, sleeve: string, ink: string, 
     g.fillRect((i * 997) % W, (i * 613) % H, 2, 1);
   }
   g.globalAlpha = 1;
-  // canvas y: 0 = top of the cup
-  const top = H * 0.36;
-  const bottom = H * 0.68;
-  g.fillStyle = sleeve;
-  g.fillRect(0, top, W, bottom - top);
-  const lineAt = { S: 0.78, M: 0.55, L: 0.3 }[size];
-  g.fillStyle = line;
-  g.fillRect(0, top + (bottom - top) * lineAt - 5, W, 10);
   // centred on the front (u = 0.5) and the back (u = 0 / 1, wrapping)
-  for (const cx of [0, W * 0.5, W]) {
-    const w = W * 0.25;
-    drawWordmark(g, cx - w / 2, top + (bottom - top) * 0.2, w, ink);
-    drawK(g, cx, H * 0.83, H * 0.12, "#1b1714");
-  }
+  for (const cx of [0, W * 0.5, W]) drawK(g, cx, H * 0.55, H * 0.26, "#141414");
   // rim fold
   g.fillStyle = "rgba(0,0,0,0.08)";
   g.fillRect(0, 0, W, H * 0.02);

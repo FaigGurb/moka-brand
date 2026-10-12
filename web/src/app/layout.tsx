@@ -8,7 +8,7 @@ import "@fontsource-variable/montserrat/wght.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MOKA Coffee Roastery",
+  title: "MOKA Roastery & Eatery",
 };
 
 export const viewport: Viewport = {

@@ -5,7 +5,7 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "MOKA Coffee Roastery",
+    name: "MOKA Roastery & Eatery",
     short_name: "MOKA",
     description: "4 hərf · 4 dəmləmə · 1 xətt",
     start_url: `${BASE}/`,

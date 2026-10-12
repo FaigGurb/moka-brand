@@ -1,94 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { Logo } from "../Logo";
+import { useRef, useState } from "react";
+import { PACKS } from "../packs/Packs";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
-import type { Dict } from "@/i18n/dict";
-
-function Dots({ n, ink }: { n: number; ink: string }) {
-  return (
-    <span className="flex gap-1.5" aria-hidden="true">
-      {Array.from({ length: 5 }, (_, i) => (
-        <i key={i} className="block h-3 w-3 border-2" style={{ borderColor: ink, background: i < n ? ink : "transparent" }} />
-      ))}
-    </span>
-  );
-}
-
-type BagText = Dict["tiers"]["bag"];
-
-function bags(b: BagText) {
-  return [
-    (
-      <div key="core" className="relative flex h-full flex-col overflow-hidden bg-white text-espresso">
-        <div className="h-[5%] bg-[#ECE8E1]" />
-        <div className="flex flex-col gap-2 p-[9%]">
-          <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em]">{b.core}</span>
-          <span className="mt-5 flex items-center gap-2">
-            <span className="h-3.5 w-3.5 flex-none rounded-full bg-flavor-berry" aria-hidden="true" />
-            <span className="font-[family-name:var(--font-display)] text-[26px] leading-[1.05]">{b.coreNotes}</span>
-          </span>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 flex h-[42%] flex-col justify-between bg-roast-2 px-[9%] py-4 text-paper">
-          <span className="text-[11px] font-bold tracking-[0.18em]">{b.medium}</span>
-          <Dots n={3} ink="#F5F1EA" />
-        </div>
-      </div>
-    ),
-    (
-      <div key="single" className="relative flex h-full flex-col overflow-hidden bg-kraft text-espresso">
-        <div className="h-[5%] bg-[#B9976F]" />
-        <div className="flex flex-col gap-2 p-[9%]">
-          <Logo className="w-[58%]" />
-          <span className="text-[9px] font-bold tracking-[0.3em]">{b.single}</span>
-          <span className="mt-4 flex gap-1.5" aria-hidden="true">
-            <span className="h-3.5 w-3.5 rounded-full bg-flavor-floral" />
-            <span className="h-3.5 w-3.5 rounded-full bg-flavor-citrus" />
-          </span>
-          <span className="font-[family-name:var(--font-display)] text-[32px] leading-[1]">
-            {b.singleNotes[0]}
-            <br />
-            {b.singleNotes[1]}
-          </span>
-          <span className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] leading-snug">
-            <span><b>{b.farmer}</b><br />{b.ph.farmer}</span>
-            <span><b>{b.region}</b><br />{b.ph.region}</span>
-            <span><b>{b.altitude}</b><br />{b.ph.altitude}</span>
-            <span><b>{b.process}</b><br />{b.ph.process}</span>
-          </span>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 flex h-[24%] items-end justify-between border-t-4 border-paper bg-roast-1 px-[9%] py-4">
-          <span className="text-[11px] font-bold tracking-[0.18em]">{b.light}</span>
-          <span className="text-[11px] font-bold tracking-[0.12em]">QR → AR</span>
-        </div>
-      </div>
-    ),
-    (
-      <div key="limited" className="relative flex h-full flex-col overflow-hidden bg-espresso text-paper">
-        <div className="h-[5%] bg-espresso-2" />
-        <div className="flex flex-col gap-2 p-[9%]">
-          <Logo className="w-[58%]" />
-          <span className="text-[10px] font-bold tracking-[0.3em] text-[#e07a62]">{b.limited}</span>
-          <span className="mt-3 font-[family-name:var(--font-display)] text-[24px] leading-tight">{b.artist}</span>
-        </div>
-        <svg viewBox="0 0 300 200" className="mt-auto w-full" aria-hidden="true">
-          <polygon points="20,30 80,72 140,30 166,196 0,196" fill="#8E2F22" />
-          <circle cx="220" cy="90" r="56" fill="#F5F1EA" />
-          <polygon points="110,110 200,110 176,152 200,200 112,200 134,152" fill="#C89B6D" />
-          <rect x="0" y="128" width="300" height="5" fill="#1B1714" />
-          <rect x="0" y="133" width="300" height="4" fill="#8E2F22" />
-        </svg>
-      </div>
-    ),
-  ];
-}
 
 export function Tiers() {
   const { t } = useI18n();
-  const bagEls = bags(t.tiers.bag);
-  const TIERS = t.tiers.items.map((it, i) => ({ n: it.name, sub: it.sub, bag: bagEls[i] }));
+  const [line, setLine] = useState(false);
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -127,20 +46,37 @@ export function Tiers() {
             <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted">
               {t.tiers.text}
             </p>
+            <button
+              type="button"
+              aria-pressed={line}
+              onClick={() => setLine((v) => !v)}
+              className="inline-flex items-center gap-3 self-start border-2 border-espresso px-5 py-3 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:bg-espresso hover:text-paper aria-pressed:bg-espresso aria-pressed:text-paper"
+            >
+              <span className="h-[3px] w-6 bg-glow" aria-hidden="true" />
+              {line ? t.tiers.hide : t.tiers.show}
+            </button>
             <p className="text-sm font-bold tracking-[0.06em] text-muted motion-reduce:hidden">{t.tiers.hint}</p>
+            <p className="max-w-[40ch] text-xs leading-relaxed text-muted">{t.tiers.source}</p>
           </div>
-          {TIERS.map((t, i) => (
-            <article key={t.n} className="flex w-[min(72vw,calc((100svh_-_250px)/1.53),380px)] flex-none snap-start flex-col gap-3 md:gap-4 lg:w-[min(26vw,calc((100svh_-_250px)/1.53))]">
-              <div className="aspect-[3/4.6] w-full shadow-[0_40px_70px_-40px_rgba(27,23,20,0.55)] transition-transform duration-500 ease-[var(--ease-brand)] hover:-translate-y-2">
-                {t.bag}
-              </div>
-              <h3 className="text-2xl font-medium">
-                <span className="mr-2 text-muted">{i + 1}</span>
-                {t.n}
-              </h3>
-              <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted">{t.sub}</p>
-            </article>
-          ))}
+          {t.tiers.items.map((it, i) => {
+            const Pack = PACKS[i];
+            return (
+              <article key={it.name} className="flex w-[min(72vw,calc((100svh_-_300px)/1.53),360px)] flex-none snap-start flex-col gap-3 md:gap-4 lg:w-[min(24vw,calc((100svh_-_300px)/1.53))]">
+                <div className="aspect-[300/460] w-full bg-paper transition-transform duration-500 ease-[var(--ease-brand)] hover:-translate-y-2">
+                  <Pack line={line} title={it.name} className="h-full w-full" />
+                </div>
+                <h3 className="text-2xl font-medium">
+                  <span className="mr-2 text-muted">{i + 1}</span>
+                  {it.name}
+                </h3>
+                <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted">{it.sub}</p>
+                <p className={`flex max-w-[34ch] gap-2.5 text-[15px] leading-relaxed transition-opacity duration-500 ${line ? "opacity-100" : "opacity-60"}`}>
+                  <span className="mt-[0.7em] h-[3px] w-5 flex-none bg-axsam" aria-hidden="true" />
+                  {it.idea}
+                </p>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,4 +1,6 @@
-"""Print-ready files for the MOKA concept (business card, cup sleeve, bag label, A3 menu).
+"""Print-ready files for the MOKA concept (business card, bean card, A3 menu).
+
+The official packaging (bag, cup, labels) stays as it is in MOKA's brand book, so it has no files here.
 
 Each file is drawn as SVG in millimetres, wrapped in an HTML page whose size is the trim size + 3 mm
 bleed on every side, and printed to PDF by Chromium (Playwright). Fonts are the self-hosted League
@@ -7,7 +9,7 @@ Spartan / Mulish from /fonts. Every page also gets a PNG preview.
 Notes for the print shop (also printed on the proof pages):
 - PDFs are RGB. CMYK values for every brand colour are in the brand book; the printer converts.
 - Bleed 3 mm, keep text 4 mm inside the trim. Proof pages show trim (magenta) and safe area (cyan).
-- Facts that MOKA has not supplied (names, phone, address, prices, origins) are [placeholders].
+- Contact data comes from MOKA's public Google profile; names, prices and origins stay [placeholders].
 
 Usage (repo root):  python3 docs/tools/render_print.py
 Output:             web/public/brand-kit/print/*.pdf  (+ docs/tools/print-preview/*.png)
@@ -26,6 +28,9 @@ BLEED = 3.0
 ESP, PAPER, KRAFT, MUTED = "#1B1714", "#F5F1EA", "#C9A882", "#5E5852"
 SEHER, GUNORTA, AXSAM, SEHER_CITY, NAR, GLOW = "#C89B6D", "#D9B56A", "#A8643A", "#8E8A84", "#8E2F22", "#FFE2A6"
 ROAST = ["#8C9A5B", "#C08A55", "#8A5A3B", "#5E3B26", "#2B1D15"]
+INK, WHITE = "#111111", "#FFFFFF"  # the official black and white
+ADDRESS = "Əhməd Cavad küçəsi, Bakı AZ1005"
+PHONE = "+994 51 244 13 01"
 DISPLAY = "'League Spartan','Montserrat',sans-serif"
 TEXT = "'Mulish',sans-serif"
 
@@ -62,6 +67,14 @@ def wordmark(x, y, w, color):
     s = w / 675
     body = "".join(letter(c, color) for c in "MOKA")
     return f'<g transform="translate({x:.3f} {y:.3f}) scale({s:.5f})">{body}</g>'
+
+
+def lockup(x, y, w, color):
+    """The official lockup: wordmark over ROASTERY & EATERY at the same width."""
+    s = w / 675
+    return (wordmark(x, y, w, color)
+            + f'<text x="{x + 2 * s:.3f}" y="{y + 200 * s:.3f}" textLength="{671 * s:.3f}" lengthAdjust="spacing" '
+              f'font-family="{TEXT}" font-weight="600" font-size="{34 * s:.3f}" fill="{color}">ROASTERY &amp; EATERY</text>')
 
 
 def qr(data, x, y, size, color):
@@ -108,131 +121,63 @@ def doc(pages, W, H, title):
 section:last-child{{break-after:auto}}svg{{display:block}}</style></head><body>{''.join(pages)}</body></html>"""
 
 
-# ------------------------------------------------------------------ business card 90 x 50
+# ------------------------------------------------------------------ business card 90 x 50 (the brand book's layout)
 def business_card():
     w, h = 90, 50
-    front = (f'<rect x="-3" y="-3" width="96" height="56" fill="{ESP}"/>'
-             + wordmark(18, 17.6, 54, PAPER)
-             + t(45, 39.5, "COFFEE ROASTERY · BAKI", pt(6.2), "#B8B0A6", weight=700, anchor="middle", ls=pt(6.2) * 0.22))
-    # back: the signature line runs across at the height of the logo's gap
-    line_y = 27
-    back = (f'<rect x="-3" y="-3" width="96" height="56" fill="{PAPER}"/>'
-            + t(6, 12.5, "[Ad Soyad]", pt(11), ESP, font=DISPLAY, weight=500)
-            + t(6, 17.2, "[Vəzifə]", pt(7), MUTED)
-            + f'<rect x="-3" y="{line_y}" width="96" height="0.9" fill="{AXSAM}"/>'
-            + t(6, 35.5, "[telefon]", pt(7), ESP)
-            + t(6, 39.7, "[e-poçt]", pt(7), ESP)
-            + t(6, 43.9, "@mokacoffeebaku · [Ünvan], Bakı", pt(7), ESP)
-            + qr(SITE + "ar/", 74, 30.5, 12, ESP)
-            + t(80, 45.4, "AR", pt(5.5), MUTED, weight=700, anchor="middle", ls=0.4))
+    front = f'<rect x="-3" y="-3" width="96" height="56" fill="{INK}"/>' + lockup(17, 16.5, 56, WHITE)
+    line_y = 25
+    k = letter("K", INK)
+    back = (f'<rect x="-3" y="-3" width="96" height="56" fill="{WHITE}"/>'
+            + f'<g transform="translate({84 - 162 * 0.07:.3f} 6) scale(0.07) translate(-348 0)">{k}</g>'
+            + f'<rect x="-3" y="{line_y}" width="96" height="0.35" fill="{INK}"/>'
+            + t(6, line_y - 2.4, "[AD SOYAD]", pt(9.5), INK, font=DISPLAY, weight=600, ls=0.2)
+            + t(42, line_y - 2.4, "[VƏZİFƏ]", pt(6.5), MUTED, weight=600, ls=0.3)
+            + t(6, 31.5, "[e-poçt]", pt(7), INK)
+            + t(6, 35.6, PHONE, pt(7), INK)
+            + t(6, 39.7, ADDRESS, pt(7), INK)
+            + t(6, 43.8, "@mokacoffeebaku", pt(7), MUTED))
     return w, h, [("front", front), ("back", back)]
 
 
-# ------------------------------------------------------------------ bag label 100 x 150
-def bag_label():
-    w, h = 100, 150
-    roast = 2  # sample: medium-light; the band's height shows the roast (higher = lighter)
-    band_top = 114 + roast * 3   # lighter roast = higher line (114 … 126 mm)
-    rows = [("Mənşə", "[ölkə, region]"), ("Proses", "[yuyulmuş / natural]"), ("Hündürlük", "[____ m]"),
-            ("Qovurma tarixi", "[__.__.____]"), ("Çəki", "[çəki]")]
-    s = (f'<rect x="-3" y="-3" width="106" height="156" fill="{KRAFT}"/>'
-         + wordmark(8, 10, 46, ESP)
-         + t(8, 32, "TƏK MƏNŞƏ · NÜMUNƏ", pt(6.5), ESP, weight=700, ls=pt(6.5) * 0.2)
-         + t(8, 44, "[Çeşidin adı]", pt(20), ESP, font=DISPLAY, weight=500)
-         + t(8, 52, "[dad notu] · [dad notu] · [dad notu]", pt(8.5), ESP))
-    y = 62
-    for k, v in rows:
-        s += (f'<rect x="8" y="{y}" width="84" height="0.25" fill="{ESP}" opacity="0.35"/>'
-              + t(8, y + 5.2, k, pt(7.5), ESP, weight=700) + t(92, y + 5.2, v, pt(7.5), ESP, anchor="end"))
-        y += 7.6
-    s += f'<rect x="8" y="{y}" width="84" height="0.25" fill="{ESP}" opacity="0.35"/>'
-    # roast scale: five steps, the sample's step marked
-    sy = y + 6
-    s += t(8, sy + 2, "QOVURMA", pt(6.5), ESP, weight=700, ls=pt(6.5) * 0.2)
-    for i, c in enumerate(ROAST):
-        s += f'<rect x="{34 + i*11.6:.2f}" y="{sy - 2.2}" width="11" height="5" fill="{c}"/>'
-    s += f'<rect x="{34 + roast*11.6:.2f}" y="{sy - 3.2}" width="11" height="7" fill="none" stroke="{ESP}" stroke-width="0.5"/>'
-    # band: its top edge is the signature line
-    s += (f'<rect x="-3" y="{band_top}" width="106" height="{156 - band_top}" fill="{ROAST[roast]}"/>'
-          f'<rect x="-3" y="{band_top}" width="106" height="1.2" fill="{PAPER}"/>'
-          + t(8, band_top + 8, "Xətt nə qədər yüksəkdirsə,", pt(6.5), PAPER)
-          + t(8, band_top + 11.2, "qovurma o qədər açıqdır.", pt(6.5), PAPER)
-          + qr(SITE + "ar/", 77, band_top + 4, 15, PAPER)
-          + t(8, 140.8, "Skan et: AR-da dənin hekayəsi", pt(6.5), PAPER, weight=700)
-          + t(8, 145.4, "MOKA Coffee Roastery · Bakı · @mokacoffeebaku", pt(6.5), PAPER))
-    return w, h, [("label", s)]
-
-
-# ------------------------------------------------------------------ cup sleeve (12 oz sample dieline)
-def cup_sleeve():
-    D1, D2, H = 86.0, 76.0, 60.0           # sleeve top / bottom diameter, height (sample)
-    GLUE = 10.0
-    slant = math.hypot(H, (D1 - D2) / 2)
-    Ro = slant * D1 / (D1 - D2)
-    Ri = Ro - slant
-    theta = math.pi * D1 / Ro                # wrap angle
-    tot = theta + GLUE / Ro
-    cx = 155.0
-    top = 12.0
-    cy = top + Ro                             # arc centre below the artwork
-    W, Hh = 310.0, 110.0                      # page trim area (art sits inside, not a rectangle)
-
-    def P(r, a):
-        return cx + r * math.sin(a), cy - r * math.cos(a)
-
-    def band(r1, r2, a0, a1):
-        p1, p2, p3, p4 = P(r2, a0), P(r2, a1), P(r1, a1), P(r1, a0)
-        large = 1 if a1 - a0 > math.pi else 0
-        return (f'M{p1[0]:.3f},{p1[1]:.3f} A{r2:.3f},{r2:.3f} 0 {large} 1 {p2[0]:.3f},{p2[1]:.3f} '
-                f'L{p3[0]:.3f},{p3[1]:.3f} A{r1:.3f},{r1:.3f} 0 {large} 0 {p4[0]:.3f},{p4[1]:.3f} Z')
-
-    half = tot / 2
-    bl = BLEED / Ro
-    art = f'<path d="{band(Ri - BLEED, Ro + BLEED, -half - bl, half + bl)}" fill="{ESP}"/>'
-    # signature line: an arc at the logo's gap height
-    line_r = Ro - slant * 0.49
-
-    def on_arc(a, r, inner):
-        x, y = P(r, a)
-        return f'<g transform="translate({x:.3f} {y:.3f}) rotate({math.degrees(a):.4f})">{inner}</g>'
-
-    # front: the four letters, each set on the arc so their split meets the curved line
-    lw = 0.1  # mm per logo unit: the wordmark is 67.5 mm wide on the front
-    gap_mid = (GAP[0] + GAP[1]) / 2
-    front = ""
-    for ch, (_, _, (u0, u1)) in LETTERS.items():
-        cxu = (u0 + u1) / 2
-        dx = (cxu - 337.5) * lw
-        a = dx / line_r
-        inner = f'<g transform="scale({lw}) translate({-cxu} {-gap_mid})">{letter(ch, PAPER)}</g>'
-        front += on_arc(a, line_r, inner)
-    art += front
-    gap_mm = (GAP[1] - GAP[0]) * lw
-    art += f'<path d="{band(line_r - gap_mm / 2, line_r + gap_mm / 2, -half - bl, half + bl)}" fill="{GLOW}"/>'
-    # sides: tagline on the left, AR code on the right (quarter turns from the front)
-    q = theta / 4
-    art += on_arc(-q, line_r + 9, t(0, 0, "XƏTTƏ QƏDƏR.", pt(14), PAPER, font=DISPLAY, weight=500, anchor="middle"))
-    art += on_arc(-q, line_r - 10, t(0, 0, "COFFEE ROASTERY · BAKI", pt(6), "#B8B0A6", weight=700, anchor="middle", ls=0.6))
-    art += on_arc(q, line_r + 10, f'<rect x="-9.5" y="-9.5" width="19" height="19" fill="{PAPER}"/>' + qr(SITE + "ar/", -8, -8, 16, ESP))
-    art += on_arc(q, line_r - 6.5, t(0, 0, "SKAN ET · AR", pt(6), PAPER, weight=700, anchor="middle", ls=0.5))
-    # seam: the glue flap carries no art beyond the background
-    trim = f'<path d="{band(Ri, Ro, -half, half)}" fill="none" stroke="#E6007E" stroke-width="0.3"/>'
-    gx0, gy0 = P(Ri, half - GLUE / Ro)
-    gx1, gy1 = P(Ro, half - GLUE / Ro)
-    glue = (f'<line x1="{gx0:.3f}" y1="{gy0:.3f}" x2="{gx1:.3f}" y2="{gy1:.3f}" stroke="#E6007E" stroke-width="0.3" stroke-dasharray="1.5 1"/>')
-    label = on_arc(half - GLUE / Ro / 2, (Ri + Ro) / 2, t(0, 1, "YAPIŞQAN", pt(5), "#E6007E", anchor="middle", extra='transform="rotate(90)"'))
-    info = (t(0, 98, f"Nümunə dieline: 12 oz stəkan, qolun üst Ø {D1:.0f} mm, alt Ø {D2:.0f} mm, hündürlük {H:.0f} mm, yapışqan zolağı {GLUE:.0f} mm. "
-                     "Çapdan əvvəl tədarükçünün öz dieline-ı ilə yoxlanılmalıdır.", pt(6.5), ESP)
-            + t(0, 103, "Maqenta: kəsim xətti · qırıq maqenta: qatlama / yapışqan. Bu səhifə yalnız yoxlama üçündür.", pt(6.5), ESP))
-    return W, Hh, [("proof", art + trim + glue + label + info), ("print", art)]
-
+# ------------------------------------------------------------------ bean card 55 x 85 (given with every bag)
+def bean_card():
+    w, h = 55, 85
+    roast = 2   # sample: medium; the band's top edge is the signature line — higher = lighter roast
+    band_top = 50 + roast * 4
+    hole = f'<circle cx="{w - 7}" cy="7" r="2.2" fill="none" stroke="#E6007E" stroke-width="0.25" stroke-dasharray="0.6 0.4"/>'
+    front = (f'<rect x="-3" y="-3" width="{w + 6}" height="{h + 6}" fill="{WHITE}"/>'
+             + t(5, 9, "DƏN KARTI", pt(5.5), AXSAM, weight=700, ls=0.5)
+             + lockup(5, 13, 30, INK)
+             + t(5, 31, "[Mənşə]", pt(15), INK, font=DISPLAY, weight=500)
+             + t(5, 37, "[dad notu] · [dad notu]", pt(6.5), INK)
+             + t(5, 41.5, "[çəki] · MOKA-da qovrulub", pt(6), MUTED)
+             + f'<rect x="-3" y="{band_top}" width="{w + 6}" height="{h + 3 - band_top}" fill="{ROAST[roast]}"/>'
+             + f'<rect x="-3" y="{band_top}" width="{w + 6}" height="0.8" fill="{INK}"/>'
+             + t(5, band_top + 6, "ORTA QOVURMA", pt(6), WHITE, weight=700, ls=0.5)
+             + "".join(f'<rect x="{5 + i * 4.2:.2f}" y="{h - 9}" width="3.2" height="3.2" fill="{WHITE if i <= roast else "none"}" stroke="{WHITE}" stroke-width="0.35"/>' for i in range(5))
+             + hole)
+    rows = [("Proses", "[____]"), ("Hündürlük", "[____ m]"), ("Qovrulub", "[__.__.____]"), ("Partiya", "[№ ___]")]
+    back = f'<rect x="-3" y="-3" width="{w + 6}" height="{h + 6}" fill="{WHITE}"/>' + t(5, 9, "XƏTTƏ QƏDƏR.", pt(7), INK, font=DISPLAY, weight=600)
+    y = 15
+    for k_, v in rows:
+        back += f'<rect x="5" y="{y}" width="{w - 10}" height="0.2" fill="{INK}" opacity="0.4"/>' + t(5, y + 4, k_, pt(6), INK, weight=700) + t(w - 5, y + 4, v, pt(6), INK, anchor="end")
+        y += 6
+    back += f'<rect x="5" y="{y}" width="{w - 10}" height="0.2" fill="{INK}" opacity="0.4"/>'
+    back += t(5, y + 6.5, "Hansı alətdə?", pt(6), INK, weight=700)
+    for i, ch in enumerate("MOKA"):
+        _, _, (u0, u1) = LETTERS[ch]
+        sc = 5.5 / 155
+        back += f'<g transform="translate({5 + i * 8} {y + 9}) scale({sc}) translate({-u0} 0)">{letter(ch, INK)}</g>'
+    back += qr(SITE + "ar/", w - 19, h - 24, 14, INK) + t(w - 12, h - 6.5, "AR", pt(5.5), MUTED, weight=700, anchor="middle")
+    back += t(5, h - 6.5, "@mokacoffeebaku", pt(5.5), MUTED) + hole
+    return w, h, [("front", front), ("back", back)]
 
 
 # ------------------------------------------------------------------ A3 menu 297 x 420
 def menu():
     w, h = 297, 420
     s = f'<rect x="-3" y="-3" width="303" height="426" fill="{PAPER}"/>'
-    s += wordmark(20, 22, 120, ESP)
+    s += lockup(20, 20, 120, INK)
     s += t(277, 30, "MENYU", pt(11), ESP, weight=700, anchor="end", ls=pt(11) * 0.24)
     s += t(277, 37.5, "Hər içkinin öz hərfi var", pt(10), MUTED, anchor="end")
     s += f'<rect x="-3" y="60" width="303" height="1.6" fill="{AXSAM}"/>'
@@ -247,7 +192,7 @@ def menu():
                                     ("Espresso tonik", "Tonik üzərində espresso.")]),
         ("Dənlər", GUNORTA, None, [("Əsas · orta qovurma", "[mənşə] · [dad notları] · [çəki]", None),
                                    ("Tək mənşə · açıq qovurma", "[mənşə] · [dad notları] · [çəki]", None),
-                                   ("Limitli · Nar seriyası", "[rəssam] · nömrəli tiraj", None)]),
+                                   ("Mövsümi · [ad]", "[mənşə] · [dad notları] · [çəki]", None)]),
         ("Yemək", NAR, None, [("Kruasan", "[təsvir]", None), ("Çizkeyk", "[təsvir]", None), ("Səhər yeməyi", "[təsvir]", None)]),
     ]
     cols = [(20, [0, 2]), (158.5, [1, 3, 4])]
@@ -276,15 +221,14 @@ def menu():
     s += f'<rect x="-3" y="352" width="303" height="1.6" fill="{GLOW}"/>'
     s += t(20, 372, "Hərf alətdir, xətt səviyyədir.", pt(16), PAPER, font=DISPLAY, weight=500)
     s += t(20, 381, "O fincan · M moka pot · K Chemex · A V60", pt(9), "#D6D2CB")
-    s += t(20, 397, "[Ünvan], Bakı · @mokacoffeebaku", pt(8.5), "#D6D2CB")
+    s += t(20, 397, f"{ADDRESS} · {PHONE} · hər gün, 24 saat · @mokacoffeebaku", pt(8.5), "#D6D2CB")
     s += t(20, 403, "Nümunə menyu: siyahı və qiymətlər yer tutucudur ([₼]).", pt(7.5), "#B8B0A6")
     s += f'<rect x="242" y="362" width="35" height="35" fill="{PAPER}"/>' + qr(SITE + "menu/", 244.5, 364.5, 30, ESP)
     s += t(259.5, 404, "Menyu və AR", pt(7.5), PAPER, weight=700, anchor="middle")
     return w, h, [("menu", s)]
 
 
-JOBS = [("moka-business-card-90x50", business_card), ("moka-bag-label-100x150", bag_label),
-        ("moka-cup-sleeve-12oz", cup_sleeve), ("moka-menu-a3", menu)]
+JOBS = [("moka-business-card-90x50", business_card), ("moka-bean-card-55x85", bean_card), ("moka-menu-a3", menu)]
 
 
 async def main():
@@ -295,7 +239,7 @@ async def main():
         for name, fn in JOBS:
             w, h, pages = fn()
             W, H = w + 2 * BLEED, h + 2 * BLEED
-            # the PDF carries no marks (the sleeve's proof page draws its own dieline)
+            # the PDF carries no trim marks; the bean card's punch hole is drawn as a dashed magenta die line
             html = doc([page(w, h, svg) for _, svg in pages], W, H, name)
             tmp = PREV / f"{name}.html"
             tmp.write_text(html, encoding="utf-8")

@@ -8,6 +8,7 @@ import { Apps } from "@/components/sections/Apps";
 import { DayPalette } from "@/components/sections/DayPalette";
 import { Roast } from "@/components/sections/Roast";
 import { Tiers } from "@/components/sections/Tiers";
+import { Partners } from "@/components/sections/Partners";
 import { Store } from "@/components/sections/Store";
 import { Experience, FinalCta } from "@/components/sections/Experience";
 import { ScrollRefresh } from "@/components/ScrollRefresh";
@@ -39,6 +40,7 @@ export function Site({ locale }: { locale: Locale }) {
         <DayPalette />
         <Roast />
         <BrewGuide />
+        <Partners />
         <Tiers />
         <Store />
         <Marquee />

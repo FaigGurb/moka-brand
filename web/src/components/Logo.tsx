@@ -33,3 +33,24 @@ export function Letter({ id, className }: { id: "M" | "O" | "K" | "A"; className
     </svg>
   );
 }
+
+/** The official lockup from the brand book: the wordmark over "ROASTERY & EATERY", set to the same width. */
+export function Lockup({ className, title = "MOKA Roastery & Eatery" }: { className?: string; title?: string }) {
+  return (
+    <svg viewBox="0 0 675 205" className={className} role="img" aria-label={title} fill="currentColor">
+      {LETTERS.map((l) => {
+        const h = halves(l.poly);
+        return (
+          <g key={l.id}>
+            <polygon points={pts(h.top)} />
+            <polygon points={pts(h.bottom)} />
+          </g>
+        );
+      })}
+      <path d={HANDLE_PATH} fill="none" stroke="currentColor" strokeWidth={8} />
+      <text x="2" y="200" textLength="671" lengthAdjust="spacing" fontSize="34" fontWeight="600" fontFamily="var(--font-sans)" aria-hidden="true">
+        ROASTERY &amp; EATERY
+      </text>
+    </svg>
+  );
+}

@@ -28,7 +28,7 @@ export function pageMeta(locale: Locale, title: string, description: string, sub
     openGraph: {
       type: "website",
       url: path(locale),
-      siteName: "MOKA Coffee Roastery",
+      siteName: "MOKA Roastery & Eatery",
       title,
       description,
       locale: OG_LOCALE[locale],

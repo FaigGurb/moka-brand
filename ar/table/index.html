@@ -53,17 +53,13 @@
     shadow-intensity="1.1" shadow-softness="0.8" exposure="1.05" environment-image="neutral"
     camera-orbit="25deg 75deg auto" interaction-prompt="auto">
     <button slot="ar-button" class="btn arbtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7z M12 12l9-5 M12 12v10 M12 12L3 7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-t="ar"></span></button>
-    <div slot="hotspot-line" class="hot" id="hot" data-position="0 0.0616 0.038" data-normal="0 0 1" data-visibility-attribute="visible"><span data-t="hot"></span></div>
+    <div slot="hotspot-line" class="hot" id="hot" data-position="0 0.066 0.039" data-normal="0 0 1" data-visibility-attribute="visible"><span data-t="hot"></span></div>
   </model-viewer>
   <section class="panel">
     <p class="eyebrow" data-t="eyebrow"></p>
     <h1 data-t="title"></h1>
     <p data-t="lead"></p>
     <div class="tabs" role="tablist" id="tabs"></div>
-    <div id="sleeve">
-      <div class="swl"><span data-t="sleeve"></span>: <b id="swname" style="color:var(--paper)"></b></div>
-      <div class="sw" id="sw" style="margin-top:10px"></div>
-    </div>
     <p id="desc"></p>
     <p class="noar hidden" id="noar" data-t="noar"></p>
     <div class="qr"><img src="../qr-table.png" alt="" width="88" height="88"><span data-t="qr"></span></div>
@@ -73,7 +69,6 @@
 <script src="../../club/club.js"></script>
 <script type="module">
 import { initLang } from '../shared/lang.js';
-import { paintSleeve, DAY } from '../shared/moka-art.js';
 
 const MODELS = [
   { id: 'cup', orbit: '25deg 75deg auto' },
@@ -83,25 +78,24 @@ const MODELS = [
 ];
 const T = {
   az: { back: 'AR menyusu', clubPts: 'xal', eyebrow: 'AR · Masana qoy', title: 'Real ölçüdə, öz masanda', lead: 'Modeli seç, barmaqla fırlat, sonra "Masana qoy" düyməsinə bas: kamera açılır və obyekt döşəməyə və ya masaya yerləşir.',
-    ar: 'Masana qoy', sleeve: 'Qolun rəngi', hot: 'Xətt ölçünü göstərir', noar: 'Bu cihazda AR açılmadı. 3D modeli burada fırlada bilərsən; AR üçün telefonda Safari (iPhone) və ya Chrome (Android) ilə aç.',
-    qr: 'AR üçün telefonla skan et.', note: 'Konsept / test işi. Paketdəki mənşə və dad notları yer tutucudur.',
+    ar: 'Masana qoy', hot: 'K-dakı boşluq — imza xətti', noar: 'Bu cihazda AR açılmadı. 3D modeli burada fırlada bilərsən; AR üçün telefonda Safari (iPhone) və ya Chrome (Android) ilə aç.',
+    qr: 'AR üçün telefonla skan et.', note: 'Konsept / test işi. Stəkan və paket MOKA-nın rəsmi brendbukundakı dizayndadır.',
     names: ['Stəkan', 'Chemex', 'Paket', 'Loqo'],
-    desc: ['Götür stəkanı, M · 350 ml. Qoldakı xətt ölçünü göstərir; rəng günün saatına görə dəyişir.', 'Şüşə Chemex: qəhvə düz imza xəttinə qədər. K hərfi bu alətdir.', 'Əsas çeşid, orta qovurma. Rəngli hissənin hündürlüyü qovurma səviyyəsidir.', 'Dörd hərf, bir xətt: masaüstü heykəl kimi 3D loqo, işıqlı imza xətti ilə.'] },
+    desc: ['MOKA-nın rəsmi götür stəkanı, M · 350 ml: ağ stəkan, qara K. K-nı kəsən boşluq imza xəttidir.', 'Şüşə Chemex: qəhvə düz imza xəttinə qədər. K hərfi bu alətdir.', 'Rəsmi qara paket: Espresso Blend, 250 q. Paket olduğu kimi qalır; qovurma xətti dən kartındadır.', 'Dörd hərf, bir xətt: masaüstü heykəl kimi 3D loqo, işıqlı imza xətti ilə.'] },
   en: { back: 'AR menu', clubPts: 'points', eyebrow: 'AR · On your table', title: 'Real size, on your own table', lead: 'Pick a model, spin it with your finger, then tap "Place on table": the camera opens and the object sits on your floor or desk.',
-    ar: 'Place on table', sleeve: 'Sleeve colour', hot: 'The line shows the size', noar: "AR didn't open on this device. You can still spin the 3D model here; for AR open the page in Safari (iPhone) or Chrome (Android).",
-    qr: 'Scan with your phone for AR.', note: 'Concept / test project. Origin and tasting notes on the bag are placeholders.',
+    ar: 'Place on table', hot: 'The gap in the K — the signature line', noar: "AR didn't open on this device. You can still spin the 3D model here; for AR open the page in Safari (iPhone) or Chrome (Android).",
+    qr: 'Scan with your phone for AR.', note: 'Concept / test project. The cup and the bag follow MOKA’s official brand book.',
     names: ['Cup', 'Chemex', 'Bag', 'Logo'],
-    desc: ['Takeaway cup, M · 350 ml. The line on the sleeve shows the size; the colour follows the time of day.', 'Glass Chemex: coffee right up to the signature line. The letter K is this brewer.', 'Core range, medium roast. The height of the coloured part is the roast level.', 'Four letters, one line: the 3D logo as a desk sculpture with a glowing signature line.'] },
+    desc: ['MOKA’s official takeaway cup, M · 350 ml: white cup, black K. The gap that cuts the K is the signature line.', 'Glass Chemex: coffee right up to the signature line. The letter K is this brewer.', 'The official black bag: Espresso Blend, 250 g. The bag stays as it is; the roast line lives on the bean card.', 'Four letters, one line: the 3D logo as a desk sculpture with a glowing signature line.'] },
   ru: { back: 'Меню AR', clubPts: 'баллов', eyebrow: 'AR · На вашем столе', title: 'В натуральную величину, на вашем столе', lead: 'Выберите модель, поверните пальцем и нажмите «Поставить на стол»: откроется камера, и предмет встанет на пол или стол.',
-    ar: 'Поставить на стол', sleeve: 'Цвет манжеты', hot: 'Линия показывает размер', noar: 'AR не запустился на этом устройстве. 3D-модель можно вращать здесь; для AR откройте страницу в Safari (iPhone) или Chrome (Android).',
-    qr: 'Отсканируйте телефоном для AR.', note: 'Концепт / тестовый проект. Происхождение и ноты на пачке — заглушки.',
+    ar: 'Поставить на стол', hot: 'Просвет в K — фирменная линия', noar: 'AR не запустился на этом устройстве. 3D-модель можно вращать здесь; для AR откройте страницу в Safari (iPhone) или Chrome (Android).',
+    qr: 'Отсканируйте телефоном для AR.', note: 'Концепт / тестовый проект. Стакан и пачка — по официальному брендбуку MOKA.',
     names: ['Стакан', 'Chemex', 'Пачка', 'Логотип'],
-    desc: ['Стакан с собой, M · 350 мл. Линия на манжете показывает размер; цвет меняется по времени дня.', 'Стеклянный Chemex: кофе ровно до фирменной линии. Буква K — это он.', 'Базовая линейка, средняя обжарка. Высота цветной части — степень обжарки.', 'Четыре буквы, одна линия: 3D-логотип как настольная скульптура со светящейся линией.'] },
+    desc: ['Официальный стакан MOKA с собой, M · 350 мл: белый стакан, чёрный K. Просвет, разрезающий K, — фирменная линия.', 'Стеклянный Chemex: кофе ровно до фирменной линии. Буква K — это он.', 'Официальная чёрная пачка: Espresso Blend, 250 г. Пачка не меняется; линия обжарки — на карточке зерна.', 'Четыре буквы, одна линия: 3D-логотип как настольная скульптура со светящейся линией.'] },
 };
 const mv = document.getElementById('mv');
 const tabs = document.getElementById('tabs');
-const sw = document.getElementById('sw');
-let current = 0, sleeveIdx = 0, L;
+let current = 0, L;
 
 function renderTabs() {
   if (!L) return;
@@ -120,31 +114,9 @@ function select(i) {
   current = i;
   mv.src = `../models/${MODELS[i].id}.glb`;
   mv.cameraOrbit = MODELS[i].orbit;
-  document.getElementById('sleeve').classList.toggle('hidden', i !== 0);
   document.getElementById('hot').classList.toggle('hidden', i !== 0);
   renderTabs();
 }
-async function applySleeve() {
-  document.getElementById('swname').textContent = DAY[sleeveIdx].name;
-  sw.querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-pressed', i === sleeveIdx ? 'true' : 'false'));
-  if (current !== 0 || !mv.model) return;
-  const mat = mv.model.getMaterialByName('Sleeve');
-  if (!mat) return;
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 256;
-  paintSleeve(c, DAY[sleeveIdx]);
-  // glTF textures are not flipped like three.js canvas textures: flip the art vertically.
-  const f = document.createElement('canvas'); f.width = c.width; f.height = c.height;
-  const fg = f.getContext('2d'); fg.translate(0, f.height); fg.scale(1, -1); fg.drawImage(c, 0, 0);
-  const tex = await mv.createTexture(f.toDataURL('image/png'));
-  mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
-}
-DAY.forEach((d, i) => {
-  const b = document.createElement('button');
-  b.type = 'button'; b.style.background = d.bg; b.setAttribute('aria-label', d.name);
-  b.addEventListener('click', () => { sleeveIdx = i; applySleeve(); });
-  sw.appendChild(b);
-});
-mv.addEventListener('load', () => { if (current === 0 && sleeveIdx !== 0) applySleeve(); });
 mv.addEventListener('ar-status', (e) => {
   if (e.detail.status === 'failed') document.getElementById('noar').classList.remove('hidden');
   if (e.detail.status === 'session-started') clubAward();
@@ -161,11 +133,7 @@ function clubAward() {
 }
 L = initLang(T, { home: '../../', onChange: () => renderTabs() });
 renderTabs();
-// default sleeve: the colour of the current time of day in Baku
-const h = new Date().getHours();
-sleeveIdx = h < 11 ? 1 : h < 16 ? 2 : h < 20 ? 3 : 4;
 select(0);
-applySleeve();
 // Hide the AR button where AR can't run (desktop) — the QR code is shown instead.
 customElements.whenDefined('model-viewer').then(() => setTimeout(() => { if (!mv.canActivateAR) document.querySelector('.arbtn').classList.add('hidden'); }, 800));
 </script>

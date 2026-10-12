@@ -6,11 +6,11 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { paintCupWrap, type CupSize } from "@/lib/cupArt";
 
-type Props = { sleeve: string; ink: string; line: string; size: CupSize; reducedMotion: boolean; touch: boolean; active: boolean };
+type Props = { size: CupSize; reducedMotion: boolean; touch: boolean; active: boolean };
 
 const HEIGHT: Record<CupSize, number> = { S: 1.9, M: 2.3, L: 2.7 };
 
-function Cup({ sleeve, ink, line, size, reducedMotion }: Omit<Props, "touch" | "active">) {
+function Cup({ size, reducedMotion }: Omit<Props, "touch" | "active">) {
   const group = useRef<THREE.Group>(null);
   const scaleY = useRef(HEIGHT[size]);
   const canvas = useMemo(() => {
@@ -27,9 +27,9 @@ function Cup({ sleeve, ink, line, size, reducedMotion }: Omit<Props, "touch" | "
   }, [canvas]);
 
   useEffect(() => {
-    paintCupWrap(canvas, sleeve, ink, line, size);
+    paintCupWrap(canvas);
     tex.needsUpdate = true;
-  }, [canvas, tex, sleeve, ink, line, size]);
+  }, [canvas, tex]);
 
   const geo = useMemo(() => {
     // unit-height straight cone; scaled on Y per size
@@ -47,8 +47,8 @@ function Cup({ sleeve, ink, line, size, reducedMotion }: Omit<Props, "touch" | "
   const mats = useMemo(
     () => ({
       paper: new THREE.MeshStandardMaterial({ map: tex, roughness: 0.62, side: THREE.DoubleSide }),
-      plain: new THREE.MeshStandardMaterial({ color: "#efe9df", roughness: 0.7 }),
-      lid: new THREE.MeshStandardMaterial({ color: "#1b1714", roughness: 0.32 }),
+      plain: new THREE.MeshStandardMaterial({ color: "#f2f1ee", roughness: 0.7 }),
+      lid: new THREE.MeshStandardMaterial({ color: "#141414", roughness: 0.32 }),
       hole: new THREE.MeshBasicMaterial({ color: "#000000" }),
     }),
     [tex],

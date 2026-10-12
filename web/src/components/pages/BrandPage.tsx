@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Letter, Logo } from "../Logo";
+import { Letter, Lockup, Logo } from "../Logo";
+import { PACKS } from "../packs/Packs";
 import { HANDLE_PATH, LETTERS, pts } from "@/lib/logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
@@ -10,7 +11,10 @@ import { cmyk, contrast, hexRgb } from "@/lib/color";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const KIT = `${BASE}/brand-kit`;
-const IDS = ["platform", "logo", "color", "type", "grid", "photo", "voice", "motion", "sound", "downloads"] as const;
+const IDS = ["base", "platform", "logo", "color", "type", "grid", "photo", "voice", "motion", "sound", "downloads"] as const;
+
+// The official grey scale from MOKA's brand book (14 steps, white → black; HEX approximated).
+const MONO = ["#FFFFFF", "#EDEDED", "#DCDCDC", "#CBCBCB", "#BABABA", "#A9A9A9", "#989898", "#878787", "#6E6E6E", "#575757", "#414141", "#2C2C2C", "#181818", "#000000"];
 
 const BASE_COLORS = [
   { key: "espresso", hex: "#1B1714" },
@@ -269,6 +273,81 @@ export function BrandPage() {
           </nav>
 
           <div className="min-w-0">
+            {/* 0 foundation: MOKA's official brand book, unchanged */}
+            <Section id="base" title={b.base.title} note={b.base.note}>
+              <p className="max-w-[68ch] text-[17px] leading-relaxed">{b.base.text}</p>
+              <ul className="mt-8 grid gap-4 md:grid-cols-2">
+                {b.base.layers.map((l, i) => (
+                  <li key={l.name} className={`b-item flex flex-col gap-2 p-6 ${i === 0 ? "bg-white" : "bg-espresso text-paper"}`}>
+                    <span className={`eyebrow ${i === 0 ? "text-axsam-ink" : "text-seher"}`}>
+                      {String(i + 1).padStart(2, "0")} · {l.by}
+                    </span>
+                    <b className="font-[family-name:var(--font-display)] text-3xl font-medium">{l.name}</b>
+                    <span className={`text-[15px] leading-relaxed ${i === 0 ? "text-muted" : "text-muted-dark"}`}>{l.items}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-14 grid gap-10 md:grid-cols-[1.2fr_1fr] md:items-center">
+                <div className="b-item flex items-center justify-center bg-white px-[10%] py-14">
+                  <Lockup className="w-full max-w-[420px] text-[#111]" />
+                </div>
+                <div className="b-item">
+                  <p className="eyebrow text-axsam-ink">{b.base.lockupT}</p>
+                  <p className="mt-3 text-[16px] leading-relaxed text-muted">{b.base.lockup}</p>
+                </div>
+              </div>
+
+              <p className="eyebrow mt-14 text-axsam-ink">{b.base.monoT}</p>
+              <div className="b-item mt-5 grid grid-cols-7 gap-2 sm:grid-cols-14">
+                {MONO.map((hex) => (
+                  <span key={hex} className="flex flex-col gap-1.5">
+                    <span className="block aspect-square rounded-full border border-espresso/15" style={{ background: hex }} aria-hidden="true" />
+                    <span className="text-center text-[10px] tabular-nums text-muted">{hex}</span>
+                  </span>
+                ))}
+              </div>
+              <div className="b-item mt-3 h-6 bg-[linear-gradient(90deg,#fff,#000)]" aria-hidden="true" />
+              <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.mono}</p>
+              <p className="mt-1 text-[12px] text-muted">{b.base.monoNote}</p>
+
+              <p className="eyebrow mt-14 text-axsam-ink">{b.base.fontsT}</p>
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div className="b-item flex flex-col gap-3 bg-[#111] p-6 text-white">
+                  <span className="font-[family-name:var(--font-display)] text-[clamp(40px,5vw,64px)] leading-none font-black uppercase">Abcde</span>
+                  <b className="text-lg">{b.base.fonts[0].name}</b>
+                  <span className="text-[14px] text-white/70">{b.base.fonts[0].use}</span>
+                </div>
+                <div className="b-item flex flex-col gap-3 bg-white p-6">
+                  <span className="text-[clamp(30px,3.6vw,46px)] leading-none">Abcdefgğhiİjk</span>
+                  <b className="text-lg">{b.base.fonts[1].name}</b>
+                  <span className="text-[14px] text-muted">{b.base.fonts[1].use}</span>
+                </div>
+              </div>
+              <p className="mt-4 max-w-[68ch] text-[14px] leading-relaxed text-muted">{b.base.fontsNote}</p>
+
+              <p className="eyebrow mt-14 text-axsam-ink">{b.base.slogansT}</p>
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                {b.base.slogans.map((sl) => (
+                  <p key={sl} className="b-item bg-[#111] px-6 py-8 font-[family-name:var(--font-display)] text-[clamp(28px,3.4vw,44px)] leading-[1.02] font-black text-white uppercase">
+                    {sl}
+                  </p>
+                ))}
+              </div>
+              <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.slogansNote}</p>
+
+              <p className="eyebrow mt-14 text-axsam-ink">{b.base.packT}</p>
+              <ul className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
+                {PACKS.map((Pack, i) => (
+                  <li key={i} className="b-item bg-white p-3">
+                    <Pack title={site.tiers.items[i].name} className="h-auto w-full" />
+                    <span className="mt-1 block text-center text-[13px] font-bold">{site.tiers.items[i].name}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.pack}</p>
+            </Section>
+
             {/* 1 platform */}
             <Section id="platform" title={b.platform.title} note={b.platform.note}>
               <div className="grid gap-10 md:grid-cols-2">
@@ -764,8 +843,7 @@ export function BrandPage() {
                     ["video916", "moka-logo-animation-9x16.mp4"],
                     ["gif", "moka-logo-animation-1x1.gif"],
                     ["card", "print/moka-business-card-90x50.pdf"],
-                    ["sleeve", "print/moka-cup-sleeve-12oz.pdf"],
-                    ["label", "print/moka-bag-label-100x150.pdf"],
+                    ["beanCard", "print/moka-bean-card-55x85.pdf"],
                     ["menuA3", "print/moka-menu-a3.pdf"],
                     ["storyBean", "social/moka-story-bean.png"],
                     ["storyPoll", "social/moka-story-poll.png"],

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Logo } from "../Logo";
+import { Cup as PackCup } from "../packs/Packs";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import type { CupSize } from "@/lib/cupArt";
@@ -14,27 +15,15 @@ const CupScene = dynamic(() => import("../apps/CupScene"), { ssr: false });
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const img = (id: string, small = false) => `${BASE}/brand/${id}${small ? "-sm" : ""}.webp`;
 
-// Sleeve colours: the base espresso plus the day palette (names stay Azerbaijani).
-const SLEEVES = [
-  { name: "Espresso", hex: "#1b1714", ink: "#f5f1ea", line: "#ffe2a6", day: -1 },
-  { name: "Səhər", hex: "#c89b6d", ink: "#1b1714", line: "#f5f1ea", day: 0 },
-  { name: "Günorta", hex: "#d9b56a", ink: "#1b1714", line: "#f5f1ea", day: 1 },
-  { name: "Axşam", hex: "#a8643a", ink: "#1b1714", line: "#f5f1ea", day: 2 },
-  { name: "Şəhər", hex: "#8e8a84", ink: "#1b1714", line: "#f5f1ea", day: 3 },
-  { name: "Nar", hex: "#8e2f22", ink: "#f5f1ea", line: "#ffe2a6", day: 4 },
-];
 const SIZES: CupSize[] = ["S", "M", "L"];
 
 // Board images rendered from the design canvas; cats index into insta.filters (0 = all).
 const POSTS = [
   { id: "main", cats: [2], w: 1600, h: 900 },
-  { id: "packaging", cats: [1], w: 1600, h: 900 },
   { id: "icons", cats: [2, 3], w: 1280, h: 640 },
-  { id: "cups", cats: [1, 3], w: 1600, h: 900 },
   { id: "menu", cats: [3], w: 840, h: 1188 },
   { id: "instagram", cats: [2], w: 1600, h: 900 },
   { id: "merch", cats: [1, 3], w: 1600, h: 900 },
-  { id: "tiers", cats: [1], w: 1600, h: 900 },
   { id: "store", cats: [3], w: 1600, h: 900 },
 ];
 
@@ -45,7 +34,6 @@ function CupConfigurator() {
   const webgl = useWebGL();
   const touch = useTouch();
   const [size, setSize] = useState<CupSize>("M");
-  const [sleeve, setSleeve] = useState(0);
   const [active, setActive] = useState(false);
   const box = useRef<HTMLDivElement>(null);
 
@@ -57,7 +45,6 @@ function CupConfigurator() {
     return () => io.disconnect();
   }, []);
 
-  const sl = SLEEVES[sleeve];
   return (
     <div className="flex flex-col bg-paper-2 p-5 md:p-8">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
@@ -66,11 +53,10 @@ function CupConfigurator() {
       </div>
       <div ref={box} data-cursor="↔" className="relative mx-auto my-4 aspect-square w-full max-w-[460px]">
         {webgl === true ? (
-          <CupScene sleeve={sl.hex} ink={sl.ink} line={sl.line} size={size} reducedMotion={reduced} touch={touch} active={active} />
+          <CupScene size={size} reducedMotion={reduced} touch={touch} active={active} />
         ) : (
           webgl === false && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={img("cups", true)} alt={c.fallback} className="h-full w-full object-contain" />
+            <PackCup title={c.fallback} className="h-full w-full" />
           )
         )}
       </div>
@@ -89,25 +75,6 @@ function CupConfigurator() {
         </div>
       </fieldset>
 
-      <fieldset className="mt-5">
-        <legend className="eyebrow text-muted">
-          {c.color}: <span className="text-espresso">{sl.name}</span>
-          {sl.day >= 0 && t.day.slides[sl.day].sub ? <span className="text-muted"> · {t.day.slides[sl.day].sub}</span> : null}
-        </legend>
-        <div className="mt-3 flex flex-wrap gap-2.5">
-          {SLEEVES.map((s, i) => (
-            <label key={s.name} className="cursor-pointer" title={s.name}>
-              <input type="radio" name="cup-sleeve" className="peer sr-only" checked={sleeve === i} onChange={() => setSleeve(i)} />
-              <span className="sr-only">{s.name}</span>
-              <span
-                aria-hidden="true"
-                className="block h-10 w-10 rounded-full ring-offset-2 ring-offset-paper-2 transition-shadow peer-checked:ring-2 peer-checked:ring-espresso peer-focus-visible:ring-2 peer-focus-visible:ring-gunorta"
-                style={{ background: s.hex }}
-              />
-            </label>
-          ))}
-        </div>
-      </fieldset>
       <p className="mt-5 max-w-[46ch] text-[15px] leading-relaxed text-muted">{c.hint}</p>
     </div>
   );
@@ -158,7 +125,7 @@ function Profile() {
         <div className="min-w-0 flex-1">
           <p className="truncate text-lg font-bold">mokacoffeebaku</p>
           <ul className="mt-1 flex gap-4 text-[14px]">
-            {[POSTS.length, SLEEVES.length, 3].map((n, i) => (
+            {[POSTS.length, 6, 3].map((n, i) => (
               <li key={i}>
                 <b>{n}</b> <span className="text-muted">{ig.stats[i]}</span>
               </li>

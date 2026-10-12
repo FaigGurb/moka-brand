@@ -3,19 +3,61 @@
 
 const az = {
   meta: {
-    title: "Brend kitabı — MOKA Coffee Roastery",
+    title: "Brend kitabı — MOKA Roastery & Eatery",
     description: "MOKA brend kitabı (konsept): platforma, loqo qaydaları, rənglər, tipoqrafiya, foto istiqaməti, danışıq tonu, motion və səs loqosu.",
   },
   nav: "Brend kitabı",
   hero: {
     eyebrow: "Brend kitabı · v1.0 · konsept",
     title: "Bir xəttin qaydaları",
-    text: "MOKA-nın bütün təmas nöqtələri eyni bir fikirdən qurulub: dörd hərf, dörd dəmləmə, bir xətt. Bu səhifə həmin fikrin qaydalarını bir yerə yığır — dizayner, barista və SMM üçün.",
+    text: "MOKA-nın rəsmi brendbuku təməldir. Bu kitab onun içindəki ideyanı — dörd hərf, dörd dəmləmə, bir xətt — bütün təmas nöqtələri üçün qaydaya çevirir: dizayner, barista və SMM üçün.",
     note: "Platforma və danışıq tonu MOKA üçün təklifdir; komanda ilə birlikdə dəqiqləşdirilməlidir.",
     pdf: "PDF yüklə",
     kit: "Brend paketi",
   },
-  toc: ["Platforma", "Loqo", "Rəng", "Tipoqrafiya", "Qrid", "Foto", "Danışıq tonu", "Motion", "Səs", "Yükləmələr"],
+  toc: ["Təməl", "Platforma", "Loqo", "Rəng", "Tipoqrafiya", "Qrid", "Foto", "Danışıq tonu", "Motion", "Səs", "Yükləmələr"],
+  base: {
+    title: "Təməl",
+    note: "MOKA-nın rəsmi brendbuku",
+    text: "Bu kitab iki qatdan ibarətdir. Təməl MOKA-nın rəsmi brendbukudur: loqo, ağ-qara palitra, şriftlər, şüarlar və qablaşdırma. O, dəyişmir. Sistem bu təməlin içində gizlənən ideyadır: dörd hərf, dörd dəmləmə, bir xətt. Sonrakı bölmələr sistemin qaydalarıdır.",
+    layers: [
+      {
+        name: "Təməl",
+        by: "MOKA-nın rəsmi brendbuku",
+        items: "Loqo və “Roastery & Eatery” · ağ-qara palitra · Yume və Avenir · şüarlar · qablaşdırma"
+      },
+      {
+        name: "Sistem",
+        by: "Bu kitab",
+        items: "4 hərf, 4 dəmləmə, 1 xətt · gün rəngləri · danışıq tonu · motion və səs · AR və oyunlar"
+      }
+    ],
+    lockupT: "Rəsmi lockup",
+    lockup: "Loqo və “ROASTERY & EATERY” yazısı eyni enlikdədir. Kiçik ölçülərdə və ikonlarda yalnız K simvolu işlədilir.",
+    monoT: "Ağ və qara",
+    mono: "Rəsmi palitra ağdan qaraya boz şkaladır. Bu kitabdakı Espresso və Kağız həmin şkalanın isti çalarlarıdır, gün rəngləri isə yalnız vurğu üçündür.",
+    monoNote: "HEX dəyərləri brendbukdakı şkaladan təxmini götürülüb.",
+    fontsT: "Rəsmi şriftlər",
+    fonts: [
+      {
+        name: "Yume Regular",
+        use: "Başlıqlar və şüarlar"
+      },
+      {
+        name: "Avenir",
+        use: "Mətn və etiketlər"
+      }
+    ],
+    fontsNote: "Rəsmi şriftlər çapda işlədilir; lisenziyaları yoxlanılmalıdır. Brendbukdakı əlifba nümunəsində “ə” hərfi yoxdur, ona görə saytda və bu kitabda Azərbaycan hərflərini tam daşıyan pulsuz analoqlar işlədilir: League Spartan və Mulish. Yuxarıdakı nümunələr də analoq şriftlə yığılıb.",
+    slogansT: "Şüarlar",
+    slogans: [
+      "In coffee we trust.",
+      "Good to the last drop!"
+    ],
+    slogansNote: "Sistemin şüarı “Xəttə qədər.” ikinci şüarın Azərbaycan dilindəki davamıdır: son damlaya, xəttə qədər.",
+    packT: "Qablaşdırma",
+    pack: "Paket, stəkan, cold brew etiketi və kağız çanta olduğu kimi qalır. Sistem onlara element əlavə etmir; ideya K simvolunun özündədir, qalanını dən kartı, menyu və rəqəmsal kanallar danışır."
+  },
   platform: {
     title: "Platforma",
     note: "Təklif",
@@ -223,8 +265,7 @@ const az = {
       video916: "Loqo animasiyası 9:16 (MP4)",
       gif: "Loqo animasiyası (GIF)",
       card: "Vizit kartı 90×50 (PDF, çap)",
-      sleeve: "Stəkan qolu 12 oz (PDF, dieline ilə)",
-      label: "Paket etiketi 100×150 (PDF, çap)",
+      beanCard: "Dən kartı 55×85 (PDF, çap)",
       menuA3: "Menyu A3 (PDF, çap)",
       storyBean: "Story: həftənin dəni (PNG)",
       storyPoll: "Story: sorğu (PNG)",
@@ -232,7 +273,7 @@ const az = {
       reelsCover: "Reels qapağı (PNG)",
       safeAreas: "Story/Reels təhlükəsiz zonalar (PNG)",
     },
-    printNote: "Çap faylları RGB PDF-dir, 3 mm kənar boşluqla; CMYK dəyərləri yuxarıdadır, mətbəə çevirir. Stəkan qolu nümunə ölçüdədir: tədarükçünün dieline-ı ilə yoxlanılmalıdır. [Mötərizədəki] mətnlər yer tutucudur.",
+    printNote: "Çap faylları RGB PDF-dir, 3 mm kənar boşluqla; CMYK dəyərləri yuxarıdadır, mətbəə çevirir. Qablaşdırma rəsmi dizaynda qalır, ona görə paket və stəkan faylları yoxdur. [Mötərizədəki] mətnlər yer tutucudur.",
   },
   back: "Ana səhifə",
 };
@@ -241,19 +282,61 @@ export type BrandDict = typeof az;
 
 const en: BrandDict = {
   meta: {
-    title: "Brand book — MOKA Coffee Roastery",
+    title: "Brand book — MOKA Roastery & Eatery",
     description: "The MOKA brand book (concept): platform, logo rules, colours, typography, photography, tone of voice, motion and the sound logo.",
   },
   nav: "Brand book",
   hero: {
     eyebrow: "Brand book · v1.0 · concept",
     title: "The rules of one line",
-    text: "Every MOKA touchpoint is built on one idea: four letters, four brews, one line. This page gathers the rules of that idea in one place — for designers, baristas and social media.",
+    text: "MOKA’s official brand book is the foundation. This book turns the idea inside it — four letters, four brews, one line — into rules for every touchpoint: for designers, baristas and social media.",
     note: "The platform and tone of voice are proposals for MOKA, to be refined with the team.",
     pdf: "Download PDF",
     kit: "Brand kit",
   },
-  toc: ["Platform", "Logo", "Colour", "Typography", "Grid", "Photography", "Tone of voice", "Motion", "Sound", "Downloads"],
+  toc: ["Foundation", "Platform", "Logo", "Colour", "Typography", "Grid", "Photography", "Tone of voice", "Motion", "Sound", "Downloads"],
+  base: {
+    title: "Foundation",
+    note: "MOKA’s official brand book",
+    text: "This book has two layers. The foundation is MOKA’s official brand book: the logo, the black-and-white palette, the typefaces, the slogans and the packaging. It does not change. The system is the idea hidden inside that foundation: four letters, four brews, one line. The following sections are the rules of the system.",
+    layers: [
+      {
+        name: "Foundation",
+        by: "MOKA’s official brand book",
+        items: "Logo and “Roastery & Eatery” · black-and-white palette · Yume and Avenir · slogans · packaging"
+      },
+      {
+        name: "System",
+        by: "This book",
+        items: "4 letters, 4 brews, 1 line · day colours · tone of voice · motion and sound · AR and games"
+      }
+    ],
+    lockupT: "Official lockup",
+    lockup: "The logo and “ROASTERY & EATERY” share the same width. At small sizes and in icons only the K mark is used.",
+    monoT: "Black and white",
+    mono: "The official palette is a grey scale from white to black. This book’s Espresso and Paper are warm tones of that scale; the day colours are for accents only.",
+    monoNote: "HEX values are approximated from the scale in the brand book.",
+    fontsT: "Official typefaces",
+    fonts: [
+      {
+        name: "Yume Regular",
+        use: "Headlines and slogans"
+      },
+      {
+        name: "Avenir",
+        use: "Text and labels"
+      }
+    ],
+    fontsNote: "The official typefaces are used in print; their licences should be checked. The alphabet sample in the brand book has no “ə”, so the site and this book use free equivalents that cover the full Azerbaijani alphabet: League Spartan and Mulish. The samples above are set in those equivalents.",
+    slogansT: "Slogans",
+    slogans: [
+      "In coffee we trust.",
+      "Good to the last drop!"
+    ],
+    slogansNote: "The system’s line “Xəttə qədər.” (To the line.) continues the second slogan in Azerbaijani: to the last drop, to the line.",
+    packT: "Packaging",
+    pack: "The bag, the cup, the cold brew label and the paper bag stay as they are. The system adds nothing to them; the idea is already in the K mark, and the bean card, the menu and the digital channels tell the rest."
+  },
   platform: {
     title: "Platform",
     note: "Proposal",
@@ -461,8 +544,7 @@ const en: BrandDict = {
       video916: "Logo animation 9:16 (MP4)",
       gif: "Logo animation (GIF)",
       card: "Business card 90×50 (PDF, print)",
-      sleeve: "Cup sleeve 12 oz (PDF, with dieline)",
-      label: "Bag label 100×150 (PDF, print)",
+      beanCard: "Bean card 55×85 (PDF, print)",
       menuA3: "Menu A3 (PDF, print)",
       storyBean: "Story: bean of the week (PNG)",
       storyPoll: "Story: poll (PNG)",
@@ -470,26 +552,68 @@ const en: BrandDict = {
       reelsCover: "Reels cover (PNG)",
       safeAreas: "Story/Reels safe areas (PNG)",
     },
-    printNote: "Print files are RGB PDFs with 3 mm bleed; CMYK values are listed above and the printer converts. The cup sleeve uses a sample size: check it against the dieline from the supplier. [Bracketed] text is a placeholder.",
+    printNote: "Print files are RGB PDFs with 3 mm bleed; CMYK values are listed above and the printer converts. The packaging stays in its official design, so there are no bag or cup files. [Bracketed] text is a placeholder.",
   },
   back: "Home",
 };
 
 const ru: BrandDict = {
   meta: {
-    title: "Брендбук — MOKA Coffee Roastery",
+    title: "Брендбук — MOKA Roastery & Eatery",
     description: "Брендбук MOKA (концепт): платформа, правила логотипа, цвета, типографика, фото, тон голоса, моушн и звуковой логотип.",
   },
   nav: "Брендбук",
   hero: {
     eyebrow: "Брендбук · v1.0 · концепт",
     title: "Правила одной линии",
-    text: "Все точки контакта MOKA построены на одной идее: четыре буквы, четыре способа, одна линия. Здесь собраны правила этой идеи — для дизайнеров, бариста и SMM.",
+    text: "Официальный брендбук MOKA — основа. Эта книга превращает заложенную в нём идею — четыре буквы, четыре способа, одна линия — в правила для всех точек контакта: для дизайнеров, бариста и SMM.",
     note: "Платформа и тон голоса — предложения для MOKA, их нужно уточнить с командой.",
     pdf: "Скачать PDF",
     kit: "Бренд-пакет",
   },
-  toc: ["Платформа", "Логотип", "Цвет", "Типографика", "Сетка", "Фото", "Тон голоса", "Моушн", "Звук", "Файлы"],
+  toc: ["Основа", "Платформа", "Логотип", "Цвет", "Типографика", "Сетка", "Фото", "Тон голоса", "Моушн", "Звук", "Файлы"],
+  base: {
+    title: "Основа",
+    note: "Официальный брендбук MOKA",
+    text: "Эта книга состоит из двух слоёв. Основа — официальный брендбук MOKA: логотип, чёрно-белая палитра, шрифты, слоганы и упаковка. Она не меняется. Система — идея, скрытая внутри этой основы: четыре буквы, четыре способа, одна линия. Следующие разделы — правила системы.",
+    layers: [
+      {
+        name: "Основа",
+        by: "Официальный брендбук MOKA",
+        items: "Логотип и «Roastery & Eatery» · чёрно-белая палитра · Yume и Avenir · слоганы · упаковка"
+      },
+      {
+        name: "Система",
+        by: "Эта книга",
+        items: "4 буквы, 4 способа, 1 линия · цвета дня · тон голоса · моушн и звук · AR и игры"
+      }
+    ],
+    lockupT: "Официальный блок",
+    lockup: "Логотип и «ROASTERY & EATERY» одной ширины. В малых размерах и иконках используется только знак K.",
+    monoT: "Белый и чёрный",
+    mono: "Официальная палитра — серая шкала от белого к чёрному. Эспрессо и Бумага в этой книге — тёплые оттенки этой шкалы, цвета дня — только для акцентов.",
+    monoNote: "Значения HEX приблизительно сняты со шкалы брендбука.",
+    fontsT: "Официальные шрифты",
+    fonts: [
+      {
+        name: "Yume Regular",
+        use: "Заголовки и слоганы"
+      },
+      {
+        name: "Avenir",
+        use: "Текст и подписи"
+      }
+    ],
+    fontsNote: "Официальные шрифты используются в печати; их лицензии нужно проверить. В образце алфавита из брендбука нет буквы «ə», поэтому сайт и эта книга используют бесплатные аналоги с полным азербайджанским алфавитом: League Spartan и Mulish. Образцы выше набраны аналогами.",
+    slogansT: "Слоганы",
+    slogans: [
+      "In coffee we trust.",
+      "Good to the last drop!"
+    ],
+    slogansNote: "Слоган системы «Xəttə qədər.» («До линии.») продолжает второй слоган по-азербайджански: до последней капли, до линии.",
+    packT: "Упаковка",
+    pack: "Пачка, стакан, этикетка cold brew и бумажный пакет остаются прежними. Система ничего на них не добавляет: идея уже в знаке K, остальное рассказывают карточка зерна, меню и цифровые каналы."
+  },
   platform: {
     title: "Платформа",
     note: "Предложение",
@@ -697,8 +821,7 @@ const ru: BrandDict = {
       video916: "Анимация логотипа 9:16 (MP4)",
       gif: "Анимация логотипа (GIF)",
       card: "Визитка 90×50 (PDF, печать)",
-      sleeve: "Манжета стакана 12 oz (PDF, с высечкой)",
-      label: "Этикетка пачки 100×150 (PDF, печать)",
+      beanCard: "Карточка зерна 55×85 (PDF, печать)",
       menuA3: "Меню A3 (PDF, печать)",
       storyBean: "Сторис: зерно недели (PNG)",
       storyPoll: "Сторис: опрос (PNG)",
@@ -706,7 +829,7 @@ const ru: BrandDict = {
       reelsCover: "Обложка Reels (PNG)",
       safeAreas: "Безопасные зоны Stories/Reels (PNG)",
     },
-    printNote: "Файлы для печати — RGB PDF с вылетами 3 мм; значения CMYK указаны выше, типография конвертирует. Манжета сделана по примерному размеру: сверьте с высечкой поставщика. Текст [в скобках] — заполнитель.",
+    printNote: "Файлы для печати — RGB PDF с вылетами 3 мм; значения CMYK указаны выше, типография конвертирует. Упаковка остаётся в официальном дизайне, поэтому файлов пачки и стакана нет. Текст [в скобках] — заполнитель.",
   },
   back: "Главная",
 };

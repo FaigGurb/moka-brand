@@ -5,6 +5,7 @@ import { Letter, Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
 import { bakuHour, daySlot, type DaySlot } from "@/lib/day";
+import { CONTACT } from "@/lib/site";
 
 type LetterId = "M" | "O" | "K" | "A";
 // Section accents come from the day palette; brand names stay Azerbaijani.
@@ -96,7 +97,6 @@ export function MenuPage() {
 
   const items = m.items as Record<string, { name: string; desc: string }[]>;
   const levels = t.roast.levels;
-  const tiers = t.tiers.items;
 
   return (
     <div ref={root}>
@@ -159,13 +159,14 @@ export function MenuPage() {
                 <>
                   <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-muted">{m.beansText}</p>
                   <ul className="mt-8 grid gap-5 sm:grid-cols-3">
-                    {BAGS.map((b, i) => (
+                    {BAGS.map((b) => (
                       <li key={b.level} className="m-bag">
-                        <div className="relative aspect-[3/4] overflow-hidden bg-white shadow-[0_24px_60px_-30px_rgba(27,23,20,0.45)]">
+                        <div className="relative aspect-[3/4] overflow-hidden rounded-[10px] bg-white shadow-[0_24px_60px_-30px_rgba(27,23,20,0.45)]">
+                          <span className="absolute top-4 right-4 block h-3.5 w-3.5 rounded-full bg-paper-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]" aria-hidden="true" />
                           <div className="absolute inset-x-0 top-0 p-5">
                             <Logo className="h-5 w-auto" />
-                            <p className="mt-1 text-[9px] font-bold tracking-[0.3em] text-muted uppercase">Coffee Roastery</p>
-                            <p className="mt-6 text-[11px] font-bold tracking-[0.18em] text-muted uppercase">{tiers[i]?.name}</p>
+                            <p className="mt-1 text-[9px] font-bold tracking-[0.3em] text-muted uppercase">Roastery & Eatery</p>
+                            <p className="mt-6 text-[11px] font-bold tracking-[0.18em] text-axsam-ink uppercase">{t.roast.house.card}</p>
                             <p className="mt-1 font-[family-name:var(--font-display)] text-2xl">{levels[b.level].origin}</p>
                             <p className="text-[13px] text-muted">{levels[b.level].notes}</p>
                           </div>
@@ -216,20 +217,29 @@ export function MenuPage() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <a
-                href="https://www.instagram.com/mokacoffeebaku/"
+                href={CONTACT.map}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow"
+              >
+                {m.place.map} ↗
+              </a>
+              <a
+                href={CONTACT.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow"
               >
                 {m.place.instagram}
               </a>
-              <span className="text-[14px] text-muted-dark">
-                {m.place.contactT}: {m.place.phone}
-              </span>
+              <a href={`tel:${CONTACT.tel}`} className="text-[14px] text-muted-dark hover:text-paper">
+                {m.place.contactT}: <span className="tabular-nums">{m.place.phone}</span>
+              </a>
             </div>
           </div>
           {/* abstract map: streets as thin lines, the café marked with the Chemex letter */}
-          <figure className="relative aspect-[4/3] overflow-hidden border border-paper/10 bg-espresso-2">
+          <a href={CONTACT.map} target="_blank" rel="noopener noreferrer" aria-label={`${m.place.map}: ${m.place.address}`} className="group block">
+          <figure className="relative aspect-[4/3] overflow-hidden border border-paper/10 bg-espresso-2 transition-colors group-hover:border-glow/50">
             <svg viewBox="0 0 400 300" className="h-full w-full" aria-hidden="true">
               <g stroke="rgba(245,241,234,0.12)" strokeWidth="1.5" fill="none">
                 <path d="M-10 60 L410 40" /><path d="M-10 140 L410 120" /><path d="M-10 220 L410 210" />
@@ -242,8 +252,9 @@ export function MenuPage() {
                 <polygon points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-340 0)" fill="#FFE2A6" />
               </g>
             </svg>
-            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-[0.14em] text-muted-dark uppercase">{m.place.map}</figcaption>
+            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-[0.14em] text-muted-dark uppercase group-hover:text-glow">{m.place.map} ↗</figcaption>
           </figure>
+          </a>
         </div>
       </section>
     </div>

@@ -95,6 +95,15 @@ export function paintCupBody(c) {
   return c;
 }
 
+/** MOKA's official takeaway cup (brand book): white paper, the black K front and back. Canvas top = cup top. */
+export function paintOfficialCup(c) {
+  const W = c.width, H = c.height, g = c.getContext('2d');
+  g.fillStyle = '#F7F6F3';
+  g.fillRect(0, 0, W, H);
+  for (const cx of [0, W * 0.5, W]) drawLetter(g, 'K', cx, H * 0.45, H * 0.27, '#141414');
+  return c;
+}
+
 export const DAY = [
   { name: 'Espresso', bg: '#1B1714', ink: '#F5F1EA', line: '#FFE2A6' },
   { name: 'Səhər', bg: '#C89B6D', ink: '#1B1714', line: '#F5F1EA' },

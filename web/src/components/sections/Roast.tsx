@@ -52,11 +52,13 @@ export function Roast() {
   return (
     <section id="qovurma" ref={root} className="day-wash overflow-hidden bg-paper text-espresso">
       <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
-        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[340px] overflow-hidden bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
-          <div className="h-[6%] bg-[#ECE8E1]" />
-          <div className="flex flex-col gap-2 p-[9%]">
-            <Logo className="w-[62%]" />
-            <span className="text-[9px] font-bold tracking-[0.3em]">COFFEE ROASTERY</span>
+        {/* the bean card: given with every bag, so the official bag itself stays unchanged */}
+        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
+          <span className="absolute top-[4.5%] right-[8%] block h-4 w-4 rounded-full bg-paper-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]" aria-hidden="true" />
+          <div className="flex flex-col gap-2 p-[9%] pt-[11%]">
+            <span className="text-[10px] font-bold tracking-[0.28em] text-axsam-ink">{t.roast.house.card}</span>
+            <Logo className="mt-2 w-[56%]" />
+            <span className="text-[8px] font-bold tracking-[0.3em]">ROASTERY & EATERY</span>
             <span className="mt-4 font-[family-name:var(--font-display)] text-[28px] leading-none">{L.origin}</span>
             <span className="flex items-center gap-2">
               <span
@@ -88,6 +90,13 @@ export function Roast() {
           <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted">
             {t.roast.text}
           </p>
+          <div className="flex max-w-[48ch] flex-col gap-1.5 border-l-[3px] border-axsam bg-paper-2/70 px-5 py-4">
+            <b className="font-[family-name:var(--font-display)] text-xl font-medium">{t.roast.house.title}</b>
+            <p className="text-[15px] leading-relaxed text-muted">{t.roast.house.text}</p>
+            <p className="text-[13px] font-bold tracking-[0.04em]">
+              {t.roast.house.roaster}: <span className="font-normal text-muted">{t.roast.house.roasterName}</span>
+            </p>
+          </div>
           <fieldset className="mt-2 flex flex-col gap-3">
             <legend className="mb-3 text-sm font-bold tracking-[0.06em]">{t.roast.legend}</legend>
             <input
