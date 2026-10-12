@@ -192,7 +192,11 @@ export function Partners() {
           })}
         </ol>
 
-        <div className="mt-20 flex flex-col gap-5 border-t border-paper/12 pt-8 md:flex-row md:items-center md:justify-between">
+        <p className="mt-20 flex items-start gap-3 text-[14px] leading-relaxed text-paper/80">
+          <span aria-hidden="true" className="mt-[7px] block h-[3px] w-6 shrink-0 bg-glow" />
+          {p.trust}
+        </p>
+        <div className="mt-8 flex flex-col gap-5 border-t border-paper/12 pt-8 md:flex-row md:items-center md:justify-between">
           <p className="max-w-[52ch] font-[family-name:var(--font-display)] text-[clamp(20px,2vw,26px)] leading-snug">{p.b2b}</p>
           <a
             href={`tel:${CONTACT.tel}`}

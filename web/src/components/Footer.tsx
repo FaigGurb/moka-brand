@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Lockup } from "./Logo";
 import { bakuHour, daySlot, type DaySlot } from "@/lib/day";
-import { CONTACT, PARTNERS, links } from "@/lib/site";
+import { CONTACT, LOCATIONS, PARTNERS, links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
 
 export function Footer() {
@@ -46,14 +46,21 @@ export function Footer() {
         </nav>
         <address className="flex flex-col gap-3 text-sm not-italic">
           <b className="eyebrow text-seher">{t.contact.title}</b>
-          <a className="text-paper hover:text-glow" href={CONTACT.map} target="_blank" rel="noopener noreferrer">
-            {t.contact.address} <span aria-hidden="true">↗</span>
-          </a>
-          <span>{t.contact.near}</span>
-          <span>{t.contact.hours}</span>
-          <a className="tabular-nums text-paper hover:text-glow" href={`tel:${CONTACT.tel}`}>
-            {CONTACT.phone}
-          </a>
+          {LOCATIONS.map((loc, i) => {
+            const pl = t.contact.places[i];
+            return (
+              <div key={loc.id} className="flex flex-col gap-1">
+                <b className="font-bold text-paper">MOKA · {pl.name}</b>
+                <a className="text-paper/90 hover:text-glow" href={loc.map} target="_blank" rel="noopener noreferrer">
+                  {pl.address} <span aria-hidden="true">↗</span>
+                </a>
+                <span>{pl.hours}</span>
+                <a className="tabular-nums text-paper/90 hover:text-glow" href={`tel:${loc.tel}`}>
+                  {loc.phone}
+                </a>
+              </div>
+            );
+          })}
           <a className="hover:text-paper" href={CONTACT.instagram} target="_blank" rel="noopener noreferrer">
             {CONTACT.handle}
           </a>

@@ -5,7 +5,7 @@ import { Letter, Logo } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
 import { bakuHour, daySlot, type DaySlot } from "@/lib/day";
-import { CONTACT } from "@/lib/site";
+import { CONTACT, LOCATIONS } from "@/lib/site";
 
 type LetterId = "M" | "O" | "K" | "A";
 // Section accents come from the day palette; brand names stay Azerbaijani.
@@ -203,27 +203,32 @@ export function MenuPage() {
           <div className="flex flex-col gap-6">
             <p className="eyebrow text-seher">{m.place.eyebrow}</p>
             <h2 id="m-place-t" className="text-[clamp(32px,5vw,64px)] leading-[1.02] font-medium">{m.place.title}</h2>
-            <p className="font-[family-name:var(--font-display)] text-2xl">{m.place.address}</p>
-            <div>
-              <p className="eyebrow text-muted-dark">{m.place.hoursT}</p>
-              <dl className="mt-3 grid max-w-md gap-2 text-[15px]">
-                {m.place.hours.map(([d, h]) => (
-                  <div key={d} className="flex justify-between gap-4 border-b border-paper/10 pb-2">
-                    <dt className="text-muted-dark">{d}</dt>
-                    <dd className="tabular-nums">{h}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+            <p className="max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">{m.place.text}</p>
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {LOCATIONS.map((loc, i) => {
+                const pl = t.contact.places[i];
+                return (
+                  <li key={loc.id} className="flex flex-col gap-2 border border-paper/12 p-5">
+                    <b className="font-[family-name:var(--font-display)] text-xl font-medium">MOKA · {pl.name}</b>
+                    <span className="text-[15px] text-paper/90">{pl.address}</span>
+                    <span className="text-[13px] text-muted-dark">{pl.near}</span>
+                    <span className="mt-1 text-[13px]">
+                      <span className="text-muted-dark">{m.place.hoursT}: </span>
+                      <span className="tabular-nums">{pl.hours}</span>
+                    </span>
+                    <span className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-[13px] font-bold">
+                      <a href={loc.map} target="_blank" rel="noopener noreferrer" className="border-b border-paper/25 pb-0.5 hover:border-glow hover:text-glow">
+                        {m.place.map} ↗<span className="sr-only"> — MOKA {pl.name}</span>
+                      </a>
+                      <a href={`tel:${loc.tel}`} className="border-b border-paper/25 pb-0.5 tabular-nums hover:border-glow hover:text-glow">
+                        {loc.phone}
+                      </a>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
             <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={CONTACT.map}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow"
-              >
-                {m.place.map} ↗
-              </a>
               <a
                 href={CONTACT.instagram}
                 target="_blank"
@@ -232,29 +237,32 @@ export function MenuPage() {
               >
                 {m.place.instagram}
               </a>
-              <a href={`tel:${CONTACT.tel}`} className="text-[14px] text-muted-dark hover:text-paper">
-                {m.place.contactT}: <span className="tabular-nums">{m.place.phone}</span>
-              </a>
             </div>
           </div>
           {/* abstract map: streets as thin lines, the café marked with the Chemex letter */}
-          <a href={CONTACT.map} target="_blank" rel="noopener noreferrer" aria-label={`${m.place.map}: ${m.place.address}`} className="group block">
-          <figure className="relative aspect-[4/3] overflow-hidden border border-paper/10 bg-espresso-2 transition-colors group-hover:border-glow/50">
+          <figure aria-hidden="true" className="relative aspect-[4/3] overflow-hidden border border-paper/10 bg-espresso-2">
             <svg viewBox="0 0 400 300" className="h-full w-full" aria-hidden="true">
               <g stroke="rgba(245,241,234,0.12)" strokeWidth="1.5" fill="none">
                 <path d="M-10 60 L410 40" /><path d="M-10 140 L410 120" /><path d="M-10 220 L410 210" />
                 <path d="M60 -10 L80 310" /><path d="M170 -10 L160 310" /><path d="M280 -10 L300 310" />
                 <path d="M-10 300 C120 250 260 270 410 230" stroke="rgba(142,138,132,0.45)" strokeWidth="18" />
               </g>
-              <circle cx="215" cy="128" r="46" fill="rgba(255,226,166,0.12)" />
-              <g transform="translate(196 104) scale(0.24)">
-                <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" transform="translate(-340 0)" fill="none" stroke="#FFE2A6" strokeWidth="9" />
-                <polygon points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-340 0)" fill="#FFE2A6" />
-              </g>
+              {/* two cafés, roughly where they sit relative to each other: Parkview is ~800 m north */}
+              {[
+                [215, 178],
+                [248, 72],
+              ].map(([x, y]) => (
+                <g key={x}>
+                  <circle cx={x} cy={y} r="40" fill="rgba(255,226,166,0.12)" />
+                  <g transform={`translate(${x - 19} ${y - 24}) scale(0.24)`}>
+                    <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" transform="translate(-340 0)" fill="none" stroke="#FFE2A6" strokeWidth="9" />
+                    <polygon points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-340 0)" fill="#FFE2A6" />
+                  </g>
+                </g>
+              ))}
             </svg>
-            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-[0.14em] text-muted-dark uppercase group-hover:text-glow">{m.place.map} ↗</figcaption>
+            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-[0.14em] text-muted-dark uppercase">MOKA × 2 · {t.contact.places.map((p) => p.name).join(" · ")}</figcaption>
           </figure>
-          </a>
         </div>
       </section>
     </div>

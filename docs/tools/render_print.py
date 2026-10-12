@@ -29,8 +29,11 @@ ESP, PAPER, KRAFT, MUTED = "#1B1714", "#F5F1EA", "#C9A882", "#5E5852"
 SEHER, GUNORTA, AXSAM, SEHER_CITY, NAR, GLOW = "#C89B6D", "#D9B56A", "#A8643A", "#8E8A84", "#8E2F22", "#FFE2A6"
 ROAST = ["#8C9A5B", "#C08A55", "#8A5A3B", "#5E3B26", "#2B1D15"]
 INK, WHITE = "#111111", "#FFFFFF"  # the official black and white
-ADDRESS = "Əhməd Cavad küçəsi, Bakı AZ1005"
+ADDRESS = "Azərbaycan pr. 4, Bakı AZ1005"
 PHONE = "+994 51 244 13 01"
+# second café (MOKA Instagram + Google profile, October 2026)
+ADDRESS_2 = "Füzuli küç. 37, Bakı AZ1014"
+PHONE_2 = "+994 51 244 13 02"
 DISPLAY = "'League Spartan','Montserrat',sans-serif"
 TEXT = "'Mulish',sans-serif"
 
@@ -221,7 +224,8 @@ def menu():
     s += f'<rect x="-3" y="352" width="303" height="1.6" fill="{GLOW}"/>'
     s += t(20, 372, "Hərf alətdir, xətt səviyyədir.", pt(16), PAPER, font=DISPLAY, weight=500)
     s += t(20, 381, "O fincan · M moka pot · K Chemex · A V60", pt(9), "#D6D2CB")
-    s += t(20, 397, f"{ADDRESS} · {PHONE} · hər gün, 24 saat · @mokacoffeebaku", pt(8.5), "#D6D2CB")
+    s += t(20, 391, f"Nizami parkı · {ADDRESS} · {PHONE} · hər gün, 24 saat", pt(8.5), "#D6D2CB")
+    s += t(20, 397, f"Parkview · {ADDRESS_2} · {PHONE_2} · hər gün, 07:30–00:00 · @mokacoffeebaku", pt(8.5), "#D6D2CB")
     s += t(20, 403, "Nümunə menyu: siyahı və qiymətlər yer tutucudur ([₼]).", pt(7.5), "#B8B0A6")
     s += f'<rect x="242" y="362" width="35" height="35" fill="{PAPER}"/>' + qr(SITE + "menu/", 244.5, 364.5, 30, ESP)
     s += t(259.5, 404, "Menyu və AR", pt(7.5), PAPER, weight=700, anchor="middle")

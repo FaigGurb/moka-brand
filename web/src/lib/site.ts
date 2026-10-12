@@ -46,6 +46,16 @@ export const CONTACT = {
 };
 
 /**
+ * The two cafés, in the order MOKA lists them on Instagram. Addresses, phones and hours come from
+ * MOKA's own posts and its Google Business profiles (checked October 2026); the copy (address,
+ * landmark, hours) lives in `dict.ts` under `contact.places` in the same order.
+ */
+export const LOCATIONS = [
+  { id: "nizami", phone: CONTACT.phone, tel: CONTACT.tel, map: CONTACT.map },
+  { id: "parkview", phone: "+994 51 244 13 02", tel: "+994512441302", map: "https://maps.app.goo.gl/CGsgys3P2HSYjH9k8" },
+] as const;
+
+/**
  * Italian brands MOKA distributes officially in Azerbaijan, in the order of a cup's path
  * (bean → grind → espresso → syrup → showcase). Facts come from each brand's own site.
  */

@@ -336,6 +336,16 @@ export function BrandPage() {
               </div>
               <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.slogansNote}</p>
 
+              <p className="eyebrow mt-14 text-axsam-ink">{b.base.voiceT}</p>
+              <ul className="mt-5 grid gap-x-8 gap-y-3 md:grid-cols-2">
+                {b.base.voice.map((v) => (
+                  <li key={v} className="b-item border-l-[3px] border-[#111] pl-4 font-[family-name:var(--font-display)] text-[clamp(19px,2vw,24px)] leading-snug font-medium">
+                    {v}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.voiceNote}</p>
+
               <p className="eyebrow mt-14 text-axsam-ink">{b.base.packT}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {PACKS.map((Pack, i) => (
