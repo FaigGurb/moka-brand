@@ -17,9 +17,9 @@ update it at the end; git is the only channel between them. Keep it short — re
   4. `npm run check` + `npm run build` keçir; `docs/tools/qa/` brauzer yoxlamaları və `docs/QA.md` hero bəndləri.
   5. Əvvəl/sonra skrinşotlar (mobil + desktop) hesabata.
 - **Status:** deployed + merged (PR #1)
-- **Verification:** check+build keçdi, CI yaşıl. Chromium skrinşotları 360/390/768/1440: hero kəsilmir, mətn oxunur, fon canlı, JS xətası yox. Real telefonda performans yoxlanmayıb.
+- **Verification:** check+build keçdi, CI yaşıl. 2026-10-13 mobil emulyasiya (Chromium, swiftshader): 6 səhifə × az/en/ru × 4 ekran — üfüqi daşma 0, JS xətası 0. Real telefonda GPU performansı hələ yoxlanmayıb (emulyasiyada WebGL proqram rejimindədir).
 - **Blockers:** —
-- **Next step:** Canlı saytda (faiggurb.github.io/moka-brand) real telefonda yoxla; qa-only istəyə görə.
+- **Next step:** Real telefonda (iPhone + Android) hero və dən hekayəsini yoxla. Tapıntı: 360px-də dən hekayəsində uçan dənlər başlıq/caption mətninin üstünə düşür (oxunaqlıq); ana JS ~1.6 MB.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: 3D səhnə, shader/fon, layout dizaynı (əsas iş). **Sonnet**: lint/typecheck düzəlişləri, i18n sinxronu, QA skriptləri.
