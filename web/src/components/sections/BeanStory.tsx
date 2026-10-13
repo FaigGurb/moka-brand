@@ -13,9 +13,16 @@ export function BeanStory() {
   const b = t.beans;
   const shots: Scene["shots"][] = [
     [{ still: STILLS.beanGreen, focus: "48% 50%" }],
-    [{ still: STILLS.beanLight, focus: "70% 50%" }],
-    [{ still: STILLS.hero, focus: "72% 50%" }],
-    [{ still: STILLS.hero, focus: "60% 50%" }],
+    [
+      { still: STILLS.beanLight, focus: "70% 50%" },
+      { still: STILLS.beanDark, focus: "48% 50%" },
+      { still: STILLS.beanCrack, focus: "50% 50%" },
+    ],
+    [{ still: STILLS.grind, focus: "50% 60%" }],
+    [
+      { still: STILLS.pour, focus: "44% 60%" },
+      { still: STILLS.chemex, focus: "48% 55%" },
+    ],
     [{ still: STILLS.cup, focus: "50% 50%" }],
   ];
   const steps = [...b.steps, b.final];
@@ -33,6 +40,7 @@ export function BeanStory() {
       eyebrow={b.eyebrow}
       heading={<h2 id="proses-title">{b.title}</h2>}
       scenes={scenes}
+      perShot={0.75}
     />
   );
 }

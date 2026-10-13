@@ -69,11 +69,13 @@ export function CinemaStage({ id, labelledBy, eyebrow, heading, scenes, perShot 
         scenes.forEach((sc, si) => {
           const len = sc.shots.length * seg;
           const cap = caps[si];
+          // captions arrive with the shot's dissolve and leave just before the next chapter's,
+          // so even a one-shot chapter reads for most of its scroll
           if (si > 0) {
-            tl.fromTo(cap, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: seg * 0.3, ease: "power2.out" }, at + seg * 0.05);
+            tl.fromTo(cap, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: seg * 0.2, ease: "power2.out" }, at - seg * 0.08);
             if (ticks[si]) tl.to(ticks[si], { opacity: 1, duration: seg * 0.1 }, at);
           }
-          if (si < scenes.length - 1) tl.to(cap, { autoAlpha: 0, y: -30, duration: seg * 0.25, ease: "power2.in" }, at + len - seg * 0.3);
+          if (si < scenes.length - 1) tl.to(cap, { autoAlpha: 0, y: -30, duration: seg * 0.14, ease: "power2.in" }, at + len - seg * 0.2);
           at += len;
         });
         tl.fromTo(".c-rail", { scaleY: 0 }, { scaleY: 1, duration: 1 }, 0);

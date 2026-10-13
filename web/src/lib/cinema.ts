@@ -12,6 +12,11 @@ export const STILLS = {
   hero: { name: "hero", widths: [960, 1600], aspect: 1.7768 },
   beanGreen: { name: "bean-green", widths: [960, 1600, 2400], aspect: 1.7917 },
   beanLight: { name: "bean-light", widths: [960, 1600, 2400], aspect: 1.7917 },
+  beanDark: { name: "bean-dark", widths: [960, 1600], aspect: 1.7797 },
+  beanCrack: { name: "bean-crack", widths: [960, 1600], aspect: 1.7797 },
+  grind: { name: "grind", widths: [960, 1600], aspect: 1.7797 },
+  pour: { name: "pour", widths: [960, 1600], aspect: 1.7797 },
+  chemex: { name: "chemex", widths: [960, 1600], aspect: 1.7797 },
   cup: { name: "cup", widths: [960, 1600], aspect: 1.7768 },
 } satisfies Record<string, Still>;
 
