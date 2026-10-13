@@ -10,9 +10,9 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** Yeni dizayn deploy olundu: hero + 'Bir fincanın yolu' 9 foto-real kadr (yaşıl → açıq → tünd → çatlayan dən, üyütmə, tökmə, dolu Chemex, MOKA fincanı).
-- **Verification:** check+build keçdi; Chromium 1440/390 skrinşotları 9 kadrın hamısında başlıq oxunur, xəta yox. scroll_perf (əvvəlki 4 kadrlı versiya): mobil 4× CPU 44.7 fps, desktop 37. Real telefon yoxlanmayıb.
-- **Next step:** İstifadəçi baxsın → DEPLOY: yes olarsa deploy + PR; sonra qalan bölmələrin tünd luxury cilası (Concept, Roast, BrewGuide, Tiers…).
+- **Status:** Canlı animasiya deploy olundu: hero-da düşən foto-dənlər; tüstü (tünd dən), qırıntılar (çatlayan dən), axan toz (üyütmə), su axını + buxar (tökmə), damcı + halqa + buxar (Chemex), buxar (fincan). Real video kliplər (Kling) gəlsə ScrollFilm ilə əlavə olunacaq.
+- **Verification:** check+build keçdi; Playwright: 7 səhnədə 0.7 s ara ilə piksel fərqi (animasiya işləyir), xəta yox; önizləmə videosu yazıldı. scroll_perf: mobil 4× CPU 45.1 fps, desktop 36.1 (effektlərsiz 44.7 / 37). Real telefon yoxlanmayıb.
+- **Next step:** İstifadəçi önizləməyə baxsın → DEPLOY: yes; sonra qalan bölmələrin tünd luxury cilası.
 
 ## Recent decisions (newest first, max 5)
 - 2026-10-13: Video modelləri ödənişli olduğundan foto-real still + kinematik keçid (CinemaStage) seçildi; K loqosu vektordan qoyulur.
