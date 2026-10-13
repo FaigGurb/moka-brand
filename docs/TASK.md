@@ -24,10 +24,10 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə scroll lag-sız (lite yol); canvas ekrandan kənarda render etmir.
   4. Reduced-motion: statik, mətn oxunur. WebGL yoxdursa: statik fallback.
   5. `npm run check` + `npm run build` + `docs/tools/qa/` keçir; əvvəl/sonra skrinşotlar.
-- **Status:** M1 + M2 hazır (səhifə boyu dən→qovurma→üyütmə→dəmləmə→fincana tökülmə→qapaq→xətt); M3 gözləyir
-- **Verification:** M2: check+build keçdi; Chromium 390/1440: bölmələr + final ardıcıllığı (7 kadr) skrinşotla yoxlandı, konsolda xəta yox. Final keçidində qısa an Chemex başlığın altına toxunur. Real telefon/perf yoxlanmayıb.
+- **Status:** M1 + M2 + M3 hazır; M4 (cilalama, az/en/ru, QA.md) gözləyir
+- **Verification:** M3: check+build keçdi. scroll_perf (GPU-suz headless, software compositing): mobil 48→30 fps (optimallaşdırmadan əvvəl 10), desktop 42→16; trace: vaxt GLES2::ReadPixels-dədir (real cihazda yoxdur). Adaptiv keyfiyyət headless-də 3D-ni ~11 s-də söndürür (statik K). responsive.py: overflow 0, xəta yox; journey qutusu üçün 'wide' xəbərdarlığı kəsici konteynerlə düzəldildi (təkrar yoxlama gedir). Real telefon yoxlanmayıb.
 - **Blockers:** —
-- **Next step:** M3: mobil perf (scroll_perf.py, offscreen_draws.py), reduced-motion statik kadrlar, telefonda yoldaşın mətnlə toqquşması. **DEPLOY: no**.
+- **Next step:** İstifadəçi real telefonda yoxlasın (deploy lazımdır). Sonra M4: final keçid cilası, telefonda yoldaşın mətnlə toqquşması, docs/QA.md. **DEPLOY: no**.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: səhnə memarlığı, material, kamera/keçidlər. **Sonnet**: i18n sinxronu, lint/typecheck, QA skriptləri.

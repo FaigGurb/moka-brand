@@ -11,6 +11,18 @@ import { ANCHORS, journey, lerpPose } from "./chapters";
 const JourneyScene = dynamic(() => import("./JourneyScene"), { ssr: false });
 
 const sstep = (x: number) => x * x * (3 - 2 * x);
+
+/** True once the journey has switched itself off on a device too slow for it (stages then show the K). */
+let offNow = false;
+export function useJourneyOff() {
+  const [off, setOff] = useState(offNow);
+  useEffect(() => {
+    const on = () => setOff(true);
+    window.addEventListener("moka:journey-off", on);
+    return () => window.removeEventListener("moka:journey-off", on);
+  }, []);
+  return off;
+}
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
 /**
@@ -27,8 +39,50 @@ export function Journey() {
   const idle = useIdle(1600);
   const box = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
+  // adaptive quality: 0 full, 1 economy (lite materials, fewer frames), 2 off
+  const [level, setLevel] = useState(0);
 
-  const enabled = webgl === true && !reduced && idle;
+  const enabled = webgl === true && !reduced && idle && level < 2;
+
+  // Watch the real frame rate while the journey is on screen; step down when the device can't keep up.
+  useEffect(() => {
+    if (!enabled) return;
+    let raf = 0;
+    let last = performance.now();
+    let sum = 0;
+    let n = 0;
+    let slow = 0;
+    let lvl = level;
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      const dt = now - last;
+      last = now;
+      if (journey.presence < 0.5 || document.hidden || dt > 250) return;
+      sum += dt;
+      n++;
+      if (sum < 2500) return;
+      const fps = (1000 * n) / sum;
+      sum = 0;
+      n = 0;
+      // below 40 fps: economy (also what a 30 Hz-capped phone in low-power mode lands on);
+      // switched off only when even economy stays under 24 fps
+      slow = fps < (lvl === 0 ? 40 : 24) ? slow + 1 : Math.max(0, slow - 1);
+      if (slow >= 2) {
+        slow = 0;
+        lvl++;
+        setLevel((l) => {
+          if (l + 1 >= 2) {
+            offNow = true;
+            window.dispatchEvent(new Event("moka:journey-off"));
+          }
+          return l + 1;
+        });
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+    // the level is read once per run; the effect restarts when it changes
+  }, [enabled, level]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -37,6 +91,7 @@ export function Journey() {
     let fadeIn = [0, 1];
     let fadeOut = [Infinity, Infinity];
     let on = false;
+    let lastOp = -1;
 
     const measure = () => {
       const vh = innerHeight;
@@ -84,7 +139,12 @@ export function Journey() {
       const presence =
         sstep(clamp01((y - fadeIn[0]) / (fadeIn[1] - fadeIn[0]))) * (1 - sstep(clamp01((y - fadeOut[0]) / (fadeOut[1] - fadeOut[0]))));
       journey.presence = presence;
-      if (box.current) box.current.style.opacity = String(presence * pose.o);
+      // write only real changes: a style write every frame on a WebGL layer costs a recomposite
+      const op = Math.round(presence * pose.o * 500) / 500;
+      if (box.current && op !== lastOp) {
+        lastOp = op;
+        box.current.style.opacity = String(op);
+      }
       const nowOn = presence > 0.01;
       if (nowOn !== on) {
         on = nowOn;
@@ -110,8 +170,11 @@ export function Journey() {
 
   if (!enabled) return null;
   return (
-    <div ref={box} aria-hidden="true" className="pointer-events-none fixed inset-0 z-40 opacity-0">
-      <JourneyScene touch={touch} lite={tier === "low"} active={active} />
+    // a clipping viewport around the moving box, so it can slide past the screen edge without overflow
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
+      <div ref={box} className="absolute top-0 left-0 h-[100lvh] w-screen opacity-0 will-change-transform">
+        <JourneyScene frame={box} touch={touch} lite={tier === "low" || level >= 1} eco={level >= 1} active={active} />
+      </div>
     </div>
   );
 }

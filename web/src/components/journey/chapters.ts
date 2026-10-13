@@ -80,4 +80,6 @@ export const journey = {
   pose: { x: 0.3, y: 0, s: 0.75, o: 0 } as Pose,
   /** 0 over the hero and the footer, 1 in between */
   presence: 0,
+  /** set by the scene while it is still easing toward the scroll target (frames then run at full rate) */
+  moving: false,
 };

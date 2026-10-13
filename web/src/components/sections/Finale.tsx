@@ -5,6 +5,7 @@ import { Letter } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useWebGL } from "@/lib/hooks";
 import { useI18n } from "@/i18n/context";
+import { useJourneyOff } from "../journey/Journey";
 
 /**
  * Stage 2 of the coffee journey: a tall section whose caption stays on screen (CSS sticky) while the
@@ -17,7 +18,8 @@ export function Finale() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const webgl = useWebGL();
-  const still = webgl === false || reduced;
+  const journeyOff = useJourneyOff();
+  const still = webgl === false || reduced || journeyOff;
 
   useGSAP(
     () => {

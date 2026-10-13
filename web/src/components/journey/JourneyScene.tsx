@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
 import { paintCupWrap } from "@/lib/cupArt";
@@ -18,10 +18,14 @@ import { installPointer, pointer as sharedPointer, pointerNDC } from "@/lib/poin
  */
 
 type Props = {
+  /** the fixed element holding the canvas: sized and moved here to cover only the object */
+  frame: RefObject<HTMLDivElement | null>;
   touch: boolean;
   active: boolean;
   /** light path for phones and weak machines */
   lite?: boolean;
+  /** economy: the device struggled, so even fewer frames */
+  eco?: boolean;
   onReady?: () => void;
 };
 
@@ -101,7 +105,10 @@ type Bean = {
   angle: number;
 };
 
-function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
+/** Vertical size of the view at the object's depth (camera z 7.6, fov 35). */
+const VIEW_H = 2 * Math.tan(THREE.MathUtils.degToRad(17.5)) * 7.6;
+
+function Story({ frame, touch, lite = false }: Omit<Props, "active" | "onReady" | "eco">) {
   const root = useRef<THREE.Group>(null);
   const beans = useRef<THREE.InstancedMesh>(null);
   const grounds = useRef<THREE.Points>(null);
@@ -123,14 +130,20 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
   const smooth = useRef(journey.p);
   const lastGrind = useRef(-1);
   const lastRoast = useRef(-1);
-  const { viewport, camera, pointer, gl } = useThree();
+  const { camera, pointer, gl } = useThree();
+  // The canvas covers only a box around the object (companion mode) or the whole screen (stages);
+  // the camera keeps the full-screen projection through a view offset, so nothing jumps.
+  const box = useRef({ mode: "", w: 0, h: 0, fx: 1, fy: 1 });
+  const fullCam = useMemo(() => new THREE.PerspectiveCamera(35, 1, 0.1, 100), []);
+  const centre = useMemo(() => new THREE.Vector3(), []);
   useEffect(() => installPointer(), []);
 
   // page-wide, so fewer beans than a single full-screen stage would carry
   const BEANS = lite ? 26 : 64;
   const GROUNDS = lite ? 450 : 1800;
 
-  const beanGeo = useMemo(() => createBeanGeometry(lite ? "low" : "high"), [lite]);
+  // the beans are small on a page-wide layer: the low-poly bean is enough everywhere
+  const beanGeo = useMemo(() => createBeanGeometry("low"), []);
   const beanMat = useMemo(() => new THREE.MeshStandardMaterial({ roughness: 0.42, metalness: 0.05 }), []);
 
   const data = useMemo<Bean[]>(() => {
@@ -319,6 +332,9 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
     const p = smooth.current;
 
     // ---- layout: the pose (from the section on screen) places and sizes the whole object
+    const fw = window.innerWidth;
+    const fh = window.innerHeight;
+    const viewport = { width: (VIEW_H * fw) / fh, height: VIEW_H, aspect: fw / fh };
     const landscape = viewport.aspect > 1.05;
     const base = landscape ? Math.min(0.95, viewport.height / 5.6) : Math.min(1, viewport.width / 3.4, (viewport.height * 0.44) / 2.5);
     const pose = journey.pose;
@@ -333,6 +349,10 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
       r.position.y += (pose.y * viewport.height + 0.05 * scale - r.position.y) * k;
       // a slow turn while travelling, so it reads as one object moving through the page
       r.rotation.y = Math.sin(p * Math.PI * 2) * 0.25;
+      journey.moving =
+        Math.abs(journey.p - p) > 4e-4 ||
+        Math.abs(pose.x * viewport.width - r.position.x) > 2e-3 ||
+        Math.abs(scale - r.scale.x) > 2e-3;
     }
     // gentle camera drift: mouse on desktop, slow sway on touch
     const cx = touch ? Math.sin(t * 0.25) * 0.25 : pointer.x * 0.4;
@@ -340,6 +360,50 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
     camera.position.x += (cx - camera.position.x) * 0.05;
     camera.position.y += (0.9 + cy - camera.position.y) * 0.05;
     camera.lookAt(camera.position.x * 0.8, 0.1, 0);
+
+    // ---- canvas box: full screen on the stages, a moving box around the companion elsewhere
+    const cam = camera as THREE.PerspectiveCamera;
+    cam.aspect = fw / fh;
+    const el = frame.current;
+    const b = box.current;
+    const r0 = root.current;
+    const big = !r0 || Math.max(pose.s, r0.scale.x / base) > 0.8;
+    if (big) {
+      if (b.mode !== "full" || b.w !== fw || b.h !== fh) {
+        Object.assign(b, { mode: "full", w: fw, h: fh, fx: 1, fy: 1 });
+        if (el) {
+          el.style.width = `${fw}px`;
+          el.style.height = `${fh}px`;
+          el.style.transform = "none";
+        }
+      }
+      cam.clearViewOffset();
+    } else {
+      // sized for the largest companion (0.8 × base): local x ±(cloud + Chemex), y −1.8 … 3.2
+      const px = (fh / VIEW_H) * base * 0.8 * 1.12;
+      const bw = Math.min(fw, Math.ceil(2 * ((landscape ? 1.9 : 1.5) + 0.7) * px));
+      const bh = Math.min(fh, Math.ceil(5 * px));
+      if (b.mode !== "box" || b.w !== bw || b.h !== bh) {
+        Object.assign(b, { mode: "box", w: bw, h: bh, fx: bw / fw, fy: bh / fh });
+        if (el) {
+          el.style.width = `${bw}px`;
+          el.style.height = `${bh}px`;
+        }
+      }
+      fullCam.position.copy(cam.position);
+      fullCam.quaternion.copy(cam.quaternion);
+      fullCam.aspect = fw / fh;
+      fullCam.updateProjectionMatrix();
+      fullCam.updateMatrixWorld();
+      r0.updateMatrixWorld();
+      centre.set(0, 0.7, 0);
+      r0.localToWorld(centre).project(fullCam);
+      const ox = Math.round((centre.x * 0.5 + 0.5) * fw - bw / 2);
+      const oy = Math.round((-centre.y * 0.5 + 0.5) * fh - bh / 2);
+      if (el) el.style.transform = `translate3d(${ox}px,${oy}px,0)`;
+      cam.setViewOffset(fw, fh, ox, oy, bw, bh);
+    }
+    cam.updateProjectionMatrix();
 
     const roast = sstep(PHASES.roast[0], PHASES.roast[1], p) * 0.92;
     const grind = clamp((p - PHASES.grind[0]) / (PHASES.grind[1] - PHASES.grind[0]), 0, 1);
@@ -385,7 +449,7 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
           const sc0 = rp.scale.x;
           ndcToPlane(ndc, camera, rp.position.z + v.z * sc0, pw);
           pw.sub(rp.position).divideScalar(sc0);
-          pvel.set((ndc.vx * viewport.width) / 2 / sc0, (ndc.vy * viewport.height) / 2 / sc0, 0);
+          pvel.set((ndc.vx * viewport.width * box.current.fx) / 2 / sc0, (ndc.vy * viewport.height * box.current.fy) / 2 / sc0, 0);
           hit = true;
         }
         push.apply(i, v, hit ? pw : null, hit ? pvel : null, touch ? 1.1 : 0.9, dt, burst && hit);
@@ -595,13 +659,62 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
   );
 }
 
-export default function JourneyScene({ touch, active, lite = false, onReady }: Props) {
+/**
+ * Compiles every shader once at start (hidden parts included), so the cup, the stream and the
+ * line don't stall the scroll with a shader compile the first time they appear.
+ */
+function Precompile() {
+  const { gl, scene, camera } = useThree();
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const hidden: THREE.Object3D[] = [];
+      scene.traverse((o) => {
+        if (!o.visible) {
+          hidden.push(o);
+          o.visible = true;
+        }
+      });
+      gl.compile(scene, camera);
+      hidden.forEach((o) => (o.visible = false));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [gl, scene, camera]);
+  return null;
+}
+
+/**
+ * Frames on demand: full rate while the journey is still easing or the pointer is moving, otherwise
+ * a slow idle rate for the floating beans. A page-wide layer must not cost a frame every vsync.
+ */
+function FrameDriver({ lite, eco }: { lite: boolean; eco: boolean }) {
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    const busyMs = eco ? 1000 / 24 : lite ? 1000 / 30 : 1000 / 60;
+    const idleMs = eco ? 1000 / 8 : lite ? 1000 / 12 : 1000 / 24;
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      const busy = journey.moving || now - sharedPointer.moved < 700;
+      if (now - last >= (busy ? busyMs : idleMs) - 2) {
+        last = now;
+        invalidate();
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [invalidate, lite, eco]);
+  return null;
+}
+
+export default function JourneyScene({ frame, touch, active, lite = false, eco = false, onReady }: Props) {
   return (
     <Canvas
-      frameloop={active ? "always" : "never"}
-      dpr={lite ? [1, 1.25] : [1, 1.75]}
-      camera={{ position: [0, 0.9, 7.6], fov: 35 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      frameloop={active ? "demand" : "never"}
+      dpr={lite ? 1 : [1, 1.5]}
+      // aspect given = the camera is ours (R3F won't reset it on resize); Story sets it every frame
+      camera={{ position: [0, 0.9, 7.6], fov: 35, aspect: 1 }}
+      gl={{ antialias: !lite, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.localClippingEnabled = true;
         onReady?.();
@@ -617,7 +730,9 @@ export default function JourneyScene({ touch, active, lite = false, onReady }: P
         <Lightformer intensity={1.4} position={[-5, 1, 1]} rotation-y={Math.PI / 2} scale={[1, 5, 1]} color="#ffe2a6" />
         <Lightformer intensity={0.9} position={[5, 0, 1]} rotation-y={-Math.PI / 2} scale={[1, 5, 1]} color="#a8643a" />
       </Environment>
-      <Story touch={touch} lite={lite} />
+      {active && <FrameDriver lite={lite} eco={eco} />}
+      <Precompile />
+      <Story frame={frame} touch={touch} lite={lite} />
     </Canvas>
   );
 }

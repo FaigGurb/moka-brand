@@ -5,6 +5,7 @@ import { Letter } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useWebGL } from "@/lib/hooks";
 import { useI18n } from "@/i18n/context";
+import { useJourneyOff } from "../journey/Journey";
 
 /**
  * The map of the coffee journey. The 3D itself is the page-wide `journey/Journey`: at this section
@@ -38,7 +39,8 @@ export function BeanStory() {
 
   const steps = [...b.steps.map((s) => ({ title: s.title, text: s.text })), { title: b.final.title, text: b.final.text }];
   // without the 3D (no WebGL or reduced motion) the stage shows the brand's K instead
-  const still = webgl === false || reduced;
+  const journeyOff = useJourneyOff();
+  const still = webgl === false || reduced || journeyOff;
 
   return (
     <section id="proses" ref={root} aria-labelledby="proses-title" className="relative overflow-hidden bg-espresso text-paper">
