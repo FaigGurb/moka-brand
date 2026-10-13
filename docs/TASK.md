@@ -24,10 +24,10 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə scroll lag-sız (lite yol); canvas ekrandan kənarda render etmir.
   4. Reduced-motion: statik, mətn oxunur. WebGL yoxdursa: statik fallback.
   5. `npm run check` + `npm run build` + `docs/tools/qa/` keçir; əvvəl/sonra skrinşotlar.
-- **Status:** mərhələ 1 hazır (tək canvas, fəsil xəritəsi, dən→qovurma→üyütmə→Chemex dəmləmə səhifə boyu); mərhələ 2 gözləyir
-- **Verification:** M1: check+build keçdi; Chromium skrinşotları 390/1440 × 6 bölmə: progress irəli gedir, konsolda xəta yox. Desktopda demleme/terefdas-da obyekt sağ mətnin kənarına toxunur; telefonda kiçik yoldaş kənarda mətnin ucunu örtür (M4-də düzələcək). Real telefon yoxlanmayıb.
+- **Status:** M1 + M2 hazır (səhifə boyu dən→qovurma→üyütmə→dəmləmə→fincana tökülmə→qapaq→xətt); M3 gözləyir
+- **Verification:** M2: check+build keçdi; Chromium 390/1440: bölmələr + final ardıcıllığı (7 kadr) skrinşotla yoxlandı, konsolda xəta yox. Final keçidində qısa an Chemex başlığın altına toxunur. Real telefon/perf yoxlanmayıb.
 - **Blockers:** —
-- **Next step:** M2: ağ MOKA fincanı (Packs) final fəsli + fəsillər arası keçidlər; BrewGuide-də ikinci səhnə boşluğu. **DEPLOY: no**.
+- **Next step:** M3: mobil perf (scroll_perf.py, offscreen_draws.py), reduced-motion statik kadrlar, telefonda yoldaşın mətnlə toqquşması. **DEPLOY: no**.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: səhnə memarlığı, material, kamera/keçidlər. **Sonnet**: i18n sinxronu, lint/typecheck, QA skriptləri.

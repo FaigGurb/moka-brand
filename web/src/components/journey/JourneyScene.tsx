@@ -5,6 +5,7 @@ import { Environment, Lightformer } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
+import { paintCupWrap } from "@/lib/cupArt";
 import { PHASES, journey } from "./chapters";
 import { BeanPush, ndcToPlane } from "@/lib/beanPhysics";
 import { installPointer, pointer as sharedPointer, pointerNDC } from "@/lib/pointer";
@@ -45,6 +46,12 @@ const LINE_Y = 0.82;
 const FILTER_APEX = 1.42;
 const FILTER_SLOPE = 1.15;
 const PILE_H = 0.4;
+/** MOKA's takeaway cup (same model and wrap as apps/CupScene, size M), scaled beside the Chemex. */
+const CUP_H = 2.3;
+const CUP_S = 0.6;
+/** Chemex tilt while pouring, and its rim spout in the Chemex's own space. */
+const TILT = 0.95;
+const SPOUT = new THREE.Vector3(1.05, 2.5, 0);
 
 function radiusAt(y: number) {
   for (let i = 1; i < PROFILE.length; i++) {
@@ -106,6 +113,13 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
   const ringGlow = useRef<THREE.Sprite>(null);
   const heat = useRef<THREE.PointLight>(null);
   const steam = useRef<(THREE.Sprite | null)[]>([]);
+  const chemex = useRef<THREE.Group>(null);
+  const cup = useRef<THREE.Group>(null);
+  const cupFill = useRef<THREE.Mesh>(null);
+  const lid = useRef<THREE.Group>(null);
+  const stream = useRef<THREE.Mesh>(null);
+  const cupRing = useRef<THREE.Mesh>(null);
+  const cupGlow = useRef<THREE.Sprite>(null);
   const smooth = useRef(journey.p);
   const lastGrind = useRef(-1);
   const lastRoast = useRef(-1);
@@ -218,6 +232,55 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
     [clip, lite],
   );
 
+  // ---- the MOKA cup (finale)
+  const cupRes = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = lite ? 1024 : 2048;
+    c.height = lite ? 512 : 1024;
+    paintCupWrap(c);
+    const wrap = new THREE.CanvasTexture(c);
+    wrap.colorSpace = THREE.SRGBColorSpace;
+    wrap.anisotropy = 4;
+    const seg = lite ? 48 : 96;
+    const streamGeo = new THREE.CylinderGeometry(0.024, 0.02, 1, 10, 1, true);
+    streamGeo.translate(0, -0.5, 0);
+    return {
+      wrap,
+      geo: {
+        body: new THREE.LatheGeometry([new THREE.Vector2(0.6, 0), new THREE.Vector2(0.84, 1)], seg),
+        bottom: new THREE.CircleGeometry(0.6, 48).rotateX(Math.PI / 2),
+        lid: new THREE.LatheGeometry(
+          [[0, 0.16], [0.5, 0.16], [0.62, 0.12], [0.7, 0.1], [0.74, 0.06], [0.86, 0.05], [0.9, 0.02], [0.9, -0.04], [0.85, -0.06]].map(
+            ([r, y]) => new THREE.Vector2(r, y),
+          ),
+          seg,
+        ),
+        rim: new THREE.TorusGeometry(0.85, 0.025, 10, seg).rotateX(Math.PI / 2),
+        fill: new THREE.CircleGeometry(1, 48).rotateX(-Math.PI / 2),
+        // the signature line around the cup at 60% of its height
+        ring: new THREE.TorusGeometry(0.6 + 0.24 * 0.6 + 0.012, 0.014, 8, seg).rotateX(Math.PI / 2),
+        stream: streamGeo,
+      },
+      mat: {
+        paper: new THREE.MeshStandardMaterial({ map: wrap, roughness: 0.62, side: THREE.DoubleSide }),
+        plain: new THREE.MeshStandardMaterial({ color: "#f2f1ee", roughness: 0.7 }),
+        lid: new THREE.MeshStandardMaterial({ color: "#141414", roughness: 0.32 }),
+        coffee: new THREE.MeshStandardMaterial({ color: "#3a2112", roughness: 0.15, emissive: "#2a160b", emissiveIntensity: 0.25 }),
+        stream: new THREE.MeshStandardMaterial({ color: "#3b2416", roughness: 0.2, transparent: true, opacity: 0 }),
+        ring: new THREE.MeshBasicMaterial({ color: "#ffe2a6", transparent: true, opacity: 0, toneMapped: false }),
+      },
+    };
+  }, [lite]);
+
+  useEffect(
+    () => () => {
+      cupRes.wrap.dispose();
+      Object.values(cupRes.geo).forEach((g) => g.dispose());
+      Object.values(cupRes.mat).forEach((m) => m.dispose());
+    },
+    [cupRes],
+  );
+
   useEffect(
     () => () => {
       beanGeo.dispose();
@@ -243,6 +306,11 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
   const pvel = useMemo(() => new THREE.Vector3(), []);
   const poff = useMemo(() => new THREE.Vector3(), []);
   const push = useMemo(() => new BeanPush(BEANS), [BEANS]);
+  const spout = useMemo(() => new THREE.Vector3(), []);
+  const mouth = useMemo(() => new THREE.Vector3(), []);
+  const dir = useMemo(() => new THREE.Vector3(), []);
+  const DOWN = useMemo(() => new THREE.Vector3(0, -1, 0), []);
+  const tiltE = useMemo(() => new THREE.Euler(), []);
 
   useFrame((state, delta) => {
     const t = state.clock.elapsedTime;
@@ -276,6 +344,15 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
     const roast = sstep(PHASES.roast[0], PHASES.roast[1], p) * 0.92;
     const grind = clamp((p - PHASES.grind[0]) / (PHASES.grind[1] - PHASES.grind[0]), 0, 1);
     const brew = clamp((p - PHASES.brew[0]) / (PHASES.brew[1] - PHASES.brew[0]), 0, 1);
+    // finale: the cup rises in, the Chemex lifts and pours, the lid closes, the Chemex steps away
+    const cupIn = sstep(PHASES.cupIn[0], PHASES.cupIn[1], p);
+    const pourT = clamp((p - PHASES.pour[0]) / (PHASES.pour[1] - PHASES.pour[0]), 0, 1);
+    const finT = clamp((p - PHASES.finish[0]) / (PHASES.finish[1] - PHASES.finish[0]), 0, 1);
+    const tilt = sstep(0, 0.3, pourT) * (1 - sstep(0.8, 1, pourT));
+    const flow = sstep(0.22, 0.36, pourT) * (1 - sstep(0.78, 0.9, pourT));
+    const drained = sstep(0.3, 0.85, pourT);
+    const lidK = sstep(0.05, 0.45, finT);
+    const away = sstep(0.15, 0.75, finT);
 
     // ---- beans
     const mesh = beans.current;
@@ -363,7 +440,7 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
       pour.current.position.y = from;
       pour.current.scale.y = (from - (FILTER_APEX + PILE_H)) * sstep(0, 0.1, brew) + 0.001;
     }
-    const level = LINE_Y * sstep(0.1, 0.96, brew);
+    const level = LINE_Y * sstep(0.1, 0.96, brew) * (1 - drained);
     const dripOn = sstep(0.06, 0.14, brew) * (1 - sstep(0.94, 1, brew));
     if (drip.current) {
       mats.dripM.opacity = dripOn;
@@ -372,7 +449,7 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
     }
     if (liquid.current && surface.current) {
       liquid.current.visible = level > 0.005;
-      surface.current.visible = level > 0.005;
+      surface.current.visible = level > 0.005 && tilt < 0.04;
       liquid.current.updateWorldMatrix(true, false);
       tmp.set(0, level, 0);
       liquid.current.localToWorld(tmp);
@@ -382,8 +459,8 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
       surface.current.scale.setScalar(Math.max(r, 0.001));
     }
 
-    // ---- final: the signature line lights up
-    const fin = sstep(0.88, 0.98, p);
+    // ---- the signature line lights up on the full Chemex, then on the cup once the lid is on
+    const fin = sstep(PHASES.line[0], PHASES.line[1], p) * (1 - tilt) * (1 - drained);
     mats.ring.opacity = fin;
     if (ringGlow.current) (ringGlow.current.material as THREE.SpriteMaterial).opacity = fin * (0.75 + Math.sin(t * 2) * 0.1);
 
@@ -393,15 +470,77 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
       const ph = (t * 0.18 + i / steam.current.length) % 1;
       sp.position.set(Math.sin(t * 0.6 + i * 2) * 0.18, TOP + 0.4 + ph * 1.3, 0.1);
       sp.scale.setScalar(0.5 + ph * 0.7);
-      (sp.material as THREE.SpriteMaterial).opacity = sstep(0.8, 0.95, p) * Math.sin(Math.PI * ph) * 0.18;
+      (sp.material as THREE.SpriteMaterial).opacity = sstep(0.78, 0.84, p) * (1 - tilt) * (1 - drained) * Math.sin(Math.PI * ph) * 0.18;
     });
+
+    // ---- cup and pour (all in the root group's space; the Chemex base sits at y -1.3)
+    const cg = cup.current;
+    const ch = chemex.current;
+    if (cg && ch) {
+      const cupX = (1.0 + 0.35 * tilt) * (1 - away);
+      const cupY = -1.3 - 0.9 * (1 - cupIn);
+      cg.visible = cupIn > 0.002;
+      cg.position.set(cupX, cupY, 0.1);
+      cg.scale.setScalar(CUP_S * Math.max(cupIn, 0.001));
+      // the logo faces the viewer during the pour, then the cup turns slowly with the scroll
+      cg.rotation.y = Math.PI - 0.5 + (p - PHASES.cupIn[0]) * 6;
+      const mouthY = cupY + CUP_H * CUP_S;
+      // Chemex: rest (shifted left for the cup) → lifted and tilted so its spout sits over the cup
+      const a = TILT;
+      const sx = SPOUT.x * Math.cos(a) + SPOUT.y * Math.sin(a);
+      const sy = -SPOUT.x * Math.sin(a) + SPOUT.y * Math.cos(a);
+      const restX = -0.85 * cupIn;
+      const pourX = cupX - sx + 0.05;
+      const pourY = mouthY + 0.45 - sy;
+      ch.position.set(restX + (pourX - restX) * tilt - 1.8 * away, -1.3 + (pourY + 1.3) * tilt, -0.6 * away);
+      ch.rotation.z = -a * tilt;
+      ch.scale.setScalar(Math.max(1 - away, 0.001));
+      ch.visible = away < 0.999;
+      // the stream from the spout into the cup
+      const sm = stream.current;
+      if (sm) {
+        cupRes.mat.stream.opacity = flow;
+        sm.visible = flow > 0.01;
+        if (sm.visible) {
+          tiltE.set(0, 0, ch.rotation.z);
+          spout.copy(SPOUT).applyEuler(tiltE).multiplyScalar(ch.scale.x).add(ch.position);
+          const fillY = 0.62 * drained;
+          mouth.set(cupX, cupY + CUP_H * CUP_S * Math.max(fillY, 0.08), 0.1);
+          dir.subVectors(mouth, spout);
+          const len = dir.length();
+          sm.position.copy(spout);
+          sm.quaternion.setFromUnitVectors(DOWN, dir.divideScalar(Math.max(len, 1e-4)));
+          sm.scale.set(1, Math.max(len, 0.001), 1);
+        }
+      }
+      // coffee rising in the cup
+      const cf = cupFill.current;
+      if (cf) {
+        const f = 0.62 * drained;
+        cf.visible = drained > 0.01;
+        cf.position.y = f * CUP_H;
+        cf.scale.setScalar((0.6 + 0.24 * f) * 0.97);
+      }
+      // lid drops on
+      const ld = lid.current;
+      if (ld) {
+        ld.visible = lidK > 0.01;
+        ld.position.y = CUP_H + (1 - lidK) * 0.7;
+        ld.rotation.x = (1 - lidK) * 0.35;
+        ld.scale.setScalar(0.7 + 0.3 * lidK);
+      }
+      const ringOn = sstep(0.5, 0.95, finT);
+      cupRes.mat.ring.opacity = ringOn;
+      if (cupRing.current) cupRing.current.visible = ringOn > 0.01;
+      if (cupGlow.current) (cupGlow.current.material as THREE.SpriteMaterial).opacity = ringOn * (0.6 + Math.sin(t * 2) * 0.1);
+    }
   });
 
   return (
     <group ref={root}>
       <instancedMesh ref={beans} args={[beanGeo, beanMat, BEANS]} frustumCulled={false} />
       <pointLight ref={heat} position={[0, 0.6, 1.4]} color="#ff8a3d" intensity={0} distance={8} />
-      <group position={[0, -1.3, 0]}>
+      <group ref={chemex} position={[0, -1.3, 0]}>
         <mesh ref={liquid} geometry={geos.liquid} material={mats.liquid} visible={false} />
         <mesh ref={surface} geometry={geos.surface} material={mats.surface} rotation-x={-Math.PI / 2} visible={false} />
         <points ref={grounds} geometry={groundsData.geo} material={groundsMat} frustumCulled={false} />
@@ -434,6 +573,23 @@ function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
             <spriteMaterial map={tex.steam} transparent opacity={0} depthWrite={false} />
           </sprite>
         ))}
+      </group>
+      <mesh ref={stream} geometry={cupRes.geo.stream} material={cupRes.mat.stream} visible={false} />
+      <group ref={cup} visible={false}>
+        <mesh geometry={cupRes.geo.body} material={cupRes.mat.paper} scale={[1, CUP_H, 1]} />
+        <mesh geometry={cupRes.geo.bottom} material={cupRes.mat.plain} />
+        <mesh ref={cupFill} geometry={cupRes.geo.fill} material={cupRes.mat.coffee} visible={false} />
+        <mesh ref={cupRing} geometry={cupRes.geo.ring} material={cupRes.mat.ring} position={[0, CUP_H * 0.6, 0]} visible={false} />
+        <sprite ref={cupGlow} position={[0, CUP_H * 0.6, 0.5]} scale={[3.2, 0.55, 1]}>
+          <spriteMaterial map={tex.glow} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        </sprite>
+        <group ref={lid} visible={false}>
+          <mesh geometry={cupRes.geo.rim} material={cupRes.mat.plain} />
+          <mesh geometry={cupRes.geo.lid} material={cupRes.mat.lid} />
+          <mesh position={[0, 0.165, -0.42]} rotation-x={-Math.PI / 2} material={cupRes.mat.lid}>
+            <planeGeometry args={[0.22, 0.07]} />
+          </mesh>
+        </group>
       </group>
     </group>
   );
