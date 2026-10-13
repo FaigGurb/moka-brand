@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Lockup } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { Dust } from "../cinema/Dust";
+import { BeanRain } from "../cinema/BeanRain";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { STILLS, stillSrc, stillSrcSet } from "@/lib/cinema";
@@ -74,6 +75,7 @@ export function Hero() {
           className="hero-photo h-full w-full object-cover object-[78%_50%] will-change-transform md:object-[60%_50%]"
         />
       </div>
+      <BeanRain />
       <Dust />
       {/* grade: the copy side stays deep black; phones get a floor under the text */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.6)_38%,transparent_70%)]" />

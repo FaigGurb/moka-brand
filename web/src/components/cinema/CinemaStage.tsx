@@ -1,16 +1,50 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { stillSrc, stillSrcSet, type Still } from "@/lib/cinema";
 import { Dust } from "./Dust";
+import { FxCanvas } from "./FxCanvas";
+import type { FxSpec } from "./fx";
 
 export type Shot = {
   still: Still;
   /** object-position of the crop, e.g. "62% 50%" (keeps the subject in frame on phones) */
   focus?: string;
   alt?: string;
+  /** living details over the photo (steam, falling grounds, drips …), placed in image coordinates */
+  fx?: FxSpec[];
 };
+
+/**
+ * The photo's own frame, sized like CSS `object-fit: cover` with a focal point, so effects placed in
+ * image fractions sit exactly on the picture; the scroll push-in scales this frame, effects included.
+ */
+function CoverFrame({ still, focus, children }: { still: Still; focus?: string; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+  useEffect(() => {
+    const el = ref.current?.parentElement;
+    if (!el) return;
+    const [fx, fy] = (focus ?? "50% 50%").split(" ").map((v) => parseFloat(v) / 100);
+    const fit = () => {
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      const width = Math.max(cw, ch * still.aspect);
+      const height = width / still.aspect;
+      setBox({ left: (cw - width) * fx, top: (ch - height) * fy, width, height });
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [still, focus]);
+  return (
+    <div ref={ref} className="c-frame absolute will-change-transform" style={box ?? { left: 0, top: 0, width: "100%", height: "100%" }}>
+      {children}
+    </div>
+  );
+}
 
 export type Scene = { shots: Shot[]; kicker: string; title: string; text: string };
 
@@ -35,6 +69,13 @@ export function CinemaStage({ id, labelledBy, eyebrow, heading, scenes, perShot 
   const root = useRef<HTMLElement>(null);
   const shots = scenes.flatMap((s, si) => s.shots.map((shot, k) => ({ ...shot, scene: si, first: k === 0 })));
   const n = shots.length;
+  // scrubbed progress of the stage, read by the effects so only the shot on screen animates
+  const stage = useRef({ p: 0 });
+  const seg = 1 / n;
+  const near = (i: number) => () => {
+    const p = stage.current.p;
+    return p > i * seg - seg * 0.5 && p < (i + 1) * seg + seg * 0.5;
+  };
 
   useGSAP(
     () => {
@@ -49,15 +90,17 @@ export function CinemaStage({ id, labelledBy, eyebrow, heading, scenes, perShot 
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: 1 },
+          onUpdate: () => {
+            stage.current.p = tl.progress();
+          },
         });
         tl.to({}, { duration: 1 }, 0);
-        const seg = 1 / n;
         const fade = seg * 0.42;
         imgs.forEach((el, i) => {
           const s = i * seg;
           // slow push-in across the shot's whole life, slightly offset per shot for variety
           tl.fromTo(
-            el.querySelector("img"),
+            el.querySelector(".c-frame"),
             { scale: 1.16, xPercent: i % 2 ? 1.5 : -1.5 },
             { scale: 1.0, xPercent: 0, duration: seg + fade },
             Math.max(0, s - fade / 2),
@@ -102,17 +145,20 @@ export function CinemaStage({ id, labelledBy, eyebrow, heading, scenes, perShot 
           <div className="motion-reduce:hidden">
             {shots.map((s, i) => (
               <div key={i} className="c-shot absolute inset-0 overflow-hidden will-change-[opacity]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={stillSrc(s.still, s.still.widths[s.still.widths.length - 1])}
-                  srcSet={stillSrcSet(s.still)}
-                  sizes="100vw"
-                  alt={s.alt ?? ""}
-                  loading={i < 2 ? "eager" : "lazy"}
-                  decoding="async"
-                  className="h-full w-full object-cover will-change-transform"
-                  style={{ objectPosition: s.focus ?? "50% 50%" }}
-                />
+                <CoverFrame still={s.still} focus={s.focus}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={stillSrc(s.still, s.still.widths[s.still.widths.length - 1])}
+                    srcSet={stillSrcSet(s.still)}
+                    sizes="100vw"
+                    alt={s.alt ?? ""}
+                    loading={i < 2 ? "eager" : "lazy"}
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: s.focus ?? "50% 50%" }}
+                  />
+                  {s.fx?.map((spec, k) => <FxCanvas key={k} spec={spec} isActive={near(i)} />)}
+                </CoverFrame>
               </div>
             ))}
             <Dust className="motion-reduce:hidden" />
