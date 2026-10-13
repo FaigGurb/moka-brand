@@ -16,10 +16,10 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə hiss olunan lag yoxdur (lite yol); desktop-da tam keyfiyyət.
   4. `npm run check` + `npm run build` keçir; `docs/tools/qa/` brauzer yoxlamaları və `docs/QA.md` hero bəndləri.
   5. Əvvəl/sonra skrinşotlar (mobil + desktop) hesabata.
-- **Status:** planned — icra gözləyir (yerli Claude Code)
-- **Verification:** —
+- **Status:** code done, vizual yoxlama gözləyir (PR #1)
+- **Verification:** `npm run check` (lint+typecheck+16 test) və `npm run build` keçdi. Brauzer skrinşotları (360/390/768/1440) ALINMADI — əl ilə və ya `docs/tools/qa/responsive.py` ilə yoxlanmalıdır.
 - **Blockers:** —
-- **Next step:** Yerli Claude Code: (1) Hero.tsx/HeroScene.tsx/DayAmbient/CremaBackground oxu, hazırkı problemi skrinşotla müəyyən et; (2) layout + 3D düzəlişi; (3) dinamik fon; (4) yoxlama; (5) bu faylın Status/Verification-ını yenilə, commit. **DEPLOY: no** (təsdiq gözlənilir; "DEPLOY: yes" yazılana qədər yalnız commit).
+- **Next step:** Mobil+desktop skrinşotla baxıb layout/kontrastı dəqiqləşdir (Hero.tsx: aspect-[675/400] mobil, scrim qatları). **DEPLOY: no** — "DEPLOY: yes" yazılana qədər yalnız commit.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: 3D səhnə, shader/fon, layout dizaynı (əsas iş). **Sonnet**: lint/typecheck düzəlişləri, i18n sinxronu, QA skriptləri.

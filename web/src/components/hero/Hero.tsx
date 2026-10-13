@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
+import { CremaBackground } from "../fx/CremaBackground";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useReducedMotion, useTouch, useWebGL } from "@/lib/hooks";
 import { links } from "@/lib/site";
@@ -73,6 +74,13 @@ export function Hero() {
 
   // the three.js chunk loads once the browser is idle, so first paint and input stay fast
   const show3D = webgl === true && idle;
+  // fade the shader in one frame after it mounts, so the page never flashes
+  const [bgOn, setBgOn] = useState(false);
+  useEffect(() => {
+    if (!show3D) return;
+    const id = requestAnimationFrame(() => setBgOn(true));
+    return () => cancelAnimationFrame(id);
+  }, [show3D]);
 
   return (
     <section
@@ -80,16 +88,24 @@ export function Hero() {
       ref={root}
       className="relative flex min-h-[100svh] flex-col overflow-hidden bg-espresso text-paper"
     >
-      {/* warm wash behind the wordmark, echoing the café's LED line */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[34%] h-[38%] bg-[radial-gradient(ellipse_at_center,rgb(var(--day-rgb)/0.2),transparent_65%)] transition-[background] duration-1000"
-      />
+      {/* Living background: the crema shader (in view only, low res/fps, still for reduced motion) tinted by the
+          Baku day colour. The CSS wash is the instant/no-WebGL fallback; the scrims keep the copy readable. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-x-0 top-[30%] h-[44%] bg-[radial-gradient(ellipse_at_center,rgb(var(--day-rgb)/0.2),transparent_65%)] transition-[background] duration-1000" />
+        {show3D && (
+          <div className={`absolute inset-0 transition-opacity duration-[1800ms] ${bgOn ? "opacity-100" : "opacity-0"}`}>
+            <CremaBackground amp={tier === "low" ? 0.55 : 0.8} />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent_35%,var(--color-espresso)_100%)] opacity-80" />
+        <div className="absolute inset-x-0 bottom-0 h-[45%] bg-[linear-gradient(to_bottom,transparent,color-mix(in_srgb,var(--color-espresso)_88%,transparent)_70%)]" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_top,transparent,color-mix(in_srgb,var(--color-espresso)_70%,transparent))]" />
+      </div>
       <div className="relative mx-auto flex w-full max-w-[1320px] flex-1 flex-col px-5 pt-24 pb-10 md:px-10 md:pt-28">
         <p className="hero-fade eyebrow text-muted-dark">{t.hero.eyebrow}</p>
 
-        <div className="relative my-6 flex flex-1 items-center justify-center md:my-4">
-          <div className="relative aspect-[675/330] w-full max-w-[1100px] sm:aspect-[675/240]">
+        <div className="relative my-4 flex flex-1 items-center justify-center md:my-4">
+          <div className="relative aspect-[675/400] w-full max-w-[1100px] sm:aspect-[675/240]">
             {/* SVG wordmark: visible until the 3D scene is ready, and the permanent fallback without WebGL. */}
             <Logo
               className={`absolute inset-x-[6%] top-1/2 w-[88%] -translate-y-1/2 text-paper transition-opacity duration-700 ${

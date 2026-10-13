@@ -307,6 +307,88 @@ function AmbientBeans({ progress, reducedMotion, touch }: Omit<Props, "onReady" 
   return <instancedMesh ref={mesh} args={[geo, mat, COUNT]} frustumCulled={false} />;
 }
 
+/** Reads the current day colour (--day-rgb, set by DayAmbient from Baku time) as a three.js colour. */
+function readDay(out: THREE.Color) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue("--day-rgb").trim() || "242 199 110";
+  const [r, g, b] = v.split(/\s+/).map(Number);
+  return out.setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+}
+
+/** Day-tinted key light and gold dust that drifts upwards; the colour follows the time in Baku. */
+function DayDust({ reducedMotion, lite }: { reducedMotion: boolean; lite: boolean }) {
+  const light = useRef<THREE.PointLight>(null);
+  const mat = useRef<THREE.PointsMaterial>(null);
+  const target = useMemo(() => new THREE.Color("#f2c76e"), []);
+  const COUNT = lite ? 24 : 70;
+  const data = useMemo(() => {
+    const rnd = seeded(11);
+    const pos = new Float32Array(COUNT * 3);
+    const speed = new Float32Array(COUNT);
+    for (let i = 0; i < COUNT; i++) {
+      pos[i * 3] = (rnd() - 0.5) * 9;
+      pos[i * 3 + 1] = (rnd() - 0.5) * 5;
+      pos[i * 3 + 2] = -1.5 + rnd() * 3.2;
+      speed[i] = 0.05 + rnd() * 0.12;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    return { geo, pos, speed };
+  }, [COUNT]);
+
+  useEffect(() => {
+    const apply = () => readDay(target);
+    apply();
+    window.addEventListener("moka:day", apply);
+    return () => window.removeEventListener("moka:day", apply);
+  }, [target]);
+  useEffect(() => () => data.geo.dispose(), [data]);
+
+  useFrame((_, delta) => {
+    if (light.current) light.current.color.lerp(target, 1 - Math.pow(0.02, delta));
+    if (mat.current) mat.current.color.lerp(target, 1 - Math.pow(0.02, delta));
+    if (reducedMotion) return;
+    const dt = Math.min(delta, 1 / 20);
+    const { pos, speed } = data;
+    for (let i = 0; i < COUNT; i++) {
+      let y = pos[i * 3 + 1] + speed[i] * dt;
+      if (y > 2.6) y = -2.6;
+      pos[i * 3 + 1] = y;
+    }
+    data.geo.attributes.position.needsUpdate = true;
+  });
+
+  return (
+    <>
+      <pointLight ref={light} position={[0, 0, 2.2]} intensity={2.2} distance={6} color="#f2c76e" />
+      <points geometry={data.geo} frustumCulled={false}>
+        <pointsMaterial
+          ref={mat}
+          size={lite ? 0.05 : 0.04}
+          sizeAttenuation
+          transparent
+          opacity={0.55}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          color="#f2c76e"
+        />
+      </points>
+    </>
+  );
+}
+
+/** Slow camera drift toward the pointer on desktop: the wordmark gains depth against the background. */
+function CameraDrift({ enabled }: { enabled: boolean }) {
+  useFrame((state, delta) => {
+    if (!enabled) return;
+    const d = 1 - Math.pow(0.04, delta);
+    const cam = state.camera;
+    cam.position.x += (state.pointer.x * 0.35 - cam.position.x) * d;
+    cam.position.y += (0.15 + state.pointer.y * 0.18 - cam.position.y) * d;
+    cam.lookAt(0, 0, 0);
+  });
+  return null;
+}
+
 export default function HeroScene({ progress, reducedMotion, touch, lite = false, active = true, onReady }: Props) {
   return (
     <Canvas
@@ -320,7 +402,8 @@ export default function HeroScene({ progress, reducedMotion, touch, lite = false
       <ambientLight intensity={0.35} />
       <directionalLight position={[3, 4, 5]} intensity={1.6} color="#fff4e6" />
       <directionalLight position={[-4, -1, 2]} intensity={0.5} color="#c89b6d" />
-      <pointLight position={[0, 0, 2.2]} intensity={2.2} distance={6} color="#f2c76e" />
+      <DayDust reducedMotion={reducedMotion} lite={lite} />
+      <CameraDrift enabled={!touch && !reducedMotion} />
       {/* Studio reflections built from light panels: no external HDR files. */}
       <Environment resolution={lite ? 32 : 128}>
         <Lightformer intensity={2} position={[0, 3, 4]} scale={[8, 1.2, 1]} color="#fff6ea" />
