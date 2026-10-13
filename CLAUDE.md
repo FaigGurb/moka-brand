@@ -37,7 +37,7 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 ## Working method
 Follow `docs/ENGINEERING.md` (audit → prioritise → implement → verify; honest reporting; definition of done). Run `npm run check` + `npm run build` and the browser checks in `docs/tools/qa/` before deploying. Device checklist: `docs/QA.md`.
 
-- Brand book: `/brand/` (`components/pages/BrandPage.tsx`, copy in `src/i18n/brand.ts`, same shape in az/en/ru). Downloadable kit in `web/public/brand-kit/` (logo SVGs, tokens, sound logo, logo animation, brand book PDFs, `print/` business card · cup sleeve · bag label · A3 menu, `social/` Story/Reels templates) — regenerate with the scripts in `docs/tools/` (`render_print.py`, `render_social.py`, …).
+- Brand book: `/brand/` (`components/pages/BrandPage.tsx`, copy in `src/i18n/brand.ts`, same shape in az/en/ru). Downloadable kit in `web/public/brand-kit/` (logo SVGs, tokens, sound logo, logo animation, brand book PDFs, `print/` business card · bean card · A3 menu, `social/` Story/Reels templates) — regenerate with the scripts in `docs/tools/` (`render_print.py`, `render_social.py`, …).
 - Living background: `fx/DayAmbient.tsx` sets `--day`/`--day-rgb` from Baku time (`lib/day.ts`); `.day-glow`/`.day-wash` classes tint sections; `fx/CremaBackground.tsx` is a plain-WebGL shader for dark sections (in-view only, low res/fps, still frame for reduced motion).
 - AR libraries are vendored in `/vendor/` (no CDN at runtime).
 
@@ -63,3 +63,4 @@ End commit messages with the session attribution lines provided by the environme
   - `headroom` — reading large files.
 - Deploy only when the task says "DEPLOY: yes": `cd web && npm run check && npm run build && npm run deploy`, then commit and push. Otherwise commit only.
 - Reports go in Azerbaijani.
+- Task state: read `docs/TASK.md` at the start; at the end update its Status/Verification/Next step (keep it short) and commit it with the work. It is the handoff with the planning chat.
