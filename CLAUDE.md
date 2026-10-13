@@ -50,3 +50,16 @@ Follow `docs/ENGINEERING.md` (audit → prioritise → implement → verify; hon
 
 ## Commits
 End commit messages with the session attribution lines provided by the environment.
+
+## Working with Claude Code
+- Token rules:
+  - Read only the files a task names (plus CLAUDE.md); no repo-wide scans; grep only for named symbols.
+  - Read big files (`web/src/i18n/dict.ts`, `brand.ts`) in parts.
+  - One task per session; final report max 10 lines, no code dumps.
+- Skills for this project: use only when the step needs them, never others.
+  - `high-end-visual-design` — visual/UI changes only.
+  - `review` (gstack) — before committing code changes.
+  - `qa-only` (gstack) — after a deploy, to check the live site.
+  - `headroom` — reading large files.
+- Deploy only when the task says "DEPLOY: yes": `cd web && npm run check && npm run build && npm run deploy`, then commit and push. Otherwise commit only.
+- Reports go in Azerbaijani.
