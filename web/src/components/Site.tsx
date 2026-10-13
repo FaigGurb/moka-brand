@@ -13,7 +13,7 @@ import { Store } from "@/components/sections/Store";
 import { Experience, FinalCta } from "@/components/sections/Experience";
 import { ScrollRefresh } from "@/components/ScrollRefresh";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import { BeanField } from "@/components/beans/BeanField";
+import { Journey } from "@/components/journey/Journey";
 import { Preloader } from "@/components/fx/Preloader";
 import { Cursor } from "@/components/fx/Cursor";
 import { DayAmbient } from "@/components/fx/DayAmbient";
@@ -51,7 +51,7 @@ export function Site({ locale }: { locale: Locale }) {
       <Footer />
       <ScrollRefresh />
       <SmoothScroll />
-      <BeanField />
+      <Journey />
       <ScrollLine />
       <Cursor />
       <DayAmbient />

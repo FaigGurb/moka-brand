@@ -2,22 +2,21 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
-import { PHASES } from "./phases";
+import { PHASES, journey } from "./chapters";
 import { BeanPush, ndcToPlane } from "@/lib/beanPhysics";
 import { installPointer, pointer as sharedPointer, pointerNDC } from "@/lib/pointer";
 
 /**
- * "From bean to cup": beans float, roast (green → dark), spiral into a Chemex and turn into
- * grounds, then coffee drips into the lower chamber until it reaches the brand's signature line.
- * Everything is driven by one scroll progress value (0..1); time only adds idle motion.
+ * The page-wide journey "from bean to cup": beans float, roast (green → dark), spiral into a Chemex
+ * and turn into grounds, then coffee drips into the lower chamber until it reaches the signature line.
+ * Everything follows one scroll progress (`journey.p`, written by Journey.tsx); the object's place on
+ * screen follows `journey.pose`. Time only adds idle motion.
  */
 
 type Props = {
-  progress: MutableRefObject<number>;
-  reducedMotion: boolean;
   touch: boolean;
   active: boolean;
   /** light path for phones and weak machines */
@@ -95,7 +94,7 @@ type Bean = {
   angle: number;
 };
 
-function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "active" | "onReady">) {
+function Story({ touch, lite = false }: Omit<Props, "active" | "onReady">) {
   const root = useRef<THREE.Group>(null);
   const beans = useRef<THREE.InstancedMesh>(null);
   const grounds = useRef<THREE.Points>(null);
@@ -107,13 +106,14 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
   const ringGlow = useRef<THREE.Sprite>(null);
   const heat = useRef<THREE.PointLight>(null);
   const steam = useRef<(THREE.Sprite | null)[]>([]);
-  const smooth = useRef(reducedMotion ? 1 : 0);
+  const smooth = useRef(journey.p);
   const lastGrind = useRef(-1);
   const lastRoast = useRef(-1);
   const { viewport, camera, pointer, gl } = useThree();
   useEffect(() => installPointer(), []);
 
-  const BEANS = lite ? 32 : 90;
+  // page-wide, so fewer beans than a single full-screen stage would carry
+  const BEANS = lite ? 26 : 64;
   const GROUNDS = lite ? 450 : 1800;
 
   const beanGeo = useMemo(() => createBeanGeometry(lite ? "low" : "high"), [lite]);
@@ -245,29 +245,33 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
   const push = useMemo(() => new BeanPush(BEANS), [BEANS]);
 
   useFrame((state, delta) => {
-    const t = reducedMotion ? 0 : state.clock.elapsedTime;
-    const target = reducedMotion ? 1 : progress.current;
-    smooth.current += (target - smooth.current) * (1 - Math.pow(0.03, delta));
+    const t = state.clock.elapsedTime;
+    // ease toward the scroll target: scrubbed, and it plays backwards when scrolling up
+    smooth.current += (journey.p - smooth.current) * (1 - Math.pow(0.02, delta));
     const p = smooth.current;
 
-    // ---- layout: landscape puts the Chemex in the right column, portrait below the captions
+    // ---- layout: the pose (from the section on screen) places and sizes the whole object
     const landscape = viewport.aspect > 1.05;
-    const scale = landscape ? Math.min(0.95, viewport.height / 5.6) : Math.min(1, viewport.width / 3.4, (viewport.height * 0.44) / 2.5);
-    const spreadX = landscape ? Math.min(2.9, viewport.width / 2 / scale) : (viewport.width / 2 / scale) * 0.95;
+    const base = landscape ? Math.min(0.95, viewport.height / 5.6) : Math.min(1, viewport.width / 3.4, (viewport.height * 0.44) / 2.5);
+    const pose = journey.pose;
+    const scale = base * pose.s;
+    // beans stay in a cloud around the Chemex so the copy beside it stays clear
+    const spreadX = landscape ? 1.9 : 1.5;
     if (root.current) {
-      root.current.scale.setScalar(scale);
-      root.current.position.set(
-        landscape && viewport.width > 7 ? viewport.width * 0.24 : 0,
-        landscape ? 0.05 * scale : -viewport.height * 0.1,
-        0,
-      );
+      const k = 1 - Math.pow(0.004, delta);
+      const r = root.current;
+      r.scale.setScalar(r.scale.x + (scale - r.scale.x) * k);
+      r.position.x += (pose.x * viewport.width - r.position.x) * k;
+      r.position.y += (pose.y * viewport.height + 0.05 * scale - r.position.y) * k;
+      // a slow turn while travelling, so it reads as one object moving through the page
+      r.rotation.y = Math.sin(p * Math.PI * 2) * 0.25;
     }
     // gentle camera drift: mouse on desktop, slow sway on touch
-    const cx = reducedMotion ? 0 : touch ? Math.sin(t * 0.25) * 0.35 : pointer.x * 0.5;
-    const cy = reducedMotion ? 0 : touch ? Math.cos(t * 0.2) * 0.12 : pointer.y * 0.25;
+    const cx = touch ? Math.sin(t * 0.25) * 0.25 : pointer.x * 0.4;
+    const cy = touch ? Math.cos(t * 0.2) * 0.1 : pointer.y * 0.2;
     camera.position.x += (cx - camera.position.x) * 0.05;
     camera.position.y += (0.9 + cy - camera.position.y) * 0.05;
-    camera.lookAt(root.current ? root.current.position.x * 0.6 : 0, 0.1, 0);
+    camera.lookAt(camera.position.x * 0.8, 0.1, 0);
 
     const roast = sstep(PHASES.roast[0], PHASES.roast[1], p) * 0.92;
     const grind = clamp((p - PHASES.grind[0]) / (PHASES.grind[1] - PHASES.grind[0]), 0, 1);
@@ -276,7 +280,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
     // ---- beans
     const mesh = beans.current;
     const dt = Math.min(delta, 1 / 20);
-    const ndc = reducedMotion ? null : pointerNDC(gl.domElement);
+    const ndc = pointerNDC(gl.domElement);
     const burst = push.tapped(sharedPointer.tapped);
     const rp = root.current;
     if (mesh) {
@@ -286,7 +290,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
         const gi = b.grindAt > 1 ? 0 : clamp((grind - b.grindAt) / 0.42, 0, 1);
         // idle float
         const fx = b.pos.x * spreadX + Math.sin(t * 0.4 + b.phase) * 0.12;
-        const fy = b.pos.y * 1.9 + 0.35 + Math.sin(t * 0.55 + b.phase * 1.7) * 0.18;
+        const fy = b.pos.y * 1.5 + 0.35 + Math.sin(t * 0.55 + b.phase * 1.7) * 0.18;
         const fz = b.pos.z * 2 - 0.6 + Math.cos(t * 0.35 + b.phase) * 0.1;
         v.set(fx, fy, fz);
         // roasting makes the beans tremble a little
@@ -435,7 +439,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
   );
 }
 
-export default function BeanStoryScene({ progress, reducedMotion, touch, active, lite = false, onReady }: Props) {
+export default function JourneyScene({ touch, active, lite = false, onReady }: Props) {
   return (
     <Canvas
       frameloop={active ? "always" : "never"}
@@ -457,7 +461,7 @@ export default function BeanStoryScene({ progress, reducedMotion, touch, active,
         <Lightformer intensity={1.4} position={[-5, 1, 1]} rotation-y={Math.PI / 2} scale={[1, 5, 1]} color="#ffe2a6" />
         <Lightformer intensity={0.9} position={[5, 0, 1]} rotation-y={-Math.PI / 2} scale={[1, 5, 1]} color="#a8643a" />
       </Environment>
-      <Story progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} />
+      <Story touch={touch} lite={lite} />
     </Canvas>
   );
 }

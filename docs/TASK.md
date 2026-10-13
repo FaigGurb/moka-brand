@@ -24,10 +24,10 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə scroll lag-sız (lite yol); canvas ekrandan kənarda render etmir.
   4. Reduced-motion: statik, mətn oxunur. WebGL yoxdursa: statik fallback.
   5. `npm run check` + `npm run build` + `docs/tools/qa/` keçir; əvvəl/sonra skrinşotlar.
-- **Status:** planned — icra gözləyir (istifadəçi "başla" deyəndə mərhələ 1)
-- **Verification:** —
+- **Status:** mərhələ 1 hazır (tək canvas, fəsil xəritəsi, dən→qovurma→üyütmə→Chemex dəmləmə səhifə boyu); mərhələ 2 gözləyir
+- **Verification:** M1: check+build keçdi; Chromium skrinşotları 390/1440 × 6 bölmə: progress irəli gedir, konsolda xəta yox. Desktopda demleme/terefdas-da obyekt sağ mətnin kənarına toxunur; telefonda kiçik yoldaş kənarda mətnin ucunu örtür (M4-də düzələcək). Real telefon yoxlanmayıb.
 - **Blockers:** —
-- **Next step:** Mərhələ 1. Əvvəl `BeanStory.tsx`, `BeanStoryScene.tsx`, `BeanFieldScene.tsx` oxu (`headroom`), sonra tək səhnə. **DEPLOY: no** — "DEPLOY: yes" yazılana qədər yalnız commit.
+- **Next step:** M2: ağ MOKA fincanı (Packs) final fəsli + fəsillər arası keçidlər; BrewGuide-də ikinci səhnə boşluğu. **DEPLOY: no**.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: səhnə memarlığı, material, kamera/keçidlər. **Sonnet**: i18n sinxronu, lint/typecheck, QA skriptləri.
