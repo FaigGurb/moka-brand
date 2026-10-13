@@ -16,10 +16,10 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə hiss olunan lag yoxdur (lite yol); desktop-da tam keyfiyyət.
   4. `npm run check` + `npm run build` keçir; `docs/tools/qa/` brauzer yoxlamaları və `docs/QA.md` hero bəndləri.
   5. Əvvəl/sonra skrinşotlar (mobil + desktop) hesabata.
-- **Status:** done — PR #1 baxış/merge gözləyir
+- **Status:** deployed + merged (PR #1)
 - **Verification:** check+build keçdi, CI yaşıl. Chromium skrinşotları 360/390/768/1440: hero kəsilmir, mətn oxunur, fon canlı, JS xətası yox. Real telefonda performans yoxlanmayıb.
 - **Blockers:** —
-- **Next step:** Real telefonda baxış; təsdiqdən sonra merge. **DEPLOY: no** — "DEPLOY: yes" yazılana qədər yalnız commit.
+- **Next step:** Canlı saytda (faiggurb.github.io/moka-brand) real telefonda yoxla; qa-only istəyə görə.
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: 3D səhnə, shader/fon, layout dizaynı (əsas iş). **Sonnet**: lint/typecheck düzəlişləri, i18n sinxronu, QA skriptləri.
