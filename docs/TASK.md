@@ -25,7 +25,7 @@ update it at the end; git is the only channel between them. Keep it short — re
   4. Reduced-motion: statik, mətn oxunur. WebGL yoxdursa: statik fallback.
   5. `npm run check` + `npm run build` + `docs/tools/qa/` keçir; əvvəl/sonra skrinşotlar.
 - **Status:** M1 + M2 + M3 hazır; M4 (cilalama, az/en/ru, QA.md) gözləyir
-- **Verification:** M3: check+build keçdi. scroll_perf (GPU-suz headless, software compositing): mobil 48→30 fps (optimallaşdırmadan əvvəl 10), desktop 42→16; trace: vaxt GLES2::ReadPixels-dədir (real cihazda yoxdur). Adaptiv keyfiyyət headless-də 3D-ni ~11 s-də söndürür (statik K). responsive.py: overflow 0, xəta yox; journey qutusu üçün 'wide' xəbərdarlığı kəsici konteynerlə düzəldildi (təkrar yoxlama gedir). Real telefon yoxlanmayıb.
+- **Verification:** M3: check+build keçdi. scroll_perf (GPU-suz headless, software compositing): mobil 48→30 fps (optimallaşdırmadan əvvəl 10), desktop 42→16; trace: vaxt GLES2::ReadPixels-dədir (real cihazda yoxdur). Adaptiv keyfiyyət headless-də 3D-ni ~11 s-də söndürür (statik K). responsive.py: overflow 0, xəta yox; journey qutusu üçün 'wide' xəbərdarlığı kəsici konteynerlə düzəldildi, az/en/ru × 1440/390 təkrar yoxlandı: təmiz. Real telefon yoxlanmayıb.
 - **Blockers:** —
 - **Next step:** İstifadəçi real telefonda yoxlasın (deploy lazımdır). Sonra M4: final keçid cilası, telefonda yoldaşın mətnlə toqquşması, docs/QA.md. **DEPLOY: no**.
 
