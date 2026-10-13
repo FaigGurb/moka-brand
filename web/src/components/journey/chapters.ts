@@ -28,6 +28,8 @@ export type Anchor = {
   p: number;
   /** use the element's centre instead of its top (for stage blocks) */
   centre?: boolean;
+  /** where on the screen the element's edge must be for the anchor (fraction from the top, default 0.5) */
+  at?: number;
   /** wide screens */
   land: Pose;
   /** portrait screens (phones): a small companion at the edge, big only on the stage sections */
@@ -59,8 +61,10 @@ export const ANCHORS: Anchor[] = [
   // the caption has stuck to the top: the object moves to the centre for the pour
   { id: "fincan-stick", p: 0.86, land: FINALE_L, port: FINALE_P },
   { id: "fincan-end", p: 0.99, land: FINALE_L, port: FINALE_P },
-  // the finished cup travels on
-  { id: "paket", p: 1, land: SIDE_R, port: CORNER },
+  // the closed cup holds its place while the caption scrolls away, until the packaging section rises to it…
+  { id: "paket", p: 1, at: 0.9, land: FINALE_L, port: FINALE_P },
+  // …then it shrinks into the companion and travels on
+  { id: "paket", p: 1, at: 0.35, land: SIDE_R, port: CORNER },
   { id: "tecrube", p: 1, land: { ...SIDE_R, o: 0.85 }, port: { ...CORNER, o: 0.8 } },
 ];
 

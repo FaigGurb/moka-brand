@@ -25,6 +25,20 @@ export function useJourneyOff() {
 }
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
+/** Opacity of the companion while copy or an image sits under it (it stays a faint trace of the journey). */
+const GHOST = 0.14;
+const MEDIA = /^(IMG|SVG|PICTURE|VIDEO|BUTTON|INPUT|SELECT|TEXTAREA)$/;
+/** True when the element under a screen point is copy or an image (not a section background). */
+function isContent(el: Element | null) {
+  for (let i = 0; el && i < 8; i++, el = el.parentElement) {
+    const tag = el.tagName.toUpperCase();
+    if (tag === "SECTION" || tag === "MAIN" || tag === "BODY" || tag === "FOOTER") return false;
+    if (MEDIA.test(tag)) return true;
+    for (let n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.textContent!.trim()) return true;
+  }
+  return false;
+}
+
 /**
  * The page-wide coffee journey: one fixed canvas above the sections (pointer-events none).
  * The scroll position, measured against the section anchors in chapters.ts, sets the journey
@@ -100,14 +114,42 @@ export function Journey() {
         const el = document.getElementById(a.id);
         if (!el) return [];
         const r = el.getBoundingClientRect();
-        return [{ y: (a.centre ? r.top + r.height / 2 : r.top) + sy - vh * 0.5, i }];
+        return [{ y: (a.centre ? r.top + r.height / 2 : r.top) + sy - vh * (a.at ?? 0.5), i }];
       });
+      marks.sort((a, b) => a.y - b.y);
       const hero = document.getElementById("top");
       const heroEnd = hero ? hero.getBoundingClientRect().bottom + sy : vh;
       fadeIn = [heroEnd - vh * 0.75, heroEnd - vh * 0.3];
       const foot = document.querySelector("footer");
       const footTop = foot ? foot.getBoundingClientRect().top + sy : document.documentElement.scrollHeight;
       fadeOut = [footTop - vh, footTop - vh * 0.45];
+    };
+
+    // the companion fades to a trace while copy is under it, so it never sits on top of text (phones above all)
+    let dodge = 1;
+    let clear = true;
+    let probeAt = 0;
+    let probeY = -1;
+    const probe = (now: number) => {
+      const w = innerWidth;
+      const h = innerHeight;
+      const cx = (0.5 + journey.pose.x) * w;
+      const cy = (0.5 - journey.pose.y) * h;
+      const dx = Math.min(w * 0.12, 70);
+      const dy = Math.min(h * 0.08, 80);
+      clear = true;
+      grid: for (const ox of [-dx, 0, dx])
+        for (const oy of [-dy, 0, dy * 0.7]) {
+          const x = cx + ox;
+          const y = cy + oy;
+          if (x < 0 || y < 0 || x >= w || y >= h) continue;
+          if (isContent(document.elementFromPoint(x, y))) {
+            clear = false;
+            break grid;
+          }
+        }
+      probeAt = now;
+      probeY = scrollY;
     };
 
     const pose = { x: 0, y: 0, s: 1, o: 1 };
@@ -139,8 +181,15 @@ export function Journey() {
       const presence =
         sstep(clamp01((y - fadeIn[0]) / (fadeIn[1] - fadeIn[0]))) * (1 - sstep(clamp01((y - fadeOut[0]) / (fadeOut[1] - fadeOut[0]))));
       journey.presence = presence;
+      // companion only (the stages are laid out around the object); probe a few times a second while scrolling
+      if (presence > 0.01 && pose.s < 0.8) {
+        const now = performance.now();
+        if (now - probeAt > 120 && (scrollY !== probeY || now - probeAt > 800)) probe(now);
+      } else clear = true;
+      dodge += ((clear ? 1 : GHOST) - dodge) * 0.18;
+      if (Math.abs((clear ? 1 : GHOST) - dodge) < 0.004) dodge = clear ? 1 : GHOST;
       // write only real changes: a style write every frame on a WebGL layer costs a recomposite
-      const op = Math.round(presence * pose.o * 500) / 500;
+      const op = Math.round(presence * pose.o * dodge * 500) / 500;
       if (box.current && op !== lastOp) {
         lastOp = op;
         box.current.style.opacity = String(op);

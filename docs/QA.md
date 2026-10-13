@@ -13,6 +13,7 @@ Bu siyahı iki hissədir: **avtomatik yoxlanılanlar** (hər dəyişiklikdən so
 | Konsol xətaları | az / en / ru, reduced-motion daxil | 0 |
 | Əlçatanlıq (axe-core, WCAG 2 AA) | ana səhifə, menyu, məxfilik, AR, oyunlar, Club | ciddi (serious/critical) xəta yoxdur |
 | Performans | telefon emulyasiyası + 4× zəif CPU, bütün səhifə boyu scroll | ekrandan kənar 3D səhnələr kadr çəkmir; scroll ~60 fps |
+| 3D səyahət (yoldaş) | 390 px-də Rəng → Tərəfdaşlar arası hər ekranda `document.elementFromPoint` yoldaşın yerində | yoldaş kanvası yox, altdakı element qayıdır (toxunuş keçir); mətnin üstündə yoldaş şəffaflığı ~0.14 |
 
 ## 2. Real cihazda (iPhone Safari + Android Chrome)
 
@@ -21,6 +22,13 @@ Bu siyahı iki hissədir: **avtomatik yoxlanılanlar** (hər dəyişiklikdən so
 - [ ] Scroll ilişmir: Konsepsiya, Dəndən fincana, Bakıda bir gün, Paket ailəsi (pin olunan bölmələr).
 - [ ] Ünvan zolağı gizlənəndə/görünəndə pin olunan bölmələr sıçramır.
 - [ ] 3D hero, dən hekayəsi və stəkan yüklənir; telefon qızmır, batareya sürətlə düşmür.
+
+**3D səyahət (dən → qovurma → üyütmə → dəmləmə → fincan)**
+- [ ] Aşağı scroll səyahəti irəli, yuxarı scroll geri oynadır; sıçrayış yoxdur.
+- [ ] Telefonda küncdəki yoldaş mətnin, şəklin və ya düymənin üstünə gələndə solğun iz kimi qalır, boş yerdə yenidən tam görünür; mətn həmişə oxunur.
+- [ ] Yoldaşın altındakı keçidlərə və düymələrə (BAŞLA, tərəfdaş saytları) toxunmaq işləyir.
+- [ ] Final: Chemex fincana tökür, qapaq bağlanır, xətt parlayır; başlıq yuxarı gedəndə bağlı fincan ortada qalır (boş qara ekran yoxdur), Paketlər bölməsi qalxanda küncə kiçilir.
+- [ ] Zəif telefonda səyahət özü yüngül rejimə keçir və ya statik K göstərir; scroll ilişmir.
 - [ ] Dil dəyişdirici: AZ / EN / RU; Rus başlıqları Montserrat ilə düzgün görünür; Azərbaycan hərfləri (ə, ğ, ı, ö, ş, ü, ç) hər yerdə düzgündür.
 - [ ] Menyu düyməsi, alt menyu, bütün keçidlər; 404 səhifəsi (`/moka-brand/olmayan-sehife/`).
 - [ ] Ekran qaraldılmış / "hərəkəti azalt" rejimi: animasiyalar sönür, məzmun oxunur.

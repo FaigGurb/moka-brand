@@ -720,6 +720,8 @@ export default function JourneyScene({ frame, touch, active, lite = false, eco =
         onReady?.();
       }}
       aria-hidden="true"
+      // R3F sets pointer-events auto on its wrapper; the layer sits above the page, so taps must pass through
+      style={{ pointerEvents: "none" }}
     >
       <ambientLight intensity={0.45} />
       <directionalLight position={[3, 5, 4]} intensity={1.8} color="#fff4e6" />

@@ -24,18 +24,18 @@ update it at the end; git is the only channel between them. Keep it short — re
   3. Mobildə scroll lag-sız (lite yol); canvas ekrandan kənarda render etmir.
   4. Reduced-motion: statik, mətn oxunur. WebGL yoxdursa: statik fallback.
   5. `npm run check` + `npm run build` + `docs/tools/qa/` keçir; əvvəl/sonra skrinşotlar.
-- **Status:** M1–M3 deploy olundu; real telefon yoxlaması və M4 gözləyir
-- **Verification:** M3: check+build keçdi. scroll_perf (GPU-suz headless, software compositing): mobil 48→30 fps (optimallaşdırmadan əvvəl 10), desktop 42→16; trace: vaxt GLES2::ReadPixels-dədir (real cihazda yoxdur). Adaptiv keyfiyyət headless-də 3D-ni ~11 s-də söndürür (statik K). responsive.py: overflow 0, xəta yox; journey qutusu üçün 'wide' xəbərdarlığı kəsici konteynerlə düzəldildi, az/en/ru × 1440/390 təkrar yoxlandı: təmiz. Real telefon yoxlanmayıb.
+- **Status:** M1–M4 hazırdır (M4 PR #2-də commit olundu, deploy olunmayıb); real telefon yoxlaması gözləyir
+- **Verification:** M4: check+build keçdi; responsive.py (az/en/ru × 4 ölçü + reduced-motion): overflow 0, xəta yox. 390 px skrinşotlar: yoldaş mətn/şəkil üstündə ~0.14 şəffaflığa enir, boş yerdə tam görünür; R3F kanvası toxunuşları tuturdu (pointer-events auto) — düzəldildi, `elementFromPoint` indi altdakı elementi qaytarır. Final: bağlı fincan başlıq gedəndən sonra ortada qalır, Paketlər qalxanda küncə kiçilir (boş qara ekran yox). Headless-də desktop 3D adaptiv rejimlə sönür (M3 qeydi), real cihaz yoxlanmayıb.
 - **Blockers:** —
-- **Next step:** İstifadəçi canlı saytı real telefonda yoxlasın; sonra M4 (final keçid cilası, telefonda yoldaşın mətnlə toqquşması, docs/QA.md).
+- **Next step:** İstifadəçi PR #2-ni real telefonda yoxlasın (docs/QA.md → 3D səyahət); razıdırsa "DEPLOY: yes" ilə deploy, sonra "Merge et".
 
 ## İcra qeydləri (model və alətlər)
 - **Opus**: səhnə memarlığı, material, kamera/keçidlər. **Sonnet**: i18n sinxronu, lint/typecheck, QA skriptləri.
 - Skill-lər: `high-end-visual-design` (vizual), `review` (commitdən əvvəl), `headroom` (böyük fayllar). `qa-only` yalnız deploydan sonra. Figma/Canva MCP lazım deyil.
 
 ## Recent decisions (newest first, max 5)
+- 2026-10-13: M4: yoldaş mətnin üstündə solğun iz olur (gizlənmir); final fincan Paketlərə qədər ortada qalır.
 - 2026-10-13: Səhifə-miqyaslı 3D səyahət planı: bir davamlı canvas, mobildə də lite davamlı.
 - 2026-10-13: Hero canlı fon + gün işığı tozu deploy olundu (PR #1 merged).
 - 2026-10-13: Workflow set up — plan in chat, implement in local Claude Code, review via git.
 - 2026-10-13: Hero phone tilt shipped (letters follow the device, the line stays level).
-- 2026-10-12: Cream/video redesign and /flow/ rejected and reverted; video idea parked.
