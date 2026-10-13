@@ -2,26 +2,30 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
-import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { createBeanGeometry, roastColor, seeded } from "@/lib/bean";
-import { PHASES } from "./phases";
+import { paintCupWrap } from "@/lib/cupArt";
+import { PHASES, journey } from "./chapters";
 import { BeanPush, ndcToPlane } from "@/lib/beanPhysics";
 import { installPointer, pointer as sharedPointer, pointerNDC } from "@/lib/pointer";
 
 /**
- * "From bean to cup": beans float, roast (green → dark), spiral into a Chemex and turn into
- * grounds, then coffee drips into the lower chamber until it reaches the brand's signature line.
- * Everything is driven by one scroll progress value (0..1); time only adds idle motion.
+ * The page-wide journey "from bean to cup": beans float, roast (green → dark), spiral into a Chemex
+ * and turn into grounds, then coffee drips into the lower chamber until it reaches the signature line.
+ * Everything follows one scroll progress (`journey.p`, written by Journey.tsx); the object's place on
+ * screen follows `journey.pose`. Time only adds idle motion.
  */
 
 type Props = {
-  progress: MutableRefObject<number>;
-  reducedMotion: boolean;
+  /** the fixed element holding the canvas: sized and moved here to cover only the object */
+  frame: RefObject<HTMLDivElement | null>;
   touch: boolean;
   active: boolean;
   /** light path for phones and weak machines */
   lite?: boolean;
+  /** economy: the device struggled, so even fewer frames */
+  eco?: boolean;
   onReady?: () => void;
 };
 
@@ -46,6 +50,12 @@ const LINE_Y = 0.82;
 const FILTER_APEX = 1.42;
 const FILTER_SLOPE = 1.15;
 const PILE_H = 0.4;
+/** MOKA's takeaway cup (same model and wrap as apps/CupScene, size M), scaled beside the Chemex. */
+const CUP_H = 2.3;
+const CUP_S = 0.6;
+/** Chemex tilt while pouring, and its rim spout in the Chemex's own space. */
+const TILT = 0.95;
+const SPOUT = new THREE.Vector3(1.05, 2.5, 0);
 
 function radiusAt(y: number) {
   for (let i = 1; i < PROFILE.length; i++) {
@@ -95,7 +105,10 @@ type Bean = {
   angle: number;
 };
 
-function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "active" | "onReady">) {
+/** Vertical size of the view at the object's depth (camera z 7.6, fov 35). */
+const VIEW_H = 2 * Math.tan(THREE.MathUtils.degToRad(17.5)) * 7.6;
+
+function Story({ frame, touch, lite = false }: Omit<Props, "active" | "onReady" | "eco">) {
   const root = useRef<THREE.Group>(null);
   const beans = useRef<THREE.InstancedMesh>(null);
   const grounds = useRef<THREE.Points>(null);
@@ -107,16 +120,30 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
   const ringGlow = useRef<THREE.Sprite>(null);
   const heat = useRef<THREE.PointLight>(null);
   const steam = useRef<(THREE.Sprite | null)[]>([]);
-  const smooth = useRef(reducedMotion ? 1 : 0);
+  const chemex = useRef<THREE.Group>(null);
+  const cup = useRef<THREE.Group>(null);
+  const cupFill = useRef<THREE.Mesh>(null);
+  const lid = useRef<THREE.Group>(null);
+  const stream = useRef<THREE.Mesh>(null);
+  const cupRing = useRef<THREE.Mesh>(null);
+  const cupGlow = useRef<THREE.Sprite>(null);
+  const smooth = useRef(journey.p);
   const lastGrind = useRef(-1);
   const lastRoast = useRef(-1);
-  const { viewport, camera, pointer, gl } = useThree();
+  const { camera, pointer, gl } = useThree();
+  // The canvas covers only a box around the object (companion mode) or the whole screen (stages);
+  // the camera keeps the full-screen projection through a view offset, so nothing jumps.
+  const box = useRef({ mode: "", w: 0, h: 0, fx: 1, fy: 1 });
+  const fullCam = useMemo(() => new THREE.PerspectiveCamera(35, 1, 0.1, 100), []);
+  const centre = useMemo(() => new THREE.Vector3(), []);
   useEffect(() => installPointer(), []);
 
-  const BEANS = lite ? 32 : 90;
+  // page-wide, so fewer beans than a single full-screen stage would carry
+  const BEANS = lite ? 26 : 64;
   const GROUNDS = lite ? 450 : 1800;
 
-  const beanGeo = useMemo(() => createBeanGeometry(lite ? "low" : "high"), [lite]);
+  // the beans are small on a page-wide layer: the low-poly bean is enough everywhere
+  const beanGeo = useMemo(() => createBeanGeometry("low"), []);
   const beanMat = useMemo(() => new THREE.MeshStandardMaterial({ roughness: 0.42, metalness: 0.05 }), []);
 
   const data = useMemo<Bean[]>(() => {
@@ -218,6 +245,55 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
     [clip, lite],
   );
 
+  // ---- the MOKA cup (finale)
+  const cupRes = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = lite ? 1024 : 2048;
+    c.height = lite ? 512 : 1024;
+    paintCupWrap(c);
+    const wrap = new THREE.CanvasTexture(c);
+    wrap.colorSpace = THREE.SRGBColorSpace;
+    wrap.anisotropy = 4;
+    const seg = lite ? 48 : 96;
+    const streamGeo = new THREE.CylinderGeometry(0.024, 0.02, 1, 10, 1, true);
+    streamGeo.translate(0, -0.5, 0);
+    return {
+      wrap,
+      geo: {
+        body: new THREE.LatheGeometry([new THREE.Vector2(0.6, 0), new THREE.Vector2(0.84, 1)], seg),
+        bottom: new THREE.CircleGeometry(0.6, 48).rotateX(Math.PI / 2),
+        lid: new THREE.LatheGeometry(
+          [[0, 0.16], [0.5, 0.16], [0.62, 0.12], [0.7, 0.1], [0.74, 0.06], [0.86, 0.05], [0.9, 0.02], [0.9, -0.04], [0.85, -0.06]].map(
+            ([r, y]) => new THREE.Vector2(r, y),
+          ),
+          seg,
+        ),
+        rim: new THREE.TorusGeometry(0.85, 0.025, 10, seg).rotateX(Math.PI / 2),
+        fill: new THREE.CircleGeometry(1, 48).rotateX(-Math.PI / 2),
+        // the signature line around the cup at 60% of its height
+        ring: new THREE.TorusGeometry(0.6 + 0.24 * 0.6 + 0.012, 0.014, 8, seg).rotateX(Math.PI / 2),
+        stream: streamGeo,
+      },
+      mat: {
+        paper: new THREE.MeshStandardMaterial({ map: wrap, roughness: 0.62, side: THREE.DoubleSide }),
+        plain: new THREE.MeshStandardMaterial({ color: "#f2f1ee", roughness: 0.7 }),
+        lid: new THREE.MeshStandardMaterial({ color: "#141414", roughness: 0.32 }),
+        coffee: new THREE.MeshStandardMaterial({ color: "#3a2112", roughness: 0.15, emissive: "#2a160b", emissiveIntensity: 0.25 }),
+        stream: new THREE.MeshStandardMaterial({ color: "#3b2416", roughness: 0.2, transparent: true, opacity: 0 }),
+        ring: new THREE.MeshBasicMaterial({ color: "#ffe2a6", transparent: true, opacity: 0, toneMapped: false }),
+      },
+    };
+  }, [lite]);
+
+  useEffect(
+    () => () => {
+      cupRes.wrap.dispose();
+      Object.values(cupRes.geo).forEach((g) => g.dispose());
+      Object.values(cupRes.mat).forEach((m) => m.dispose());
+    },
+    [cupRes],
+  );
+
   useEffect(
     () => () => {
       beanGeo.dispose();
@@ -243,40 +319,109 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
   const pvel = useMemo(() => new THREE.Vector3(), []);
   const poff = useMemo(() => new THREE.Vector3(), []);
   const push = useMemo(() => new BeanPush(BEANS), [BEANS]);
+  const spout = useMemo(() => new THREE.Vector3(), []);
+  const mouth = useMemo(() => new THREE.Vector3(), []);
+  const dir = useMemo(() => new THREE.Vector3(), []);
+  const DOWN = useMemo(() => new THREE.Vector3(0, -1, 0), []);
+  const tiltE = useMemo(() => new THREE.Euler(), []);
 
   useFrame((state, delta) => {
-    const t = reducedMotion ? 0 : state.clock.elapsedTime;
-    const target = reducedMotion ? 1 : progress.current;
-    smooth.current += (target - smooth.current) * (1 - Math.pow(0.03, delta));
+    const t = state.clock.elapsedTime;
+    // ease toward the scroll target: scrubbed, and it plays backwards when scrolling up
+    smooth.current += (journey.p - smooth.current) * (1 - Math.pow(0.02, delta));
     const p = smooth.current;
 
-    // ---- layout: landscape puts the Chemex in the right column, portrait below the captions
+    // ---- layout: the pose (from the section on screen) places and sizes the whole object
+    const fw = window.innerWidth;
+    const fh = window.innerHeight;
+    const viewport = { width: (VIEW_H * fw) / fh, height: VIEW_H, aspect: fw / fh };
     const landscape = viewport.aspect > 1.05;
-    const scale = landscape ? Math.min(0.95, viewport.height / 5.6) : Math.min(1, viewport.width / 3.4, (viewport.height * 0.44) / 2.5);
-    const spreadX = landscape ? Math.min(2.9, viewport.width / 2 / scale) : (viewport.width / 2 / scale) * 0.95;
+    const base = landscape ? Math.min(0.95, viewport.height / 5.6) : Math.min(1, viewport.width / 3.4, (viewport.height * 0.44) / 2.5);
+    const pose = journey.pose;
+    const scale = base * pose.s;
+    // beans stay in a cloud around the Chemex so the copy beside it stays clear
+    const spreadX = landscape ? 1.9 : 1.5;
     if (root.current) {
-      root.current.scale.setScalar(scale);
-      root.current.position.set(
-        landscape && viewport.width > 7 ? viewport.width * 0.24 : 0,
-        landscape ? 0.05 * scale : -viewport.height * 0.1,
-        0,
-      );
+      const k = 1 - Math.pow(0.004, delta);
+      const r = root.current;
+      r.scale.setScalar(r.scale.x + (scale - r.scale.x) * k);
+      r.position.x += (pose.x * viewport.width - r.position.x) * k;
+      r.position.y += (pose.y * viewport.height + 0.05 * scale - r.position.y) * k;
+      // a slow turn while travelling, so it reads as one object moving through the page
+      r.rotation.y = Math.sin(p * Math.PI * 2) * 0.25;
+      journey.moving =
+        Math.abs(journey.p - p) > 4e-4 ||
+        Math.abs(pose.x * viewport.width - r.position.x) > 2e-3 ||
+        Math.abs(scale - r.scale.x) > 2e-3;
     }
     // gentle camera drift: mouse on desktop, slow sway on touch
-    const cx = reducedMotion ? 0 : touch ? Math.sin(t * 0.25) * 0.35 : pointer.x * 0.5;
-    const cy = reducedMotion ? 0 : touch ? Math.cos(t * 0.2) * 0.12 : pointer.y * 0.25;
+    const cx = touch ? Math.sin(t * 0.25) * 0.25 : pointer.x * 0.4;
+    const cy = touch ? Math.cos(t * 0.2) * 0.1 : pointer.y * 0.2;
     camera.position.x += (cx - camera.position.x) * 0.05;
     camera.position.y += (0.9 + cy - camera.position.y) * 0.05;
-    camera.lookAt(root.current ? root.current.position.x * 0.6 : 0, 0.1, 0);
+    camera.lookAt(camera.position.x * 0.8, 0.1, 0);
+
+    // ---- canvas box: full screen on the stages, a moving box around the companion elsewhere
+    const cam = camera as THREE.PerspectiveCamera;
+    cam.aspect = fw / fh;
+    const el = frame.current;
+    const b = box.current;
+    const r0 = root.current;
+    const big = !r0 || Math.max(pose.s, r0.scale.x / base) > 0.8;
+    if (big) {
+      if (b.mode !== "full" || b.w !== fw || b.h !== fh) {
+        Object.assign(b, { mode: "full", w: fw, h: fh, fx: 1, fy: 1 });
+        if (el) {
+          el.style.width = `${fw}px`;
+          el.style.height = `${fh}px`;
+          el.style.transform = "none";
+        }
+      }
+      cam.clearViewOffset();
+    } else {
+      // sized for the largest companion (0.8 × base): local x ±(cloud + Chemex), y −1.8 … 3.2
+      const px = (fh / VIEW_H) * base * 0.8 * 1.12;
+      const bw = Math.min(fw, Math.ceil(2 * ((landscape ? 1.9 : 1.5) + 0.7) * px));
+      const bh = Math.min(fh, Math.ceil(5 * px));
+      if (b.mode !== "box" || b.w !== bw || b.h !== bh) {
+        Object.assign(b, { mode: "box", w: bw, h: bh, fx: bw / fw, fy: bh / fh });
+        if (el) {
+          el.style.width = `${bw}px`;
+          el.style.height = `${bh}px`;
+        }
+      }
+      fullCam.position.copy(cam.position);
+      fullCam.quaternion.copy(cam.quaternion);
+      fullCam.aspect = fw / fh;
+      fullCam.updateProjectionMatrix();
+      fullCam.updateMatrixWorld();
+      r0.updateMatrixWorld();
+      centre.set(0, 0.7, 0);
+      r0.localToWorld(centre).project(fullCam);
+      const ox = Math.round((centre.x * 0.5 + 0.5) * fw - bw / 2);
+      const oy = Math.round((-centre.y * 0.5 + 0.5) * fh - bh / 2);
+      if (el) el.style.transform = `translate3d(${ox}px,${oy}px,0)`;
+      cam.setViewOffset(fw, fh, ox, oy, bw, bh);
+    }
+    cam.updateProjectionMatrix();
 
     const roast = sstep(PHASES.roast[0], PHASES.roast[1], p) * 0.92;
     const grind = clamp((p - PHASES.grind[0]) / (PHASES.grind[1] - PHASES.grind[0]), 0, 1);
     const brew = clamp((p - PHASES.brew[0]) / (PHASES.brew[1] - PHASES.brew[0]), 0, 1);
+    // finale: the cup rises in, the Chemex lifts and pours, the lid closes, the Chemex steps away
+    const cupIn = sstep(PHASES.cupIn[0], PHASES.cupIn[1], p);
+    const pourT = clamp((p - PHASES.pour[0]) / (PHASES.pour[1] - PHASES.pour[0]), 0, 1);
+    const finT = clamp((p - PHASES.finish[0]) / (PHASES.finish[1] - PHASES.finish[0]), 0, 1);
+    const tilt = sstep(0, 0.3, pourT) * (1 - sstep(0.8, 1, pourT));
+    const flow = sstep(0.22, 0.36, pourT) * (1 - sstep(0.78, 0.9, pourT));
+    const drained = sstep(0.3, 0.85, pourT);
+    const lidK = sstep(0.05, 0.45, finT);
+    const away = sstep(0.15, 0.75, finT);
 
     // ---- beans
     const mesh = beans.current;
     const dt = Math.min(delta, 1 / 20);
-    const ndc = reducedMotion ? null : pointerNDC(gl.domElement);
+    const ndc = pointerNDC(gl.domElement);
     const burst = push.tapped(sharedPointer.tapped);
     const rp = root.current;
     if (mesh) {
@@ -286,7 +431,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
         const gi = b.grindAt > 1 ? 0 : clamp((grind - b.grindAt) / 0.42, 0, 1);
         // idle float
         const fx = b.pos.x * spreadX + Math.sin(t * 0.4 + b.phase) * 0.12;
-        const fy = b.pos.y * 1.9 + 0.35 + Math.sin(t * 0.55 + b.phase * 1.7) * 0.18;
+        const fy = b.pos.y * 1.5 + 0.35 + Math.sin(t * 0.55 + b.phase * 1.7) * 0.18;
         const fz = b.pos.z * 2 - 0.6 + Math.cos(t * 0.35 + b.phase) * 0.1;
         v.set(fx, fy, fz);
         // roasting makes the beans tremble a little
@@ -304,7 +449,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
           const sc0 = rp.scale.x;
           ndcToPlane(ndc, camera, rp.position.z + v.z * sc0, pw);
           pw.sub(rp.position).divideScalar(sc0);
-          pvel.set((ndc.vx * viewport.width) / 2 / sc0, (ndc.vy * viewport.height) / 2 / sc0, 0);
+          pvel.set((ndc.vx * viewport.width * box.current.fx) / 2 / sc0, (ndc.vy * viewport.height * box.current.fy) / 2 / sc0, 0);
           hit = true;
         }
         push.apply(i, v, hit ? pw : null, hit ? pvel : null, touch ? 1.1 : 0.9, dt, burst && hit);
@@ -359,7 +504,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
       pour.current.position.y = from;
       pour.current.scale.y = (from - (FILTER_APEX + PILE_H)) * sstep(0, 0.1, brew) + 0.001;
     }
-    const level = LINE_Y * sstep(0.1, 0.96, brew);
+    const level = LINE_Y * sstep(0.1, 0.96, brew) * (1 - drained);
     const dripOn = sstep(0.06, 0.14, brew) * (1 - sstep(0.94, 1, brew));
     if (drip.current) {
       mats.dripM.opacity = dripOn;
@@ -368,7 +513,7 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
     }
     if (liquid.current && surface.current) {
       liquid.current.visible = level > 0.005;
-      surface.current.visible = level > 0.005;
+      surface.current.visible = level > 0.005 && tilt < 0.04;
       liquid.current.updateWorldMatrix(true, false);
       tmp.set(0, level, 0);
       liquid.current.localToWorld(tmp);
@@ -378,8 +523,8 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
       surface.current.scale.setScalar(Math.max(r, 0.001));
     }
 
-    // ---- final: the signature line lights up
-    const fin = sstep(0.88, 0.98, p);
+    // ---- the signature line lights up on the full Chemex, then on the cup once the lid is on
+    const fin = sstep(PHASES.line[0], PHASES.line[1], p) * (1 - tilt) * (1 - drained);
     mats.ring.opacity = fin;
     if (ringGlow.current) (ringGlow.current.material as THREE.SpriteMaterial).opacity = fin * (0.75 + Math.sin(t * 2) * 0.1);
 
@@ -389,15 +534,77 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
       const ph = (t * 0.18 + i / steam.current.length) % 1;
       sp.position.set(Math.sin(t * 0.6 + i * 2) * 0.18, TOP + 0.4 + ph * 1.3, 0.1);
       sp.scale.setScalar(0.5 + ph * 0.7);
-      (sp.material as THREE.SpriteMaterial).opacity = sstep(0.8, 0.95, p) * Math.sin(Math.PI * ph) * 0.18;
+      (sp.material as THREE.SpriteMaterial).opacity = sstep(0.78, 0.84, p) * (1 - tilt) * (1 - drained) * Math.sin(Math.PI * ph) * 0.18;
     });
+
+    // ---- cup and pour (all in the root group's space; the Chemex base sits at y -1.3)
+    const cg = cup.current;
+    const ch = chemex.current;
+    if (cg && ch) {
+      const cupX = (1.0 + 0.35 * tilt) * (1 - away);
+      const cupY = -1.3 - 0.9 * (1 - cupIn);
+      cg.visible = cupIn > 0.002;
+      cg.position.set(cupX, cupY, 0.1);
+      cg.scale.setScalar(CUP_S * Math.max(cupIn, 0.001));
+      // the logo faces the viewer during the pour, then the cup turns slowly with the scroll
+      cg.rotation.y = Math.PI - 0.5 + (p - PHASES.cupIn[0]) * 6;
+      const mouthY = cupY + CUP_H * CUP_S;
+      // Chemex: rest (shifted left for the cup) → lifted and tilted so its spout sits over the cup
+      const a = TILT;
+      const sx = SPOUT.x * Math.cos(a) + SPOUT.y * Math.sin(a);
+      const sy = -SPOUT.x * Math.sin(a) + SPOUT.y * Math.cos(a);
+      const restX = -0.85 * cupIn;
+      const pourX = cupX - sx + 0.05;
+      const pourY = mouthY + 0.45 - sy;
+      ch.position.set(restX + (pourX - restX) * tilt - 1.8 * away, -1.3 + (pourY + 1.3) * tilt, -0.6 * away);
+      ch.rotation.z = -a * tilt;
+      ch.scale.setScalar(Math.max(1 - away, 0.001));
+      ch.visible = away < 0.999;
+      // the stream from the spout into the cup
+      const sm = stream.current;
+      if (sm) {
+        cupRes.mat.stream.opacity = flow;
+        sm.visible = flow > 0.01;
+        if (sm.visible) {
+          tiltE.set(0, 0, ch.rotation.z);
+          spout.copy(SPOUT).applyEuler(tiltE).multiplyScalar(ch.scale.x).add(ch.position);
+          const fillY = 0.62 * drained;
+          mouth.set(cupX, cupY + CUP_H * CUP_S * Math.max(fillY, 0.08), 0.1);
+          dir.subVectors(mouth, spout);
+          const len = dir.length();
+          sm.position.copy(spout);
+          sm.quaternion.setFromUnitVectors(DOWN, dir.divideScalar(Math.max(len, 1e-4)));
+          sm.scale.set(1, Math.max(len, 0.001), 1);
+        }
+      }
+      // coffee rising in the cup
+      const cf = cupFill.current;
+      if (cf) {
+        const f = 0.62 * drained;
+        cf.visible = drained > 0.01;
+        cf.position.y = f * CUP_H;
+        cf.scale.setScalar((0.6 + 0.24 * f) * 0.97);
+      }
+      // lid drops on
+      const ld = lid.current;
+      if (ld) {
+        ld.visible = lidK > 0.01;
+        ld.position.y = CUP_H + (1 - lidK) * 0.7;
+        ld.rotation.x = (1 - lidK) * 0.35;
+        ld.scale.setScalar(0.7 + 0.3 * lidK);
+      }
+      const ringOn = sstep(0.5, 0.95, finT);
+      cupRes.mat.ring.opacity = ringOn;
+      if (cupRing.current) cupRing.current.visible = ringOn > 0.01;
+      if (cupGlow.current) (cupGlow.current.material as THREE.SpriteMaterial).opacity = ringOn * (0.6 + Math.sin(t * 2) * 0.1);
+    }
   });
 
   return (
     <group ref={root}>
       <instancedMesh ref={beans} args={[beanGeo, beanMat, BEANS]} frustumCulled={false} />
       <pointLight ref={heat} position={[0, 0.6, 1.4]} color="#ff8a3d" intensity={0} distance={8} />
-      <group position={[0, -1.3, 0]}>
+      <group ref={chemex} position={[0, -1.3, 0]}>
         <mesh ref={liquid} geometry={geos.liquid} material={mats.liquid} visible={false} />
         <mesh ref={surface} geometry={geos.surface} material={mats.surface} rotation-x={-Math.PI / 2} visible={false} />
         <points ref={grounds} geometry={groundsData.geo} material={groundsMat} frustumCulled={false} />
@@ -431,17 +638,83 @@ function Story({ progress, reducedMotion, touch, lite = false }: Omit<Props, "ac
           </sprite>
         ))}
       </group>
+      <mesh ref={stream} geometry={cupRes.geo.stream} material={cupRes.mat.stream} visible={false} />
+      <group ref={cup} visible={false}>
+        <mesh geometry={cupRes.geo.body} material={cupRes.mat.paper} scale={[1, CUP_H, 1]} />
+        <mesh geometry={cupRes.geo.bottom} material={cupRes.mat.plain} />
+        <mesh ref={cupFill} geometry={cupRes.geo.fill} material={cupRes.mat.coffee} visible={false} />
+        <mesh ref={cupRing} geometry={cupRes.geo.ring} material={cupRes.mat.ring} position={[0, CUP_H * 0.6, 0]} visible={false} />
+        <sprite ref={cupGlow} position={[0, CUP_H * 0.6, 0.5]} scale={[3.2, 0.55, 1]}>
+          <spriteMaterial map={tex.glow} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        </sprite>
+        <group ref={lid} visible={false}>
+          <mesh geometry={cupRes.geo.rim} material={cupRes.mat.plain} />
+          <mesh geometry={cupRes.geo.lid} material={cupRes.mat.lid} />
+          <mesh position={[0, 0.165, -0.42]} rotation-x={-Math.PI / 2} material={cupRes.mat.lid}>
+            <planeGeometry args={[0.22, 0.07]} />
+          </mesh>
+        </group>
+      </group>
     </group>
   );
 }
 
-export default function BeanStoryScene({ progress, reducedMotion, touch, active, lite = false, onReady }: Props) {
+/**
+ * Compiles every shader once at start (hidden parts included), so the cup, the stream and the
+ * line don't stall the scroll with a shader compile the first time they appear.
+ */
+function Precompile() {
+  const { gl, scene, camera } = useThree();
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      const hidden: THREE.Object3D[] = [];
+      scene.traverse((o) => {
+        if (!o.visible) {
+          hidden.push(o);
+          o.visible = true;
+        }
+      });
+      gl.compile(scene, camera);
+      hidden.forEach((o) => (o.visible = false));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [gl, scene, camera]);
+  return null;
+}
+
+/**
+ * Frames on demand: full rate while the journey is still easing or the pointer is moving, otherwise
+ * a slow idle rate for the floating beans. A page-wide layer must not cost a frame every vsync.
+ */
+function FrameDriver({ lite, eco }: { lite: boolean; eco: boolean }) {
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    const busyMs = eco ? 1000 / 24 : lite ? 1000 / 30 : 1000 / 60;
+    const idleMs = eco ? 1000 / 8 : lite ? 1000 / 12 : 1000 / 24;
+    const loop = (now: number) => {
+      raf = requestAnimationFrame(loop);
+      const busy = journey.moving || now - sharedPointer.moved < 700;
+      if (now - last >= (busy ? busyMs : idleMs) - 2) {
+        last = now;
+        invalidate();
+      }
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [invalidate, lite, eco]);
+  return null;
+}
+
+export default function JourneyScene({ frame, touch, active, lite = false, eco = false, onReady }: Props) {
   return (
     <Canvas
-      frameloop={active ? "always" : "never"}
-      dpr={lite ? [1, 1.25] : [1, 1.75]}
-      camera={{ position: [0, 0.9, 7.6], fov: 35 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      frameloop={active ? "demand" : "never"}
+      dpr={lite ? 1 : [1, 1.5]}
+      // aspect given = the camera is ours (R3F won't reset it on resize); Story sets it every frame
+      camera={{ position: [0, 0.9, 7.6], fov: 35, aspect: 1 }}
+      gl={{ antialias: !lite, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.localClippingEnabled = true;
         onReady?.();
@@ -457,7 +730,9 @@ export default function BeanStoryScene({ progress, reducedMotion, touch, active,
         <Lightformer intensity={1.4} position={[-5, 1, 1]} rotation-y={Math.PI / 2} scale={[1, 5, 1]} color="#ffe2a6" />
         <Lightformer intensity={0.9} position={[5, 0, 1]} rotation-y={-Math.PI / 2} scale={[1, 5, 1]} color="#a8643a" />
       </Environment>
-      <Story progress={progress} reducedMotion={reducedMotion} touch={touch} lite={lite} />
+      {active && <FrameDriver lite={lite} eco={eco} />}
+      <Precompile />
+      <Story frame={frame} touch={touch} lite={lite} />
     </Canvas>
   );
 }
