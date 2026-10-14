@@ -51,7 +51,7 @@ export function Roast() {
   );
 
   return (
-    <section id="qovurma" ref={root} className="day-wash overflow-hidden bg-paper text-espresso">
+    <section id="qovurma" ref={root} className="day-glow overflow-hidden bg-espresso text-paper">
       <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
         {/* the bean card: given with every bag, so the official bag itself stays unchanged */}
         <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
@@ -84,24 +84,24 @@ export function Roast() {
         </div>
 
         <div className="r-copy flex flex-col gap-6">
-          <p className="eyebrow text-axsam-ink">{t.roast.eyebrow}</p>
+          <p className="eyebrow text-seher">{t.roast.eyebrow}</p>
           <h2 className="text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">
             {t.roast.title}
           </h2>
-          <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted">
+          <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">
             {t.roast.text}
           </p>
-          <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-axsam bg-paper-2/70 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">
+          <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-gunorta bg-paper/[0.05] px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">
             <div className="flex flex-col gap-1.5">
               <b className="font-[family-name:var(--font-display)] text-xl font-medium">{t.roast.house.title}</b>
-              <p className="text-[15px] leading-relaxed text-muted">{t.roast.house.text}</p>
+              <p className="text-[15px] leading-relaxed text-muted-dark">{t.roast.house.text}</p>
               <p className="text-[13px] font-bold tracking-[0.04em]">
-                {t.roast.house.roaster}: <span className="font-normal text-muted">{t.roast.house.roasterName}</span>
+                {t.roast.house.roaster}: <span className="font-normal text-muted-dark">{t.roast.house.roasterName}</span>
               </p>
             </div>
-            <figure className="flex flex-col items-center gap-1 text-espresso">
+            <figure className="flex flex-col items-center gap-1 text-paper">
               <RoasterDrum label={t.roast.house.drawing} className="w-[168px] max-w-full" />
-              <figcaption className="text-[10px] font-bold tracking-[0.14em] text-muted uppercase">{t.roast.house.drawingNote}</figcaption>
+              <figcaption className="text-[10px] font-bold tracking-[0.14em] text-muted-dark uppercase">{t.roast.house.drawingNote}</figcaption>
             </figure>
           </div>
           <fieldset className="mt-2 flex flex-col gap-3">
@@ -118,18 +118,18 @@ export function Roast() {
               aria-valuetext={`${L.label}, ${t.roast.line} ${L.line}%`}
               className="w-full accent-[#A8643A]"
             />
-            <div className="flex justify-between text-xs font-bold tracking-[0.04em] text-muted" aria-hidden="true">
+            <div className="flex justify-between text-xs font-bold tracking-[0.04em] text-muted-dark" aria-hidden="true">
               {LEVELS.map((l, i) => (
-                <button key={l.short} type="button" tabIndex={-1} onClick={() => setLvl(i)} className={i === lvl ? "text-espresso" : ""}>
+                <button key={l.short} type="button" tabIndex={-1} onClick={() => setLvl(i)} className={i === lvl ? "text-paper" : ""}>
                   {l.short}
                 </button>
               ))}
             </div>
           </fieldset>
-          <p className="eyebrow text-espresso" aria-live="polite">
+          <p className="eyebrow text-paper" aria-live="polite">
             {L.label} · {t.roast.line} {L.line}%
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" aria-label={t.roast.flavorsLabel}>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-dark" aria-label={t.roast.flavorsLabel}>
             {FLAVORS.map((f) => (
               <li key={f.name} className="flex items-center gap-2">
                 <span className="h-3 w-3 rounded-full" style={{ background: f.hex }} aria-hidden="true" />
@@ -137,7 +137,7 @@ export function Roast() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-muted">{t.roast.sample}</p>
+          <p className="text-xs text-muted-dark">{t.roast.sample}</p>
         </div>
       </div>
     </section>
