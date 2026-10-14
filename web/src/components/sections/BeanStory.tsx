@@ -3,6 +3,7 @@
 import { CinemaStage, type Scene } from "../cinema/CinemaStage";
 import type { FxSpec } from "../cinema/fx";
 import { LOOPS, STILLS } from "@/lib/cinema";
+import { CLIPS } from "@/lib/clips";
 import { useI18n } from "@/i18n/context";
 
 /** Living details, in fractions of each photo (anchors measured on the stills). */
@@ -23,8 +24,10 @@ const FX: Record<string, FxSpec[]> = {
 
 /**
  * "From bean to cup" as a cinema stage: photoreal chapters (bean, roast, grind, brew, the line on
- * MOKA's cup) dissolve into each other as the page scrolls, backwards when scrolling up. Grind, pour
- * and Chemex play real video loops (Higgsfield / Kling from the same stills); the rest keep 2D effects.
+ * MOKA's cup) as one film directed by the scroll, backwards when scrolling up: the camera rests on each
+ * sharp still (grind, pour and Chemex as real video loops, the rest with 2D effects), then a Kling
+ * start→end-frame transition carries it to the next (docs/tools/film/chain.sh). The cup's K is never
+ * drawn by the generator: the film ends on a blank cup and dissolves into the still with the vector K.
  */
 export function BeanStory() {
   const { t } = useI18n();
@@ -32,7 +35,6 @@ export function BeanStory() {
   const shots: Scene["shots"][] = [
     [{ still: STILLS.beanGreen, focus: "48% 50%" }],
     [
-      { still: STILLS.beanLight, focus: "70% 50%" },
       { still: STILLS.beanDark, focus: "48% 50%", fx: FX.beanDark },
       { still: STILLS.beanCrack, focus: "50% 50%", fx: FX.beanCrack },
     ],
@@ -58,7 +60,8 @@ export function BeanStory() {
       eyebrow={b.eyebrow}
       heading={<h2 id="proses-title">{b.title}</h2>}
       scenes={scenes}
-      perShot={0.75}
+      perShot={0.95}
+      film={CLIPS.journey}
     />
   );
 }

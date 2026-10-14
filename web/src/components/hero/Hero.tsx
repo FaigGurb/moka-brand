@@ -111,6 +111,10 @@ export function Hero() {
           </div>
         </div>
       </div>
+      {/* scroll cue: a drop runs down a thin golden line, into the film below */}
+      <span aria-hidden="true" className="hero-fade pointer-events-none absolute bottom-6 left-1/2 hidden h-14 w-px -translate-x-1/2 overflow-hidden bg-paper/15 md:block">
+        <span className="absolute inset-x-0 top-0 h-5 bg-[linear-gradient(to_bottom,transparent,rgba(255,226,166,0.95))] motion-safe:animate-[scroll-cue_2.2s_cubic-bezier(0.6,0,0.3,1)_infinite]" />
+      </span>
       {/* the signature line under the hero */}
       <span aria-hidden="true" className="relative block h-px w-full bg-[linear-gradient(90deg,transparent,rgba(255,226,166,0.7),transparent)]" />
     </section>

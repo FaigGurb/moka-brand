@@ -10,13 +10,13 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** Higgsfield (Kling 3.0 Std, 4×7.5 = 30 kredit, qalıq 50) ilə 4 real video klip: hero (düşən dənlər), üyütmə, tökmə, Chemex. `docs/tools/film/loop.sh` ilə qüsursuz loop (1 s crossfade), H.264 + VP9, 720/1280. `cinema/LoopVideo.tsx`: yaxınlaşanda yüklənir, yalnız öz kadrı ekranda olanda oynayır, oynayanda 2D effekt və BeanRain çəkilir; reduced-motion/save-data → still.
-- **Verification:** check+build keçdi; Playwright: videolar düzgün oynayır/dayanır, loop dövr edir, xəta yox (headless-da VP9 ilə). scroll_perf (GPU-suz): mobil 4× CPU 43 fps, desktop 34.5 (əvvəl 45/36). Real telefon yoxlanmayıb.
-- **Next step:** İstifadəçi baxsın → DEPLOY: yes; istəsə qalan kreditlə tünd dən (tüstü), çatlama, fincan klipləri.
+- **Status:** #proses indi scroll ilə idarə olunan davamlı filmdir: 6 Kling keçidi (45 kredit, qalıq 5) — yaşıl dən qovrulur → çatlayır → toza çevrilir → dəmləmə → Chemex → fincan; hər fəsildə kəskin still (loop/effektlərlə) dayanır, başlıq film hərəkətində çəkilir. Hero-ya scroll işarəsi. Commit olunub, push/deploy olunmayıb (istifadəçinin icazəsi gözlənilir).
+- **Verification:** check (lint, tsc, 16 test) + build keçdi; Playwright film testi desktop+mobil: 12 nöqtə aşağı + 3 yuxarı, düzgün kadr/still/başlıq, xəta və 4xx yox, overflow 0; responsive.py az/en/ru × desk/tab/mob/reduced-motion: overflow 0, xəta yox. scroll_perf (GPU-suz): mobil 4× CPU 45.6 fps (jank 16), desktop 40.2 (əvvəl 43/34.5). Real telefon yoxlanmayıb.
+- **Next step:** İstifadəçi baxsın → DEPLOY: yes; sonra qalan bölmələrin (Tiers, Partners, FinalCta) kinematik cilası.
 
 ## Recent decisions (newest first, max 5)
+- 2026-10-14: Davamlı scroll filmi: Kling start→end kadr keçidləri bizim still-lər arasında; fincanın K-sı generatora verilmir (boş fincan → vektor K still).
 - 2026-10-14: Video kliplər Higgsfield (Kling 3.0 Std) ilə; Pro rejim Basic planda yoxdur. Scroll-scrub əvəzinə loop video (donmasın).
 - 2026-10-13: Video modelləri ödənişli olduğundan foto-real still + kinematik keçid (CinemaStage) seçildi; K loqosu vektordan qoyulur.
 - 2026-10-13: Real-time 3D səyahət rədd → foto-real scroll video ardıcıllığı + tünd luxury.
 - 2026-10-13: Səhifə-miqyaslı 3D səyahət deploy olundu (PR #2).
-- 2026-10-13: Hero canlı fon + gün işığı tozu deploy olundu (PR #1 merged).
