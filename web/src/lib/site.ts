@@ -34,7 +34,7 @@ export const HOME: Record<Locale, string> = {
   ru: `${base}/ru/`,
 };
 
-export const NAV_IDS = ["#konsepsiya", "#reng", "#qovurma", "#demleme", "#terefdas", "#paket", "#tetbiq", "#tecrube"] as const;
+export const NAV_IDS = ["#qovurma", "#demleme", "#paket", "#konsepsiya", "#reng", "#terefdas", "#tetbiq", "#tecrube"] as const;
 
 /** Public contact data (Google Business profile, checked October 2026). Address text lives in the dictionary. */
 export const CONTACT = {

@@ -17,6 +17,7 @@ import { Preloader } from "@/components/fx/Preloader";
 import { Cursor } from "@/components/fx/Cursor";
 import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
+import { HeadingReveal } from "@/components/fx/HeadingReveal";
 import { Marquee } from "@/components/fx/Marquee";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
@@ -26,21 +27,18 @@ export function Site({ locale }: { locale: Locale }) {
   return (
     <LocaleProvider locale={locale}>
       <a
-        href="#konsepsiya"
+        href="#proses"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:bg-paper focus:px-4 focus:py-2 focus:text-espresso"
       >
         {DICTS[locale].skip}
       </a>
       <Nav />
       <main lang={locale}>
-        <Hero />
+        {/* the coffee film runs under the hero, its chapters and the roast, brewing and packaging sections */}
+        <BeanStory lead={<Hero />} roast={<Roast />} brew={<BrewGuide />} packs={<Tiers />} />
         <Concept />
-        <BeanStory />
         <DayPalette />
-        <Roast />
-        <BrewGuide />
         <Partners />
-        <Tiers />
         <Store />
         <Marquee />
         <Apps />
@@ -51,6 +49,7 @@ export function Site({ locale }: { locale: Locale }) {
       <ScrollRefresh />
       <SmoothScroll />
       <ScrollLine />
+      <HeadingReveal />
       <Cursor />
       <DayAmbient />
       <div className="grain" aria-hidden="true" />
