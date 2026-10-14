@@ -2,7 +2,7 @@
 
 import { CinemaStage, type Scene } from "../cinema/CinemaStage";
 import type { FxSpec } from "../cinema/fx";
-import { STILLS } from "@/lib/cinema";
+import { LOOPS, STILLS } from "@/lib/cinema";
 import { useI18n } from "@/i18n/context";
 
 /** Living details, in fractions of each photo (anchors measured on the stills). */
@@ -23,7 +23,8 @@ const FX: Record<string, FxSpec[]> = {
 
 /**
  * "From bean to cup" as a cinema stage: photoreal chapters (bean, roast, grind, brew, the line on
- * MOKA's cup) dissolve into each other as the page scrolls, backwards when scrolling up.
+ * MOKA's cup) dissolve into each other as the page scrolls, backwards when scrolling up. Grind, pour
+ * and Chemex play real video loops (Higgsfield / Kling from the same stills); the rest keep 2D effects.
  */
 export function BeanStory() {
   const { t } = useI18n();
@@ -35,10 +36,10 @@ export function BeanStory() {
       { still: STILLS.beanDark, focus: "48% 50%", fx: FX.beanDark },
       { still: STILLS.beanCrack, focus: "50% 50%", fx: FX.beanCrack },
     ],
-    [{ still: STILLS.grind, focus: "50% 60%", fx: FX.grind }],
+    [{ still: STILLS.grind, focus: "50% 60%", fx: FX.grind, loop: LOOPS.grind }],
     [
-      { still: STILLS.pour, focus: "44% 60%", fx: FX.pour },
-      { still: STILLS.chemex, focus: "48% 55%", fx: FX.chemex },
+      { still: STILLS.pour, focus: "44% 60%", fx: FX.pour, loop: LOOPS.pour },
+      { still: STILLS.chemex, focus: "48% 55%", fx: FX.chemex, loop: LOOPS.chemex },
     ],
     [{ still: STILLS.cup, focus: "50% 50%", fx: FX.cup }],
   ];

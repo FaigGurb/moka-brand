@@ -23,3 +23,24 @@ export const STILLS = {
 export const stillSrc = (s: Still, w = s.widths[0]) => `${BASE}/cinema/${s.name}-${w}.webp`;
 
 export const stillSrcSet = (s: Still) => s.widths.map((w) => `${stillSrc(s, w)} ${w}w`).join(", ");
+
+/**
+ * Seamless looping clips (Higgsfield / Kling image-to-video from the stills above, looped with
+ * docs/tools/film/loop.sh). Files: web/public/cinema/video/<name>-<w>.mp4 (H.264) + .webm (VP9).
+ */
+export type Loop = { name: string; widths: number[] };
+
+export const LOOPS = {
+  hero: { name: "hero", widths: [720, 1280] },
+  grind: { name: "grind", widths: [720, 1280] },
+  pour: { name: "pour", widths: [720, 1280] },
+  chemex: { name: "chemex", widths: [720, 1280] },
+} satisfies Record<string, Loop>;
+
+/** The smallest file (path without extension) that still covers this screen (cropped like object-fit: cover) sharply enough. */
+export function loopSrc(l: Loop) {
+  const cover = Math.max(window.innerWidth, window.innerHeight * (16 / 9));
+  const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * 0.6;
+  const w = [...l.widths].sort((a, b) => a - b).find((x) => x >= need) ?? l.widths[l.widths.length - 1];
+  return `${BASE}/cinema/video/${l.name}-${w}`;
+}
