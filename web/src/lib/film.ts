@@ -26,6 +26,17 @@ export function pickWidth(clip: Clip) {
   return sorted.find((w) => w >= need * 0.9) ?? sorted[sorted.length - 1];
 }
 
+/**
+ * Like pickWidth, for a film shown full-bleed with object-fit: cover: a tall phone crops a wide frame
+ * hard, so the width it needs comes from the screen height too.
+ */
+export function pickCoverWidth(clip: Clip) {
+  const cover = Math.max(window.innerWidth, window.innerHeight * clip.aspect);
+  const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * 0.55;
+  const sorted = [...clip.widths].sort((a, b) => a - b);
+  return sorted.find((w) => w >= need) ?? sorted[sorted.length - 1];
+}
+
 export function frameUrl(clip: Clip, width: number, i: number) {
   return `${BASE}/film/${clip.id}/${width}/${String(i + 1).padStart(4, "0")}.webp`;
 }
