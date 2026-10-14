@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { stillSrc, stillSrcSet, type Still } from "@/lib/cinema";
+import { stillSrc, stillSrcSet, type Loop, type Still } from "@/lib/cinema";
 import { Dust } from "./Dust";
 import { FxCanvas } from "./FxCanvas";
+import { LoopVideo } from "./LoopVideo";
 import type { FxSpec } from "./fx";
 
 export type Shot = {
@@ -14,6 +15,8 @@ export type Shot = {
   alt?: string;
   /** living details over the photo (steam, falling grounds, drips …), placed in image coordinates */
   fx?: FxSpec[];
+  /** a seamless video loop that starts from this still; once it plays, the 2D effects step aside */
+  loop?: Loop;
 };
 
 /**
@@ -43,6 +46,28 @@ function CoverFrame({ still, focus, children }: { still: Still; focus?: string; 
     <div ref={ref} className="c-frame absolute will-change-transform" style={box ?? { left: 0, top: 0, width: "100%", height: "100%" }}>
       {children}
     </div>
+  );
+}
+
+/** Still + optional loop + effects; the effects stay only while the loop is not playing. */
+function ShotMedia({ shot, eager, isActive }: { shot: Shot; eager: boolean; isActive: () => boolean }) {
+  const [live, setLive] = useState(false);
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={stillSrc(shot.still, shot.still.widths[shot.still.widths.length - 1])}
+        srcSet={stillSrcSet(shot.still)}
+        sizes="100vw"
+        alt={shot.alt ?? ""}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        className="h-full w-full object-cover"
+        style={{ objectPosition: shot.focus ?? "50% 50%" }}
+      />
+      {shot.loop && <LoopVideo loop={shot.loop} focus={shot.focus} isActive={isActive} onPlaying={setLive} />}
+      {!live && shot.fx?.map((spec, k) => <FxCanvas key={k} spec={spec} isActive={isActive} />)}
+    </>
   );
 }
 
@@ -146,18 +171,7 @@ export function CinemaStage({ id, labelledBy, eyebrow, heading, scenes, perShot 
             {shots.map((s, i) => (
               <div key={i} className="c-shot absolute inset-0 overflow-hidden will-change-[opacity]">
                 <CoverFrame still={s.still} focus={s.focus}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={stillSrc(s.still, s.still.widths[s.still.widths.length - 1])}
-                    srcSet={stillSrcSet(s.still)}
-                    sizes="100vw"
-                    alt={s.alt ?? ""}
-                    loading={i < 2 ? "eager" : "lazy"}
-                    decoding="async"
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: s.focus ?? "50% 50%" }}
-                  />
-                  {s.fx?.map((spec, k) => <FxCanvas key={k} spec={spec} isActive={near(i)} />)}
+                  <ShotMedia shot={s} eager={i < 2} isActive={near(i)} />
                 </CoverFrame>
               </div>
             ))}

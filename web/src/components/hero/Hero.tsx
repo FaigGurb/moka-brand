@@ -1,23 +1,27 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Lockup } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { Dust } from "../cinema/Dust";
 import { BeanRain } from "../cinema/BeanRain";
+import { LoopVideo } from "../cinema/LoopVideo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
-import { STILLS, stillSrc, stillSrcSet } from "@/lib/cinema";
+import { LOOPS, STILLS, stillSrc, stillSrcSet } from "@/lib/cinema";
 import { useI18n } from "@/i18n/context";
 
 /**
- * Hero: a photoreal studio still (beans falling through warm light) that settles in on load and
- * drifts away with the scroll, MOKA's official lockup and the concept line on the dark side.
+ * Hero: a photoreal studio still (beans falling through warm light) that comes alive as a seamless
+ * video loop (Higgsfield / Kling from the same still), settles in on load and drifts away with the
+ * scroll; MOKA's official lockup and the concept line on the dark side. Until the loop plays (or
+ * without it: reduced data), beans cut from the photo fall over the still.
  */
 export function Hero() {
   const { locale, t } = useI18n();
   const L = links(locale);
   const root = useRef<HTMLElement>(null);
+  const [live, setLive] = useState(false);
 
   useGSAP(
     () => {
@@ -64,18 +68,21 @@ export function Hero() {
   return (
     <section id="top" ref={root} className="relative flex min-h-[100svh] flex-col overflow-hidden bg-black text-paper">
       <div aria-hidden="true" className="hero-photo-wrap absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={stillSrc(STILLS.hero, 1600)}
-          srcSet={stillSrcSet(STILLS.hero)}
-          sizes="100vw"
-          alt=""
-          fetchPriority="high"
-          decoding="async"
-          className="hero-photo h-full w-full object-cover object-[78%_50%] will-change-transform md:object-[60%_50%]"
-        />
+        <div className="hero-photo absolute inset-0 will-change-transform">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={stillSrc(STILLS.hero, 1600)}
+            srcSet={stillSrcSet(STILLS.hero)}
+            sizes="100vw"
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="h-full w-full object-cover object-[78%_50%] md:object-[60%_50%]"
+          />
+          <LoopVideo loop={LOOPS.hero} onPlaying={setLive} className="object-[78%_50%] md:object-[60%_50%]" />
+        </div>
       </div>
-      <BeanRain />
+      {!live && <BeanRain />}
       <Dust />
       {/* grade: the copy side stays deep black; phones get a floor under the text */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.6)_38%,transparent_70%)]" />
