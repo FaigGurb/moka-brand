@@ -4,7 +4,6 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { stillSrc, type Still } from "@/lib/cinema";
 import { FrameStore, drawCover, pickCoverWidth, type Clip } from "@/lib/film";
 import { perfTier } from "@/lib/perf";
-import { getLenis } from "@/lib/lenis";
 import { Dust } from "./Dust";
 import { CoverFrame, focusOf, type Shot } from "./Shot";
 
@@ -35,13 +34,19 @@ type Props = {
   mark?: Mark;
 };
 
-/** scroll (in screen heights) from one stop to the next, so the film keeps one speed */
-const SPAN = 2;
-/** height of a stop's own part: a chapter with a caption, or a passing shot */
-const REST_CAPTION = 1;
-const REST_PASS = 0.45;
+/** scroll (in screen heights) from one stop to the next: short, so one flick carries a whole transition */
+const SPAN = 1;
+/** height of a stop's own part: a chapter with a title, or a passing shot */
+const REST_CAPTION = 0.6;
+const REST_PASS = 0.25;
 /** runway when the film resumes after a content section (it was holding underneath) */
-const RESUME = 1.25;
+const RESUME = 0.75;
+/**
+ * Damping of the film behind the scroll, per 60 Hz frame (framerate independent): the film glides on
+ * after the wheel or finger stops, like a camera with weight (awwwards-3d's lerp loop: ~0.08).
+ */
+const FOLLOW = 0.075;
+const CAM = 0.06;
 const smooth = (x: number) => x * x * (3 - 2 * x);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
@@ -64,7 +69,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
 
   // each stop's runway, chosen so every stop-to-stop stretch is about SPAN screens long
   const rest = stops.map((s) => (s.caption ? REST_CAPTION : REST_PASS));
-  const runway = stops.map((_, k) => (k === 0 ? 0 : stops[k - 1].after ? RESUME : Math.max(0.8, SPAN - rest[k - 1])));
+  const runway = stops.map((_, k) => (k === 0 ? 0 : stops[k - 1].after ? RESUME : Math.max(0.4, SPAN - rest[k - 1])));
 
   useEffect(() => setLite(perfTier() === "low"), []);
 
@@ -90,26 +95,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     // while the opening lifts, reaches each stop as its caption part fills the screen, and holds
     // under a content section until that section's end is back on screen
     let keys: [number, number][] = [];
-    // stretches of scroll the film plays through on its own: one gesture carries it to the next
-    // stop (opening → first stop, stop → stop, end of a content section → next stop)
-    let segs: [number, number][] = [];
     const measure = () => {
       const vh = window.innerHeight;
       const y = (e: Element) => e.getBoundingClientRect().top + window.scrollY;
       keys = [];
-      segs = [];
-      let from = y(el);
       restEls.forEach((r, k) => {
         if (k === 0) keys.push([y(stopEls[0]) - vh, 0]);
-        const ry = y(r);
-        keys.push([ry, k]);
-        segs.push([from, ry]);
-        from = ry;
+        keys.push([y(r), k]);
         const a = afterEls.get(k);
-        if (a && k < n - 1) {
-          from = y(a) + a.offsetHeight - vh;
-          keys.push([from, k]);
-        }
+        if (a && k < n - 1) keys.push([y(a) + a.offsetHeight - vh, k]);
       });
     };
     const at = (sy: number) => {
@@ -144,14 +138,27 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       measure();
     };
 
-    const frame = () => {
+    let last = performance.now();
+    const frame = (now: number) => {
       raf = near ? requestAnimationFrame(frame) : 0;
-      const vh = window.innerHeight;
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
       const target = at(window.scrollY);
-      // a light follow on top of the smooth scroll: wheel steps and flings glide
-      pos += (target - pos) * 0.2;
+      // one damping layer on top of Lenis: the film eases in and out of every move
+      pos += (target - pos) * (1 - Math.pow(1 - FOLLOW, dt * 60));
       if (Math.abs(target - pos) < 2e-4) pos = target;
       const f = pos;
+      // the camera drifts a little with the pointer (fine pointers only), damped slower still
+      if (cam) {
+        const k = 1 - Math.pow(1 - CAM, dt * 60);
+        cx += (mx - cx) * k;
+        cy += (my - cy) * k;
+        const tr = `translate3d(${(cx * -14).toFixed(2)}px,${(cy * -9).toFixed(2)}px,0) scale(1.035)`;
+        if (tr !== camTr) {
+          camTr = tr;
+          cam.style.transform = tr;
+        }
+      }
       // read by the QA scripts (docs/tools/qa)
       (window as Window & { __mokaFilm?: number }).__mokaFilm = f;
 
@@ -184,15 +191,14 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         drawn = exact && (a === 0 || next) ? key : "";
       }
 
-      // reads first (caption boxes), then writes
-      const rects = caps.map((e) => e.getBoundingClientRect());
+      // chapter titles follow the film: they rise as it nears their stop and sink as it moves on
       caps.forEach((e, k) => {
-        const r = rects[k];
-        const o = Math.round(Math.min(clamp01((vh * 0.98 - r.top) / (vh * 0.3)), clamp01((r.bottom - vh * 0.1) / (vh * 0.25))) * 100) / 100;
+        const d = Math.abs(f - Number(e.dataset.filmCap));
+        const o = Math.round((1 - smooth(clamp01((d - 0.06) / 0.34))) * 100) / 100;
         if (o !== capOp[k]) {
           capOp[k] = o;
-          e.style.opacity = String(o);
-          e.style.transform = `translate3d(0,${Math.round((1 - o) * 24)}px,0)`;
+          // the words of the title rise out of depth one after another (CSS reads --o)
+          e.style.setProperty("--o", String(o));
         }
       });
       if (markEl) {
@@ -210,83 +216,17 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       }
     };
 
-    // one wheel step, swipe or key press inside the film plays it to the next stop
-    const TOL = 4;
-    const snapTarget = (y: number, dir: 1 | -1) => {
-      for (const [a0, b0] of segs) {
-        if (dir > 0 && y >= a0 - TOL && y < b0 - TOL) return b0;
-        if (dir < 0 && y > a0 + TOL && y <= b0 + TOL) return a0;
-      }
-      return null;
+    const cam = !low && matchMedia("(pointer: fine)").matches ? el.querySelector<HTMLElement>("[data-film-cam]") : null;
+    let mx = 0;
+    let my = 0;
+    let cx = 0;
+    let cy = 0;
+    let camTr = "";
+    const onPointer = (e: PointerEvent) => {
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
     };
-    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    let busy = false;
-    let lastInput = 0;
-    let doneAt = 0;
-    const here = () => getLenis()?.scroll ?? window.scrollY;
-    const go = (dir: 1 | -1) => {
-      const y = here();
-      const to = snapTarget(y, dir);
-      if (to === null) return false;
-      busy = true;
-      const vh = window.innerHeight;
-      const duration = Math.min(2.1, Math.max(1.1, 0.8 + (Math.abs(to - y) / vh) * 0.5));
-      const done = () => {
-        busy = false;
-        doneAt = performance.now();
-      };
-      const lenis = getLenis();
-      if (lenis) lenis.scrollTo(to, { duration, easing: ease, lock: true, force: true, onComplete: done });
-      else {
-        window.scrollTo({ top: to, behavior: "smooth" });
-        window.setTimeout(done, duration * 1000);
-      }
-      return true;
-    };
-    const onWheel = (e: WheelEvent) => {
-      if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 1) return;
-      const dir = e.deltaY > 0 ? 1 : -1;
-      const now = performance.now();
-      // a new gesture (not the tail of a trackpad fling), or a steady wheel after a pause on a stop
-      const fresh = now - lastInput > 180 || now - doneAt > 700;
-      lastInput = now;
-      if (!busy && snapTarget(here(), dir) === null) return; // content: scroll freely
-      e.preventDefault();
-      e.stopPropagation();
-      if (!busy && fresh) go(dir);
-    };
-    let touchY = 0;
-    let touchDir: 0 | 1 | -1 = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchY = e.touches[0].clientY;
-      touchDir = 0;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      const dy = touchY - e.touches[0].clientY;
-      if (Math.abs(dy) < 6 && !busy) return;
-      const dir = dy > 0 ? 1 : -1;
-      if (busy || snapTarget(here(), dir) !== null) {
-        e.preventDefault();
-        touchDir = dir;
-      }
-    };
-    const onTouchEnd = () => {
-      if (touchDir && !busy) go(touchDir);
-      touchDir = 0;
-    };
-    const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement | null)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.altKey || e.metaKey || e.ctrlKey) return;
-      const dir = ["ArrowDown", "PageDown", " "].includes(e.key) && !e.shiftKey ? 1 : ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey) ? -1 : 0;
-      if (!dir) return;
-      if (busy) return e.preventDefault();
-      if (go(dir)) e.preventDefault();
-    };
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("keydown", onKey);
+    if (cam) window.addEventListener("pointermove", onPointer, { passive: true });
 
     store.onReady = () => {
       drawn = "";
@@ -299,7 +239,10 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     ro.observe(c);
     const io = new IntersectionObserver(([e]) => {
       near = e.isIntersecting;
-      if (near && !raf) raf = requestAnimationFrame(frame);
+      if (near && !raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
     });
     io.observe(el);
     // the frames load once the visitor starts to scroll (or after a moment), not with the hero
@@ -314,11 +257,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const idle = window.setTimeout(start, 2000);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("wheel", onWheel, { capture: true });
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointermove", onPointer);
       window.clearTimeout(idle);
       window.removeEventListener("scroll", start);
       ro.disconnect();
@@ -347,26 +286,28 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: first.focus ?? "50% 50%" }}
         />
-        <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
-        {mark && (
-          <div className="absolute inset-0 overflow-hidden">
-            <CoverFrame still={last.still} focus={last.focus}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                data-film-mark
-                src={mark.src}
-                alt=""
-                className="absolute opacity-0"
-                style={{
-                  left: `${mark.region[0] * 100}%`,
-                  top: `${mark.region[1] * 100}%`,
-                  width: `${mark.region[2] * 100}%`,
-                  height: `${mark.region[3] * 100}%`,
-                }}
-              />
-            </CoverFrame>
-          </div>
-        )}
+        <div data-film-cam className="absolute inset-0 will-change-transform">
+          <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
+          {mark && (
+            <div className="absolute inset-0 overflow-hidden">
+              <CoverFrame still={last.still} focus={last.focus}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  data-film-mark
+                  src={mark.src}
+                  alt=""
+                  className="absolute opacity-0"
+                  style={{
+                    left: `${mark.region[0] * 100}%`,
+                    top: `${mark.region[1] * 100}%`,
+                    width: `${mark.region[2] * 100}%`,
+                    height: `${mark.region[3] * 100}%`,
+                  }}
+                />
+              </CoverFrame>
+            </div>
+          )}
+        </div>
         {!lite && <Dust />}
         {/* grade: vignette, a floor for the captions, a soft top for the nav */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_45%,transparent_35%,rgba(0,0,0,0.6)_100%)]" />
@@ -396,12 +337,26 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
 
       {stops.map((s, k) => (
         <Fragment key={k}>
-          <section
-            id={k === 0 ? id : undefined}
-            aria-labelledby={k === 0 ? `${id}-title` : undefined}
-            data-film-stop={k}
-            className="relative z-10 text-paper"
-          >
+          <section id={k === 0 ? id : undefined} aria-labelledby={k === 0 ? `${id}-title` : undefined} data-film-stop={k} className="relative z-10 text-paper">
+            {/* the chapter title, pinned to the foot of the screen for the whole section; the film sets its visibility */}
+            {s.caption && (
+              <div className="pointer-events-none motion-safe:sticky motion-safe:top-0 motion-safe:-mb-[100svh] motion-safe:flex motion-safe:h-[100svh] motion-safe:flex-col motion-safe:justify-end">
+                <div data-film-cap={k} className="film-cap pointer-events-auto mx-auto w-full max-w-[1320px] px-5 pb-16 md:px-12 md:pb-20 motion-reduce:pb-14">
+                  <p className="film-cap-fade font-[family-name:var(--font-display)] text-sm tracking-[0.3em] text-glow">
+                    {s.caption.kicker} <span className="text-paper/35">/ {String(chapters.length).padStart(2, "0")}</span>
+                  </p>
+                  <h3 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(48px,9vw,128px)] leading-[0.9] font-medium tracking-[-0.03em] [perspective:600px]">
+                    {s.caption.title.split(" ").map((w, i) => (
+                      <span key={i} className="film-word inline-block" style={{ ["--i" as string]: i }}>
+                        {w}
+                        {"\u00a0"}
+                      </span>
+                    ))}
+                  </h3>
+                  <p className="film-cap-fade mt-4 max-w-[44ch] text-[15px] leading-relaxed text-paper/75 sm:text-[17px]">{s.caption.text}</p>
+                </div>
+              </div>
+            )}
             {/* the runway: the film moves while this scrolls by */}
             {k > 0 && <div aria-hidden="true" className="motion-reduce:hidden" style={{ height: `${runway[k] * 100}svh` }} />}
             <div
@@ -419,26 +374,23 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
               )}
               {/* reduced motion: the still in flow */}
               <StillFallback still={s.shot.still} focus={s.shot.focus} />
-              {s.caption && (
-                <div data-film-cap className="mt-auto pb-16 will-change-[opacity,transform] md:pb-20 motion-reduce:mt-6 motion-reduce:pb-0">
-                  <p className="font-[family-name:var(--font-display)] text-sm tracking-[0.3em] text-glow">
-                    {s.caption.kicker} <span className="text-paper/35">/ {String(chapters.length).padStart(2, "0")}</span>
-                  </p>
-                  <h3 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(48px,9vw,128px)] leading-[0.9] font-medium tracking-[-0.03em]">
-                    {s.caption.title}
-                  </h3>
-                  <p className="mt-4 max-w-[44ch] text-[15px] leading-relaxed text-paper/75 sm:text-[17px]">{s.caption.text}</p>
-                </div>
-              )}
             </div>
           </section>
           {s.after && (
             <div data-film-after={k} className="relative z-10">
               {/* the film dissolves into the section and the section back into the film */}
-              <div aria-hidden="true" className="h-[28svh] motion-reduce:hidden" style={{ background: `linear-gradient(to bottom, transparent, ${s.tone ?? "#000"})` }} />
+              <div
+                aria-hidden="true"
+                className="h-[28svh] motion-reduce:hidden"
+                style={{ background: `linear-gradient(to bottom, transparent, ${s.tone ?? "#000"})` }}
+              />
               {s.after}
               {k < n - 1 && (
-                <div aria-hidden="true" className="h-[28svh] motion-reduce:hidden" style={{ background: `linear-gradient(to top, transparent, ${s.tone ?? "#000"})` }} />
+                <div
+                  aria-hidden="true"
+                  className="h-[28svh] motion-reduce:hidden"
+                  style={{ background: `linear-gradient(to top, transparent, ${s.tone ?? "#000"})` }}
+                />
               )}
             </div>
           )}
