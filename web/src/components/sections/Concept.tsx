@@ -54,10 +54,10 @@ export function Concept() {
   );
 
   return (
-    <section id="konsepsiya" ref={root} className="bg-paper text-espresso">
+    <section id="konsepsiya" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
       <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:min-h-[100svh] motion-safe:py-16">
         <div className="flex flex-col gap-5">
-          <p className="eyebrow text-axsam-ink">{t.concept.eyebrow}</p>
+          <p className="eyebrow text-seher">{t.concept.eyebrow}</p>
           <h2 className="max-w-[16ch] text-[clamp(32px,5.4vw,72px)] leading-[1.02] font-medium tracking-[-0.015em]">
             {t.concept.title}
           </h2>
@@ -66,7 +66,7 @@ export function Concept() {
         <div className="relative mt-10 grid grid-cols-4 gap-x-3 gap-y-10 md:gap-x-6 lg:mt-16">
           {STEPS.map((s) => (
             <figure key={s.id} className="c-letter flex flex-col gap-2 md:gap-4">
-              <Letter id={s.id} className="h-[clamp(60px,17vw,170px)] w-auto max-w-full self-start text-espresso" />
+              <Letter id={s.id} className="h-[clamp(60px,17vw,170px)] w-auto max-w-full self-start text-paper" />
               <figcaption className="font-[family-name:var(--font-display)] text-[13px] leading-tight sm:text-lg md:text-2xl">
                 <span className="hidden sm:inline">{s.id} · </span>{s.tool}
               </figcaption>
@@ -75,7 +75,7 @@ export function Concept() {
           {/* the signature line, drawn as the story progresses */}
           <span
             aria-hidden="true"
-            className="c-line pointer-events-none absolute top-[calc(clamp(60px,17vw,170px)*0.5_-_1px)] left-0 h-[3px] w-full origin-left scale-x-0 bg-axsam"
+            className="c-line pointer-events-none absolute top-[calc(clamp(60px,17vw,170px)*0.5_-_1px)] left-0 h-[3px] w-full origin-left scale-x-0 bg-glow shadow-[0_0_14px_rgba(255,226,166,0.6)]"
           />
         </div>
 
@@ -83,9 +83,9 @@ export function Concept() {
           {STEPS.map((s) => (
             <p
               key={s.id}
-              className="c-panel max-w-[52ch] text-[clamp(17px,1.6vw,22px)] leading-relaxed text-muted motion-safe:absolute motion-safe:inset-x-0 motion-safe:top-0"
+              className="c-panel max-w-[52ch] text-[clamp(17px,1.6vw,22px)] leading-relaxed text-paper/65 motion-safe:absolute motion-safe:inset-x-0 motion-safe:top-0"
             >
-              <b className="text-espresso">{s.tool}.</b> {s.text}
+              <b className="text-paper">{s.tool}.</b> {s.text}
             </p>
           ))}
         </div>

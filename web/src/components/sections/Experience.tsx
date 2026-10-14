@@ -32,18 +32,18 @@ export function Experience() {
   );
 
   return (
-    <section id="tecrube" ref={root} className="day-wash overflow-hidden bg-paper-2 text-espresso">
+    <section id="tecrube" ref={root} className="day-glow overflow-hidden bg-black text-paper">
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-5">
-          <p className="eyebrow text-axsam-ink">{t.exp.eyebrow}</p>
+          <p className="eyebrow text-seher">{t.exp.eyebrow}</p>
           <h2 className="max-w-[18ch] text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">
             {t.exp.title}
           </h2>
         </div>
 
         <div className="x-grid mt-14 grid gap-6 md:grid-cols-2">
-          <div className="x-card group flex flex-col overflow-hidden bg-espresso text-paper">
-            <a href={LINKS.ar} className="relative block aspect-[2/1] overflow-hidden bg-espresso-2" tabIndex={-1} aria-hidden="true">
+          <div className="x-card group flex flex-col overflow-hidden bg-espresso-2 text-paper">
+            <a href={LINKS.ar} className="relative block aspect-[2/1] overflow-hidden bg-espresso-3" tabIndex={-1} aria-hidden="true">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={LINKS.arCard}

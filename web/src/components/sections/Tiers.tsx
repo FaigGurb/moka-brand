@@ -37,26 +37,26 @@ export function Tiers() {
   );
 
   return (
-    <section id="paket" ref={root} className="bg-paper-2 text-espresso">
+    <section id="paket" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
       <div className="t-pin overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
         <div tabIndex={0} aria-label={t.tiers.title} className="t-track no-scrollbar focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
-            <p className="eyebrow text-axsam-ink">{t.tiers.eyebrow}</p>
+            <p className="eyebrow text-seher">{t.tiers.eyebrow}</p>
             <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">{t.tiers.title}</h2>
-            <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted">
+            <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted-dark">
               {t.tiers.text}
             </p>
             <button
               type="button"
               aria-pressed={line}
               onClick={() => setLine((v) => !v)}
-              className="inline-flex items-center gap-3 self-start border-2 border-espresso px-5 py-3 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:bg-espresso hover:text-paper aria-pressed:bg-espresso aria-pressed:text-paper"
+              className="inline-flex items-center gap-3 self-start border border-paper/60 px-5 py-3 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow aria-pressed:border-glow aria-pressed:bg-glow aria-pressed:text-espresso"
             >
               <span className="h-[3px] w-6 bg-glow" aria-hidden="true" />
               {line ? t.tiers.hide : t.tiers.show}
             </button>
-            <p className="text-sm font-bold tracking-[0.06em] text-muted motion-reduce:hidden">{t.tiers.hint}</p>
-            <p className="max-w-[40ch] text-xs leading-relaxed text-muted">{t.tiers.source}</p>
+            <p className="text-sm font-bold tracking-[0.06em] text-muted-dark motion-reduce:hidden">{t.tiers.hint}</p>
+            <p className="max-w-[40ch] text-xs leading-relaxed text-muted-dark">{t.tiers.source}</p>
           </div>
           {t.tiers.items.map((it, i) => {
             const Pack = PACKS[i];
@@ -66,10 +66,10 @@ export function Tiers() {
                   <Pack line={line} title={it.name} className="h-full w-full" />
                 </div>
                 <h3 className="text-2xl font-medium">
-                  <span className="mr-2 text-muted">{i + 1}</span>
+                  <span className="mr-2 text-muted-dark">{i + 1}</span>
                   {it.name}
                 </h3>
-                <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted">{it.sub}</p>
+                <p className="max-w-[34ch] text-[15px] leading-relaxed text-muted-dark">{it.sub}</p>
                 <p className={`flex max-w-[34ch] gap-2.5 text-[15px] leading-relaxed transition-opacity duration-500 ${line ? "opacity-100" : "opacity-60"}`}>
                   <span className="mt-[0.7em] h-[3px] w-5 flex-none bg-axsam" aria-hidden="true" />
                   {it.idea}
