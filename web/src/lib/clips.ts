@@ -8,5 +8,5 @@ import type { Clip } from "./film";
  * (green → dark → crack → grind → pour → Chemex → blank cup), joined end to end.
  */
 export const CLIPS = {
-  journey: { id: "journey", frames: 361, widths: [960, 1280], aspect: 1.7778 },
+  journey: { id: "journey", frames: 541, widths: [960, 1280], aspect: 1.7778 },
 } satisfies Record<string, Clip>;

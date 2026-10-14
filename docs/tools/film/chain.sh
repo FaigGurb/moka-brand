@@ -3,9 +3,9 @@
 # into one film and cuts it into the WebP frame sets the cinema stage scrubs (via extract.sh).
 # Every clip after the first drops its first frame (the shared still), and each is retimed to the
 # same length, so shot i sits exactly at frame i/(clips) of the film.
-# usage: docs/tools/film/chain.sh <id> <fps> "<widths>" <quality> clip1.mp4 clip2.mp4 …
+# usage: docs/tools/film/chain.sh <id> <fps> "<widths>" <quality> "<filter>" clip1.mp4 clip2.mp4 …
 set -euo pipefail
-id=$1; fps=$2; widths=$3; q=$4; shift 4
+id=$1; fps=$2; widths=$3; q=$4; flt=$5; shift 5
 here="$(cd "$(dirname "$0")" && pwd)"
 tmp=$(mktemp -d)
 n=0; inputs=(); chain=""
@@ -18,5 +18,5 @@ done
 for ((i = 0; i < n; i++)); do chain+="[v$i]"; done
 chain+="concat=n=$n:v=1:a=0[out]"
 ffmpeg -v error -y "${inputs[@]}" -filter_complex "$chain" -map "[out]" -an -c:v libx264 -crf 14 -preset slow "$tmp/film.mp4"
-"$here/extract.sh" "$tmp/film.mp4" "$id" "$fps" "$widths" "$q"
+"$here/extract.sh" "$tmp/film.mp4" "$id" "$fps" "$widths" "$q" "$flt"
 rm -rf "$tmp"
