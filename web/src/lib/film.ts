@@ -30,9 +30,9 @@ export function pickWidth(clip: Clip) {
  * Like pickWidth, for a film shown full-bleed with object-fit: cover: a tall phone crops a wide frame
  * hard, so the width it needs comes from the screen height too.
  */
-export function pickCoverWidth(clip: Clip) {
+export function pickCoverWidth(clip: Clip, factor = 0.55) {
   const cover = Math.max(window.innerWidth, window.innerHeight * clip.aspect);
-  const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * 0.55;
+  const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * factor;
   const sorted = [...clip.widths].sort((a, b) => a - b);
   return sorted.find((w) => w >= need) ?? sorted[sorted.length - 1];
 }

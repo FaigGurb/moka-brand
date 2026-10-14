@@ -14,7 +14,7 @@ const az = {
   nav: {
     label: "Əsas menyu",
     badge: "Konsept · test işi",
-    items: ["Konsepsiya", "Rəng", "Qovurma", "Dəmləmə", "Tərəfdaşlar", "Paketlər", "Tətbiqlər", "AR və oyun"],
+    items: ["Qovurma", "Dəmləmə", "Paketlər", "Konsepsiya", "Rəng", "Tərəfdaşlar", "Tətbiqlər", "AR və oyun"],
     ar: "AR demo",
     open: "Menyunu aç",
     close: "Menyunu bağla",
@@ -315,7 +315,7 @@ const en: Dict = {
   nav: {
     label: "Main menu",
     badge: "Concept · test project",
-    items: ["Concept", "Colour", "Roast", "Brew", "Partners", "Packaging", "Applications", "AR & game"],
+    items: ["Roast", "Brew", "Packaging", "Concept", "Colour", "Partners", "Applications", "AR & game"],
     ar: "AR demo",
     open: "Open menu",
     close: "Close menu",
@@ -613,7 +613,7 @@ const ru: Dict = {
   nav: {
     label: "Главное меню",
     badge: "Концепт · тестовая работа",
-    items: ["Концепция", "Цвет", "Обжарка", "Заваривание", "Партнёры", "Упаковка", "Применение", "AR и игра"],
+    items: ["Обжарка", "Заваривание", "Упаковка", "Концепция", "Цвет", "Партнёры", "Применение", "AR и игра"],
     ar: "AR-демо",
     open: "Открыть меню",
     close: "Закрыть меню",

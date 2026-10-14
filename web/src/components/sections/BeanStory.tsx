@@ -1,6 +1,7 @@
 "use client";
 
-import { CinemaStage, type Scene } from "../cinema/CinemaStage";
+import type { ReactNode } from "react";
+import { FilmJourney, type FilmStop } from "../cinema/FilmJourney";
 import type { FxSpec } from "../cinema/fx";
 import { LOOPS, STILLS } from "@/lib/cinema";
 import { CLIPS } from "@/lib/clips";
@@ -22,45 +23,38 @@ const FX: Record<string, FxSpec[]> = {
   cup: [{ kind: "steam", region: [0.4, -0.2, 0.2, 0.43], from: [0.5, 0.98], spread: 0.35, intensity: 0.8 }],
 };
 
+const ESPRESSO = "var(--color-espresso)";
+
 /**
- * "From bean to cup" as a cinema stage: photoreal chapters (bean, roast, grind, brew, the line on
- * MOKA's cup) as one film directed by the scroll, backwards when scrolling up: the camera rests on each
- * sharp still (grind, pour and Chemex as real video loops, the rest with 2D effects), then a Kling
- * start→end-frame transition carries it to the next (docs/tools/film/chain.sh). The cup's K is never
- * drawn by the generator: the film ends on a blank cup and dissolves into the still with the vector K.
+ * "From bean to cup" as one film that runs under the first part of the page (FilmJourney): the hero
+ * lifts off it, then green bean → roast → crack → grind → pour → Chemex → MOKA's cup, each a section
+ * of its own, with the roast, brewing and packaging sections scrolling over the held frames between.
+ * The film is six Kling start→end-frame transitions between these stills (docs/tools/film/chain.sh).
+ * The cup's K is never drawn by the generator: the film ends on a blank cup and dissolves into the
+ * still with the vector K.
  */
-export function BeanStory() {
+export function BeanStory({ lead, roast, brew, packs }: { lead: ReactNode; roast: ReactNode; brew: ReactNode; packs: ReactNode }) {
   const { t } = useI18n();
   const b = t.beans;
-  const shots: Scene["shots"][] = [
-    [{ still: STILLS.beanGreen, focus: "48% 50%" }],
-    [
-      { still: STILLS.beanDark, focus: "48% 50%", fx: FX.beanDark },
-      { still: STILLS.beanCrack, focus: "50% 50%", fx: FX.beanCrack },
-    ],
-    [{ still: STILLS.grind, focus: "50% 60%", fx: FX.grind, loop: LOOPS.grind }],
-    [
-      { still: STILLS.pour, focus: "44% 60%", fx: FX.pour, loop: LOOPS.pour },
-      { still: STILLS.chemex, focus: "48% 55%", fx: FX.chemex, loop: LOOPS.chemex },
-    ],
-    [{ still: STILLS.cup, focus: "50% 50%", fx: FX.cup }],
+  const [bean, roasting, grinding, brewing] = b.steps;
+  const cap = (i: number, s: { title: string; text: string }) => ({ kicker: String(i).padStart(2, "0"), title: s.title, text: s.text });
+  const stops: FilmStop[] = [
+    { shot: { still: STILLS.beanGreen, focus: "48% 50%" }, caption: cap(1, bean) },
+    { shot: { still: STILLS.beanDark, focus: "48% 50%", fx: FX.beanDark }, caption: cap(2, roasting) },
+    { shot: { still: STILLS.beanCrack, focus: "50% 50%", fx: FX.beanCrack }, after: roast, tone: ESPRESSO },
+    { shot: { still: STILLS.grind, focus: "50% 60%", fx: FX.grind, loop: LOOPS.grind }, caption: cap(3, grinding) },
+    { shot: { still: STILLS.pour, focus: "44% 60%", fx: FX.pour, loop: LOOPS.pour }, caption: cap(4, brewing) },
+    { shot: { still: STILLS.chemex, focus: "48% 55%", fx: FX.chemex, loop: LOOPS.chemex }, after: brew, tone: ESPRESSO },
+    { shot: { still: STILLS.cup, focus: "50% 50%", fx: FX.cup }, caption: cap(5, b.final), after: packs, tone: "#000" },
   ];
-  const steps = [...b.steps, b.final];
-  const scenes: Scene[] = steps.map((s, i) => ({
-    shots: shots[i],
-    kicker: String(i + 1).padStart(2, "0"),
-    title: s.title,
-    text: s.text,
-  }));
 
   return (
-    <CinemaStage
+    <FilmJourney
+      lead={lead}
       id="proses"
-      labelledBy="proses-title"
       eyebrow={b.eyebrow}
       heading={<h2 id="proses-title">{b.title}</h2>}
-      scenes={scenes}
-      perShot={0.95}
+      stops={stops}
       film={CLIPS.journey}
     />
   );
