@@ -5,11 +5,11 @@ import { stillSrc, type Still } from "@/lib/cinema";
 import { FrameStore, drawCover, pickCoverWidth, type Clip } from "@/lib/film";
 import { perfTier } from "@/lib/perf";
 import { Dust } from "./Dust";
-import { CoverFrame, ShotMedia, focusOf, type Shot } from "./Shot";
+import { CoverFrame, focusOf, type Shot } from "./Shot";
 
 export type Caption = { kicker: string; title: string; text: string };
 
-/** One stop of the film: a shot the camera rests on, its chapter caption, and the page content that follows it. */
+/** One stop of the film: the shot it passes through, its chapter caption, and the page content that follows it. */
 export type FilmStop = {
   shot: Shot;
   caption?: Caption;
@@ -18,6 +18,9 @@ export type FilmStop = {
   /** background colour of `after`, so the film fades into it and back out (CSS colour) */
   tone?: string;
 };
+
+/** A brand mark laid over the last stop in image fractions [x, y, w, h] (the generator never draws it). */
+export type Mark = { src: string; region: [number, number, number, number] };
 
 type Props = {
   /** the opening section; it scrolls away like a curtain and the film is already there underneath */
@@ -28,29 +31,37 @@ type Props = {
   stops: FilmStop[];
   /** stop i is the film's frame at i / (stops - 1) (docs/tools/film/chain.sh) */
   film: Clip;
+  mark?: Mark;
 };
 
-/** scroll (in screen heights) that carries the camera from one stop to the next */
-const RUNWAY = 1.1;
+/** scroll (in screen heights) from one stop to the next, so the film keeps one speed */
+const SPAN = 2;
+/** height of a stop's own part: a chapter with a caption, or a passing shot */
+const REST_CAPTION = 1;
+const REST_PASS = 0.45;
+/** runway when the film resumes after a content section (it was holding underneath) */
+const RESUME = 1.25;
 const smooth = (x: number) => x * x * (3 - 2 * x);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
 /**
- * The coffee journey as one film that runs under the page. A sticky full-screen backdrop sits behind
- * the opening, the chapter sections and the content between them: the opening scrolls off and the
- * film is already there; each chapter section first scrolls a runway, over which the film carries the
- * camera to its stop, then rests there with its caption; content sections (roast, brewing, packaging)
- * scroll over the held frame and fade back into the film. The scroll position alone sets the frame,
- * so scrolling up plays it backwards. At rest the sharp still shows (with its loop and effects on
- * capable devices); phones keep only stills and film. Reduced motion: stills with captions in flow.
+ * The coffee journey as one continuous film that runs under the first part of the page. A sticky
+ * full-screen backdrop sits behind the opening, the chapter sections and the content between them:
+ * the opening lifts off and the film is already there; from then on the film moves at one steady
+ * speed with the scroll, through every stop, captions passing over it like titles; content sections
+ * (roast, brewing, packaging) scroll over a held frame and dissolve back into the film, which picks
+ * up where it stopped. Neighbouring frames are blended, so even a short frame set moves smoothly,
+ * forwards and backwards. Reduced motion: stills with captions in flow.
  */
-export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) {
+export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const pos = useRef(0); // smoothed film position, in stops
-  const covered = useRef(false); // a content section fills the screen: the film is hidden
   const [lite, setLite] = useState(true);
   const n = stops.length;
+
+  // each stop's runway, chosen so every stop-to-stop stretch is about SPAN screens long
+  const rest = stops.map((s) => (s.caption ? REST_CAPTION : REST_PASS));
+  const runway = stops.map((_, k) => (k === 0 ? 0 : stops[k - 1].after ? RESUME : Math.max(0.8, SPAN - rest[k - 1])));
 
   useEffect(() => setLite(perfTier() === "low"), []);
 
@@ -63,33 +74,37 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
     const low = perfTier() === "low";
     const width = pickCoverWidth(film, low ? 0.42 : 0.55);
     const store = new FrameStore(film, width);
-    const shots = Array.from(el.querySelectorAll<HTMLElement>("[data-film-shot]"));
     const stopEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-stop]"));
+    const restEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-rest]"));
+    const afterEls = new Map(Array.from(el.querySelectorAll<HTMLElement>("[data-film-after]")).map((a) => [Number(a.dataset.filmAfter), a]));
     const caps = Array.from(el.querySelectorAll<HTMLElement>("[data-film-cap]"));
-    const afters = Array.from(el.querySelectorAll<HTMLElement>("[data-film-after]"));
+    const markEl = el.querySelector<HTMLElement>("[data-film-mark]");
     const rail = el.querySelector<HTMLElement>("[data-film-rail]");
     const ticks = Array.from(el.querySelectorAll<HTMLElement>("[data-film-tick]"));
     const focus = stops.map((s) => focusOf(s.shot));
 
-    // keyframes (scrollY → film position): a stop's section top arrives at the previous stop,
-    // its runway's end at its own; between sections the film holds
+    // keyframes (scrollY → film position), linear between them: the film sits on the first stop
+    // while the opening lifts, reaches each stop as its caption part fills the screen, and holds
+    // under a content section until that section's end is back on screen
     let keys: [number, number][] = [];
     const measure = () => {
       const vh = window.innerHeight;
+      const y = (e: Element) => e.getBoundingClientRect().top + window.scrollY;
       keys = [];
-      stopEls.forEach((s, k) => {
-        const top = s.getBoundingClientRect().top + window.scrollY;
-        if (k === 0) keys.push([top - vh, 0]);
-        else keys.push([top, k - 1], [top + RUNWAY * vh, k]);
+      restEls.forEach((r, k) => {
+        if (k === 0) keys.push([y(stopEls[0]) - vh, 0]);
+        keys.push([y(r), k]);
+        const a = afterEls.get(k);
+        if (a && k < n - 1) keys.push([y(a) + a.offsetHeight - vh, k]);
       });
     };
-    const at = (y: number) => {
-      if (!keys.length || y <= keys[0][0]) return 0;
+    const at = (sy: number) => {
+      if (!keys.length || sy <= keys[0][0]) return 0;
       for (let i = 1; i < keys.length; i++) {
         const [y1, f1] = keys[i];
-        if (y < y1) {
+        if (sy < y1) {
           const [y0, f0] = keys[i - 1];
-          return f0 === f1 ? f0 : f0 + (f1 - f0) * smooth(clamp01((y - y0) / (y1 - y0)));
+          return f0 + (f1 - f0) * clamp01((sy - y0) / Math.max(1, y1 - y0));
         }
       }
       return n - 1;
@@ -99,8 +114,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
     let near = false;
     let lastWant = -1;
     let drawn = "";
-    const op: number[] = [];
+    let pos = 0;
     const capOp: number[] = [];
+    let markOp = -1;
     let railFill = -1;
     const size = () => {
       // no more canvas pixels than the frames carry
@@ -108,57 +124,54 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
       const k = Math.min(window.devicePixelRatio || 1, 2, Math.max(0.5, 1.15 / cover));
       c.width = Math.max(1, Math.round(c.clientWidth * k));
       c.height = Math.max(1, Math.round(c.clientHeight * k));
+      g.imageSmoothingEnabled = true;
+      g.imageSmoothingQuality = "high";
       drawn = "";
       measure();
     };
-    pos.current = at(window.scrollY);
 
     const frame = () => {
       raf = near ? requestAnimationFrame(frame) : 0;
       const vh = window.innerHeight;
       const target = at(window.scrollY);
-      // a light follow: fling and wheel jumps glide instead of skipping frames
-      const p = pos.current + (target - pos.current) * 0.22;
-      pos.current = Math.abs(target - p) < 1e-3 ? target : p;
-      const f = pos.current;
+      // a light follow on top of the smooth scroll: wheel steps and flings glide
+      pos += (target - pos) * 0.2;
+      if (Math.abs(target - pos) < 2e-4) pos = target;
+      const f = pos;
+      // read by the QA scripts (docs/tools/qa)
+      (window as Window & { __mokaFilm?: number }).__mokaFilm = f;
 
-      const idx = Math.round((f / (n - 1)) * (film.frames - 1));
-      if (idx !== lastWant) {
-        store.want(idx, idx >= lastWant ? 1 : -1);
-        lastWant = idx;
+      // the frame under the scroll, blended with its neighbour by the fraction in between
+      const x = (f / (n - 1)) * (film.frames - 1);
+      const i0 = low ? Math.round(x) : Math.floor(x);
+      // phones step through the (dense) frames; larger screens blend in quarter steps
+      const a = low ? 0 : Math.round((x - i0) * 4) / 4;
+      const want = Math.round(x);
+      if (want !== lastWant) {
+        store.want(want, want >= lastWant ? 1 : -1);
+        lastWant = want;
       }
-      const got = store.nearest(idx);
-      const i = Math.min(n - 2, Math.floor(f));
-      const t = f - i;
-      const fx = focus[i][0] + (focus[i + 1][0] - focus[i][0]) * t;
-      const fy = focus[i][1] + (focus[i + 1][1] - focus[i][1]) * t;
-      const key = got ? `${got.index}|${c.width}|${c.height}|${fx.toFixed(3)}|${fy.toFixed(3)}` : "";
-      if (got && key !== drawn) {
-        drawCover(g, got.frame, c.width, c.height, fx, fy);
-        drawn = key;
-      }
-
-      // reads first (caption boxes, content sections), then writes
-      const rects = caps.map((e) => e.getBoundingClientRect());
-      covered.current = afters.some((a) => {
-        const r = a.getBoundingClientRect();
-        // past its fade-in gradient and not yet at its fade-out
-        return r.top <= -0.28 * vh && r.bottom >= 1.28 * vh;
-      });
-      // the sharp still covers the film while the scroll rests on its stop
-      shots.forEach((s, k) => {
-        const d = Math.abs(f - k);
-        const o = Math.round((1 - smooth(clamp01((d - 0.03) / 0.12))) * 100) / 100;
-        if (o !== op[k]) {
-          op[k] = o;
-          s.style.opacity = String(o);
-          s.style.visibility = o > 0 ? "visible" : "hidden";
+      const s = Math.min(n - 2, Math.floor(f));
+      const t = f - s;
+      const fx = focus[s][0] + (focus[s + 1][0] - focus[s][0]) * t;
+      const fy = focus[s][1] + (focus[s + 1][1] - focus[s][1]) * t;
+      const exact = store.get(i0);
+      const base = exact ?? store.nearest(i0)?.frame;
+      const next = a > 0 ? store.get(i0 + 1) : undefined;
+      const key = `${i0}|${next ? a : 0}|${c.width}|${c.height}|${fx.toFixed(3)}|${fy.toFixed(3)}`;
+      if (base && key !== drawn) {
+        drawCover(g, base, c.width, c.height, fx, fy);
+        if (next) {
+          g.globalAlpha = a;
+          drawCover(g, next, c.width, c.height, fx, fy);
+          g.globalAlpha = 1;
         }
-        // stills far from the camera are not even loaded until it gets close
-        const show = d < 1.2 ? "block" : "none";
-        if (s.style.display !== show) s.style.display = show;
-      });
-      // captions rise in from the bottom and leave towards the top
+        // keep redrawing until the exact pair is decoded
+        drawn = exact && (a === 0 || next) ? key : "";
+      }
+
+      // reads first (caption boxes), then writes
+      const rects = caps.map((e) => e.getBoundingClientRect());
       caps.forEach((e, k) => {
         const r = rects[k];
         const o = Math.round(Math.min(clamp01((vh * 0.98 - r.top) / (vh * 0.3)), clamp01((r.bottom - vh * 0.1) / (vh * 0.25))) * 100) / 100;
@@ -168,6 +181,13 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
           e.style.transform = `translate3d(0,${Math.round((1 - o) * 24)}px,0)`;
         }
       });
+      if (markEl) {
+        const o = Math.round(smooth(clamp01((f - (n - 1) + 0.06) / 0.06)) * 100) / 100;
+        if (o !== markOp) {
+          markOp = o;
+          markEl.style.opacity = String(o);
+        }
+      }
       const fill = Math.round((f / (n - 1)) * 1000) / 1000;
       if (rail && fill !== railFill) {
         railFill = fill;
@@ -181,6 +201,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
       if (!raf && near) raf = requestAnimationFrame(frame);
     };
     size();
+    pos = at(window.scrollY);
     const ro = new ResizeObserver(size);
     ro.observe(el);
     ro.observe(c);
@@ -198,7 +219,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
       void store.load();
     };
     window.addEventListener("scroll", start, { passive: true });
-    const idle = window.setTimeout(start, 2500);
+    const idle = window.setTimeout(start, 2000);
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(idle);
@@ -211,26 +232,44 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [film]);
 
-  const isActive = (k: number) => () => !covered.current && Math.abs(pos.current - k) < 0.14;
   const chapters = stops.map((s, k) => ({ k, c: s.caption })).filter((x): x is { k: number; c: Caption } => !!x.c);
+  const first = stops[0].shot;
+  const last = stops[n - 1].shot;
 
   return (
     <div ref={root} className="relative">
       {/* the film: sticky behind everything in this wrapper (motion only) */}
       <div aria-hidden="true" className="sticky top-0 z-0 -mb-[100svh] h-[100svh] overflow-hidden bg-black motion-reduce:hidden">
+        {/* the first frame as a picture, so there is an image before the canvas has decoded anything */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={stillSrc(first.still, first.still.widths[1] ?? first.still.widths[0])}
+          alt=""
+          fetchPriority="low"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: first.focus ?? "50% 50%" }}
+        />
         <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
-        {stops.map((s, k) => (
-          <div
-            key={k}
-            data-film-shot
-            className="absolute inset-0 overflow-hidden will-change-[opacity]"
-            style={k > 0 ? { opacity: 0, visibility: "hidden", display: "none" } : undefined}
-          >
-            <CoverFrame still={s.shot.still} focus={s.shot.focus}>
-              <ShotMedia shot={s.shot} eager={k === 0} lite={lite} isActive={isActive(k)} />
+        {mark && (
+          <div className="absolute inset-0 overflow-hidden">
+            <CoverFrame still={last.still} focus={last.focus}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                data-film-mark
+                src={mark.src}
+                alt=""
+                className="absolute opacity-0"
+                style={{
+                  left: `${mark.region[0] * 100}%`,
+                  top: `${mark.region[1] * 100}%`,
+                  width: `${mark.region[2] * 100}%`,
+                  height: `${mark.region[3] * 100}%`,
+                }}
+              />
             </CoverFrame>
           </div>
-        ))}
+        )}
         {!lite && <Dust />}
         {/* grade: vignette, a floor for the captions, a soft top for the nav */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_45%,transparent_35%,rgba(0,0,0,0.6)_100%)]" />
@@ -267,8 +306,12 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
             className="relative z-10 text-paper"
           >
             {/* the runway: the film moves while this scrolls by */}
-            {k > 0 && <div aria-hidden="true" className="motion-reduce:hidden" style={{ height: `${RUNWAY * 100}svh` }} />}
-            <div className={`relative mx-auto flex w-full max-w-[1320px] flex-col px-5 md:px-12 ${s.caption ? "motion-safe:h-[100svh]" : "motion-safe:h-[45svh]"} motion-reduce:py-14`}>
+            {k > 0 && <div aria-hidden="true" className="motion-reduce:hidden" style={{ height: `${runway[k] * 100}svh` }} />}
+            <div
+              data-film-rest
+              className="relative mx-auto flex w-full max-w-[1320px] flex-col px-5 md:px-12 motion-reduce:!h-auto motion-reduce:py-14"
+              style={{ height: `${rest[k] * 100}svh` }}
+            >
               {k === 0 && (
                 <div className="pt-24 md:pt-28">
                   <p className="eyebrow text-seher">{eyebrow}</p>
@@ -293,7 +336,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film }: Props) 
             </div>
           </section>
           {s.after && (
-            <div data-film-after className="relative z-10">
+            <div data-film-after={k} className="relative z-10">
               {/* the film dissolves into the section and the section back into the film */}
               <div aria-hidden="true" className="h-[28svh] motion-reduce:hidden" style={{ background: `linear-gradient(to bottom, transparent, ${s.tone ?? "#000"})` }} />
               {s.after}

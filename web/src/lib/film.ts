@@ -135,6 +135,11 @@ export class FrameStore {
       }
   }
 
+  /** The decoded frame at `i` if it is ready. */
+  get(i: number): Drawable | undefined {
+    return this.ready.get(i);
+  }
+
   /** The decoded frame at `i`, or the nearest decoded one (never blank once anything is ready). */
   nearest(i: number): { frame: Drawable; index: number } | null {
     if (this.ready.has(i)) return { frame: this.ready.get(i)!, index: i };

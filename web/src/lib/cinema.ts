@@ -32,9 +32,6 @@ export type Loop = { name: string; widths: number[] };
 
 export const LOOPS = {
   hero: { name: "hero", widths: [720, 1280] },
-  grind: { name: "grind", widths: [720, 1280] },
-  pour: { name: "pour", widths: [720, 1280] },
-  chemex: { name: "chemex", widths: [720, 1280] },
 } satisfies Record<string, Loop>;
 
 /** The smallest file (path without extension) that still covers this screen (cropped like object-fit: cover) sharply enough. */
