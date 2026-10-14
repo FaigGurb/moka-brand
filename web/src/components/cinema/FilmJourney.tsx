@@ -4,6 +4,7 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { stillSrc, type Still } from "@/lib/cinema";
 import { FrameStore, drawCover, pickCoverWidth, type Clip } from "@/lib/film";
 import { perfTier } from "@/lib/perf";
+import { getLenis } from "@/lib/lenis";
 import { Dust } from "./Dust";
 import { CoverFrame, focusOf, type Shot } from "./Shot";
 
@@ -51,7 +52,9 @@ const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
  * speed with the scroll, through every stop, captions passing over it like titles; content sections
  * (roast, brewing, packaging) scroll over a held frame and dissolve back into the film, which picks
  * up where it stopped. Neighbouring frames are blended, so even a short frame set moves smoothly,
- * forwards and backwards. Reduced motion: stills with captions in flow.
+ * forwards and backwards. Inside the film one wheel step, swipe or arrow key plays it to the next
+ * stop (an eased scroll through Lenis); content sections scroll freely. Reduced motion: stills with
+ * captions in flow.
  */
 export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: Props) {
   const root = useRef<HTMLDivElement>(null);
@@ -87,15 +90,26 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     // while the opening lifts, reaches each stop as its caption part fills the screen, and holds
     // under a content section until that section's end is back on screen
     let keys: [number, number][] = [];
+    // stretches of scroll the film plays through on its own: one gesture carries it to the next
+    // stop (opening → first stop, stop → stop, end of a content section → next stop)
+    let segs: [number, number][] = [];
     const measure = () => {
       const vh = window.innerHeight;
       const y = (e: Element) => e.getBoundingClientRect().top + window.scrollY;
       keys = [];
+      segs = [];
+      let from = y(el);
       restEls.forEach((r, k) => {
         if (k === 0) keys.push([y(stopEls[0]) - vh, 0]);
-        keys.push([y(r), k]);
+        const ry = y(r);
+        keys.push([ry, k]);
+        segs.push([from, ry]);
+        from = ry;
         const a = afterEls.get(k);
-        if (a && k < n - 1) keys.push([y(a) + a.offsetHeight - vh, k]);
+        if (a && k < n - 1) {
+          from = y(a) + a.offsetHeight - vh;
+          keys.push([from, k]);
+        }
       });
     };
     const at = (sy: number) => {
@@ -196,6 +210,84 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       }
     };
 
+    // one wheel step, swipe or key press inside the film plays it to the next stop
+    const TOL = 4;
+    const snapTarget = (y: number, dir: 1 | -1) => {
+      for (const [a0, b0] of segs) {
+        if (dir > 0 && y >= a0 - TOL && y < b0 - TOL) return b0;
+        if (dir < 0 && y > a0 + TOL && y <= b0 + TOL) return a0;
+      }
+      return null;
+    };
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    let busy = false;
+    let lastInput = 0;
+    let doneAt = 0;
+    const here = () => getLenis()?.scroll ?? window.scrollY;
+    const go = (dir: 1 | -1) => {
+      const y = here();
+      const to = snapTarget(y, dir);
+      if (to === null) return false;
+      busy = true;
+      const vh = window.innerHeight;
+      const duration = Math.min(2.1, Math.max(1.1, 0.8 + (Math.abs(to - y) / vh) * 0.5));
+      const done = () => {
+        busy = false;
+        doneAt = performance.now();
+      };
+      const lenis = getLenis();
+      if (lenis) lenis.scrollTo(to, { duration, easing: ease, lock: true, force: true, onComplete: done });
+      else {
+        window.scrollTo({ top: to, behavior: "smooth" });
+        window.setTimeout(done, duration * 1000);
+      }
+      return true;
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 1) return;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const now = performance.now();
+      // a new gesture (not the tail of a trackpad fling), or a steady wheel after a pause on a stop
+      const fresh = now - lastInput > 180 || now - doneAt > 700;
+      lastInput = now;
+      if (!busy && snapTarget(here(), dir) === null) return; // content: scroll freely
+      e.preventDefault();
+      e.stopPropagation();
+      if (!busy && fresh) go(dir);
+    };
+    let touchY = 0;
+    let touchDir: 0 | 1 | -1 = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0].clientY;
+      touchDir = 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = touchY - e.touches[0].clientY;
+      if (Math.abs(dy) < 6 && !busy) return;
+      const dir = dy > 0 ? 1 : -1;
+      if (busy || snapTarget(here(), dir) !== null) {
+        e.preventDefault();
+        touchDir = dir;
+      }
+    };
+    const onTouchEnd = () => {
+      if (touchDir && !busy) go(touchDir);
+      touchDir = 0;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.altKey || e.metaKey || e.ctrlKey) return;
+      const dir = ["ArrowDown", "PageDown", " "].includes(e.key) && !e.shiftKey ? 1 : ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey) ? -1 : 0;
+      if (!dir) return;
+      if (busy) return e.preventDefault();
+      if (go(dir)) e.preventDefault();
+    };
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKey);
+
     store.onReady = () => {
       drawn = "";
       if (!raf && near) raf = requestAnimationFrame(frame);
@@ -222,6 +314,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const idle = window.setTimeout(start, 2000);
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("wheel", onWheel, { capture: true });
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKey);
       window.clearTimeout(idle);
       window.removeEventListener("scroll", start);
       ro.disconnect();
