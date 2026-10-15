@@ -52,6 +52,11 @@ const CAM = 0.06;
 const FOLLOW_STEP = 0.45;
 /** dolly push: the camera leans in with the film's speed (stops per second → extra zoom), then settles */
 const PUSH = 0.028;
+/** time a gesture takes to carry the film one stop (seconds): close to the clips' own slow-motion pace */
+const STEP_BASE = 1.5;
+const STEP_PER_SCREEN = 0.7;
+const STEP_MIN = 1.8;
+const STEP_MAX = 2.8;
 const PUSH_MAX = 0.07;
 /** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
 const ZIG = 6;
@@ -286,8 +291,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       }
       return null;
     };
-    const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    // gentle in and out with an almost even middle, so the clip plays at its own (slow-motion) pace
+    const easeInOut = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
+    const easeOut = (t: number) => Math.sin((t * Math.PI) / 2);
     const here = () => getLenis()?.scroll ?? window.scrollY;
     /** true when the gesture was taken by the film */
     const step = (dir: 1 | -1) => {
@@ -298,7 +304,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       if (!lenis) return false;
       goal = to;
       const vh = window.innerHeight;
-      const duration = Math.min(1.2, Math.max(0.7, 0.55 + (Math.abs(to - here()) / vh) * 0.2));
+      const duration = Math.min(STEP_MAX, Math.max(STEP_MIN, STEP_BASE + (Math.abs(to - here()) / vh) * STEP_PER_SCREEN));
       // a new gesture mid-move carries on at speed instead of starting again from rest
       lenis.scrollTo(to, { duration, easing: moving ? easeOut : easeInOut, force: true, onComplete: () => (goal = null) });
       // if something else takes the scroll over (a nav link), forget the goal anyway

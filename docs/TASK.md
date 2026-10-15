@@ -10,8 +10,8 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** Mərhələ keçidi qısaldı (~0.7 s desktop), keçid zamanı film scroll-u birbaşa izləyir (sonradan sürünmə yox), kamera sürətlə yüngül irəli əyilir (dolly push ≤7%) və yumşaq yerinə qayıdır; telefonda da. Commit olunub, deploy olunmayıb.
-- **Verification:** check + build; keçid vaxtı ölçüldü: desktop 0.71–0.74 s, mobil ~1.1 s (toxunuş daxil), push 1.15→1.22→1.15 (desktop), 1.00→1.057→1.00 (mobil); jest testləri (1→1, 2→2, partlayış→1, məzmun azad) desktop+mobil keçdi; film testləri xətasız, overflow 0; responsive az/en/ru × 4 təmiz; menyu 6/6. scroll_perf bu konteynerdə dəyişkən: push ilə desktop 37.2 / push-suz 36.9, mobil 40.9 / 38.8. Real telefon yoxlanmayıb.
+- **Status:** Keçid tempi videonun öz (slow-motion) sürətinə yaxınlaşdırıldı: bir mərhələ ~2.1 s desktop / ~2.5 s mobil, sinus əyri (ortada bərabər sürət); kamera əyilməsi yumşaq (~2%). Commit olunub, deploy olunmayıb.
+- **Verification:** check + build; keçid vaxtı ölçüldü (desktop 2.13 s, mobil ~2.5 s, film mövqeyi ortada bərabər addımlarla); jest testləri desktop+mobil keçdi (1→1, 2→2, partlayış→1, məzmun azad); menyu 6/6. Real telefon yoxlanmayıb.
 - **Next step:** İstifadəçi lokal/önizləmə baxsın → icazə verərsə DEPLOY.
 
 ## Recent decisions (newest first, max 5)
