@@ -46,7 +46,7 @@ const az = {
     title: "Bir fincanın yolu",
     steps: [
       { title: "Dən", text: "Yaşıl dən hələ heç nə vəd etmir: nə ətri var, nə dadı. Hər partiyanın mənşəyi paketdə yazılır." },
-      { title: "Qovurma", text: "İstilik dənin rəngini və dadını dəyişir: açıq qovurmada meyvə, tündündə kakao. Dən kartındakı xətt bu dərəcəni göstərir." },
+      { title: "Qovurma", text: "İstilik dənin rəngini və dadını dəyişir: açıq qovrulmada meyvə və çiçək, ortada balans, tünddə şokolad və güclü gövdə." },
       { title: "Üyütmə", text: "Dən dəmləmədən dərhal əvvəl üyüdülür. İncəlik dəmləmə alətinə görə seçilir: Chemex üçün orta-iri." },
       { title: "Dəmləmə", text: "İsti su üyüdülmüş qəhvədən yavaş-yavaş süzülür. Kağız filtr fincanı təmiz və şəffaf edir." },
     ],
@@ -86,9 +86,16 @@ const az = {
       { label: "Tünd qovurma", short: "Tünd", origin: "Qvatemala", notes: "Kakao · qəhvəyi şəkər" },
       { label: "French qovurma", short: "French", origin: "Sumatra", notes: "Tünd şokolad · ədviyyat" },
     ],
-    flavorsLabel: "Dad rəngləri",
-    flavors: ["Giləmeyvə", "Sitrus", "Çiçək", "Kakao, qoz"],
-    sample: "Mənşə və dad notları nümunədir.",
+    spectrum: {
+      title: "Kofe spektri",
+      source: "MOKA-nın öz təsviri (Instagram)",
+      items: [
+        { level: 1, name: "Açıq qovrulma", text: "Meyvəli, çiçəkli və turşuluğu daha aydın hiss olunan dad" },
+        { level: 2, name: "Orta qovrulma", text: "Turşuluq, şirinlik və qovrulma dadları arasında balans" },
+        { level: 3, name: "Tünd qovrulma", text: "Dərin, dolğun dad, tünd şokolad notları və güclü gövdə" },
+      ],
+    },
+    sample: "Kartdakı mənşə və dad notları nümunədir.",
   },
   brew: {
     eyebrow: "Dəmləmə bələdçisi",
@@ -347,7 +354,7 @@ const en: Dict = {
     title: "The journey of a cup",
     steps: [
       { title: "Bean", text: "A green bean promises nothing yet: no aroma, no flavour. The origin of every batch is printed on the bag." },
-      { title: "Roast", text: "Heat changes the bean's colour and taste: fruit in a light roast, cocoa in a dark one. The line on the bean card shows the level." },
+      { title: "Roast", text: "Heat changes the bean's colour and taste: fruit and flowers in a light roast, balance in a medium one, chocolate and a strong body in a dark one." },
       { title: "Grind", text: "Beans are ground right before brewing. The size depends on the brewer: medium-coarse for a Chemex." },
       { title: "Brew", text: "Hot water slowly passes through the grounds. The paper filter keeps the cup clean and clear." },
     ],
@@ -386,9 +393,16 @@ const en: Dict = {
       { label: "Dark roast", short: "Dark", origin: "Guatemala", notes: "Cocoa · brown sugar" },
       { label: "French roast", short: "French", origin: "Sumatra", notes: "Dark chocolate · spice" },
     ],
-    flavorsLabel: "Flavour colours",
-    flavors: ["Berry", "Citrus", "Floral", "Cocoa, nuts"],
-    sample: "Origins and tasting notes are samples.",
+    spectrum: {
+      title: "Coffee spectrum",
+      source: "MOKA's own description (Instagram)",
+      items: [
+        { level: 1, name: "Light roast", text: "Fruity and floral, with a clearer acidity" },
+        { level: 2, name: "Medium roast", text: "A balance of acidity, sweetness and roasted flavours" },
+        { level: 3, name: "Dark roast", text: "Deep, full flavour, dark chocolate notes and a strong body" },
+      ],
+    },
+    sample: "Origins and tasting notes on the card are samples.",
   },
   brew: {
     eyebrow: "Brew guide",
@@ -645,7 +659,7 @@ const ru: Dict = {
     title: "Путь одной чашки",
     steps: [
       { title: "Зерно", text: "Зелёное зерно пока ничего не обещает: ни аромата, ни вкуса. Происхождение каждой партии указано на пачке." },
-      { title: "Обжарка", text: "Жар меняет цвет и вкус зерна: в светлой обжарке — фрукты, в тёмной — какао. Линия на карточке зерна показывает степень." },
+      { title: "Обжарка", text: "Жар меняет цвет и вкус зерна: в светлой обжарке — фрукты и цветы, в средней — баланс, в тёмной — шоколад и плотное тело." },
       { title: "Помол", text: "Зерно мелют прямо перед завариванием. Помол подбирают под способ: для Chemex — средне-крупный." },
       { title: "Заваривание", text: "Горячая вода медленно проходит через молотый кофе. Бумажный фильтр делает чашку чистой и прозрачной." },
     ],
@@ -684,9 +698,16 @@ const ru: Dict = {
       { label: "Тёмная обжарка", short: "Тёмная", origin: "Гватемала", notes: "Какао · коричневый сахар" },
       { label: "Французская обжарка", short: "French", origin: "Суматра", notes: "Тёмный шоколад · специи" },
     ],
-    flavorsLabel: "Цвета вкуса",
-    flavors: ["Ягоды", "Цитрус", "Цветы", "Какао, орехи"],
-    sample: "Происхождение и вкусовые ноты — примеры.",
+    spectrum: {
+      title: "Кофейный спектр",
+      source: "Описание самой MOKA (Instagram)",
+      items: [
+        { level: 1, name: "Светлая обжарка", text: "Фруктовый, цветочный вкус с более выраженной кислотностью" },
+        { level: 2, name: "Средняя обжарка", text: "Баланс кислотности, сладости и вкусов обжарки" },
+        { level: 3, name: "Тёмная обжарка", text: "Глубокий, насыщенный вкус, ноты тёмного шоколада и плотное тело" },
+      ],
+    },
+    sample: "Происхождение и вкусовые ноты на карточке — примеры.",
   },
   brew: {
     eyebrow: "Гид по завариванию",

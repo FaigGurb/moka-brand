@@ -47,6 +47,9 @@ const RESUME = 0.75;
  */
 const FOLLOW = 0.075;
 const CAM = 0.06;
+/** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
+const ZIG = 6;
+const ZOOM = 1.15;
 const smooth = (x: number) => x * x * (3 - 2 * x);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
@@ -71,6 +74,10 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
   const rest = stops.map((s) => (s.caption ? REST_CAPTION : REST_PASS));
   const runway = stops.map((_, k) => (k === 0 ? 0 : stops[k - 1].after ? RESUME : Math.max(0.4, SPAN - rest[k - 1])));
 
+  // zigzag: chapter titles alternate left (-1) and right (1); passing shots sit in the middle (0)
+  let chapterNo = 0;
+  const side = stops.map((s) => (s.caption ? (chapterNo++ % 2 === 0 ? -1 : 1) : 0));
+
   useEffect(() => setLite(perfTier() === "low"), []);
 
   useEffect(() => {
@@ -81,14 +88,13 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     if (!g) return;
     const low = perfTier() === "low";
     const width = pickCoverWidth(film, low ? 0.42 : 0.55);
-    const store = new FrameStore(film, width);
+    const store = new FrameStore(film, width, low);
     const stopEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-stop]"));
     const restEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-rest]"));
     const afterEls = new Map(Array.from(el.querySelectorAll<HTMLElement>("[data-film-after]")).map((a) => [Number(a.dataset.filmAfter), a]));
     const caps = Array.from(el.querySelectorAll<HTMLElement>("[data-film-cap]"));
     const markEl = el.querySelector<HTMLElement>("[data-film-mark]");
-    const rail = el.querySelector<HTMLElement>("[data-film-rail]");
-    const ticks = Array.from(el.querySelectorAll<HTMLElement>("[data-film-tick]"));
+    const shades = Array.from(el.querySelectorAll<HTMLElement>("[data-film-shade]"));
     const focus = stops.map((s) => focusOf(s.shot));
 
     // keyframes (scrollY → film position), linear between them: the film sits on the first stop
@@ -123,15 +129,21 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let lastWant = -1;
     let drawn = "";
     let pos = 0;
+    let wide = false;
     const capOp: number[] = [];
     let markOp = -1;
-    let railFill = -1;
+    const shadeOp = [-1, -1];
     const size = () => {
       // no more canvas pixels than the frames carry
       const cover = Math.max(c.clientWidth / width, c.clientHeight / (width / film.aspect));
       const k = Math.min(window.devicePixelRatio || 1, 2, Math.max(0.5, 1.15 / cover));
       c.width = Math.max(1, Math.round(c.clientWidth * k));
       c.height = Math.max(1, Math.round(c.clientHeight * k));
+      wide = window.innerWidth >= 768;
+      if (cam && !wide) {
+        cam.style.transform = "";
+        camTr = "";
+      }
       g.imageSmoothingEnabled = true;
       g.imageSmoothingQuality = "high";
       drawn = "";
@@ -148,12 +160,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       pos += (target - pos) * (1 - Math.pow(1 - FOLLOW, dt * 60));
       if (Math.abs(target - pos) < 2e-4) pos = target;
       const f = pos;
-      // the camera drifts a little with the pointer (fine pointers only), damped slower still
-      if (cam) {
+      // zigzag: on wide screens the picture slides away from the side its title is on; the
+      // pointer adds a slight drift (damped slower still)
+      const sf = Math.min(n - 2, Math.floor(f));
+      const sv = side[sf] + (side[sf + 1] - side[sf]) * smooth(f - sf);
+      if (cam && wide) {
         const k = 1 - Math.pow(1 - CAM, dt * 60);
         cx += (mx - cx) * k;
         cy += (my - cy) * k;
-        const tr = `translate3d(${(cx * -14).toFixed(2)}px,${(cy * -9).toFixed(2)}px,0) scale(1.035)`;
+        const tr = `translate3d(${(-sv * ZIG).toFixed(2)}%,0,0) translate3d(${(cx * -14).toFixed(1)}px,${(cy * -9).toFixed(1)}px,0) scale(${ZOOM})`;
         if (tr !== camTr) {
           camTr = tr;
           cam.style.transform = tr;
@@ -177,7 +192,10 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       const fx = focus[s][0] + (focus[s + 1][0] - focus[s][0]) * t;
       const fy = focus[s][1] + (focus[s + 1][1] - focus[s][1]) * t;
       const exact = store.get(i0);
-      const base = exact ?? store.nearest(i0)?.frame;
+      const near0 = exact ? null : store.nearest(i0);
+      const base = exact ?? near0?.frame;
+      // read by the QA scripts: how many frames the picture on screen lags behind the wanted one
+      (window as Window & { __mokaLag?: number }).__mokaLag = near0 ? Math.abs(near0.index - i0) : 0;
       const next = a > 0 ? store.get(i0 + 1) : undefined;
       const key = `${i0}|${next ? a : 0}|${c.width}|${c.height}|${fx.toFixed(3)}|${fy.toFixed(3)}`;
       if (base && key !== drawn) {
@@ -208,15 +226,21 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
           markEl.style.opacity = String(o);
         }
       }
-      const fill = Math.round((f / (n - 1)) * 1000) / 1000;
-      if (rail && fill !== railFill) {
-        railFill = fill;
-        rail.style.transform = `scaleY(${fill})`;
-        ticks.forEach((tk) => tk.classList.toggle("text-glow", Number(tk.dataset.filmTick) <= f + 0.05));
+      // a soft shade on the side the title is on, so it reads over any frame
+      if (wide) {
+        [Math.max(0, -sv), Math.max(0, sv)].forEach((v, k) => {
+          const o = Math.round(v * 100) / 100;
+          if (o !== shadeOp[k] && shades[k]) {
+            shadeOp[k] = o;
+            shades[k].style.opacity = String(o);
+          }
+        });
       }
     };
 
-    const cam = !low && matchMedia("(pointer: fine)").matches ? el.querySelector<HTMLElement>("[data-film-cam]") : null;
+    const cam = el.querySelector<HTMLElement>("[data-film-cam]");
+    // the pointer drift only where it is cheap and has a mouse; the zigzag slide everywhere wide
+    const fine = !low && matchMedia("(pointer: fine)").matches;
     let mx = 0;
     let my = 0;
     let cx = 0;
@@ -226,7 +250,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       mx = e.clientX / window.innerWidth - 0.5;
       my = e.clientY / window.innerHeight - 0.5;
     };
-    if (cam) window.addEventListener("pointermove", onPointer, { passive: true });
+    if (cam && fine) window.addEventListener("pointermove", onPointer, { passive: true });
 
     store.onReady = () => {
       drawn = "";
@@ -313,24 +337,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_45%,transparent_35%,rgba(0,0,0,0.6)_100%)]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-[linear-gradient(to_top,rgba(0,0,0,0.85),rgba(0,0,0,0.35)_55%,transparent)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.7),transparent)]" />
-        {/* progress rail with chapter ticks (wide screens) */}
-        <div className="absolute top-1/2 right-6 hidden -translate-y-1/2 items-stretch gap-4 md:flex lg:right-10">
-          <ol className="relative w-24 text-right text-[10px] font-bold tracking-[0.2em] text-paper/40 uppercase">
-            {chapters.map(({ k, c }) => (
-              <li
-                key={k}
-                data-film-tick={k}
-                className="absolute right-0 -translate-y-1/2 transition-colors duration-500"
-                style={{ top: `${(k / (n - 1)) * 100}%` }}
-              >
-                {c.title}
-              </li>
-            ))}
-          </ol>
-          <span className="relative block h-[38svh] w-px bg-paper/15">
-            <span data-film-rail className="absolute inset-0 origin-top scale-y-0 bg-glow shadow-[0_0_10px_rgba(255,226,166,0.7)]" />
-          </span>
-        </div>
+        {/* side shades for the zigzag titles (wide screens; the frame loop sets their opacity) */}
+        <div data-film-shade className="pointer-events-none absolute inset-y-0 left-0 hidden w-[60%] bg-[linear-gradient(to_right,rgba(0,0,0,0.78),rgba(0,0,0,0.35)_55%,transparent)] opacity-0 md:block" />
+        <div data-film-shade className="pointer-events-none absolute inset-y-0 right-0 hidden w-[60%] bg-[linear-gradient(to_left,rgba(0,0,0,0.78),rgba(0,0,0,0.35)_55%,transparent)] opacity-0 md:block" />
       </div>
 
       <div className="relative z-10">{lead}</div>
@@ -340,12 +349,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
           <section id={k === 0 ? id : undefined} aria-labelledby={k === 0 ? `${id}-title` : undefined} data-film-stop={k} className="relative z-10 text-paper">
             {/* the chapter title, pinned to the foot of the screen for the whole section; the film sets its visibility */}
             {s.caption && (
-              <div className="pointer-events-none motion-safe:sticky motion-safe:top-0 motion-safe:-mb-[100svh] motion-safe:flex motion-safe:h-[100svh] motion-safe:flex-col motion-safe:justify-end">
-                <div data-film-cap={k} className="film-cap pointer-events-auto mx-auto w-full max-w-[1320px] px-5 pb-16 md:px-12 md:pb-20 motion-reduce:pb-14">
+              <div className="pointer-events-none motion-safe:sticky motion-safe:top-0 motion-safe:-mb-[100svh] motion-safe:flex motion-safe:h-[100svh] motion-safe:flex-col motion-safe:justify-end md:motion-safe:justify-center">
+                <div
+                  data-film-cap={k}
+                  className={`film-cap pointer-events-auto mx-auto w-full max-w-[1320px] px-5 pb-16 md:px-12 md:pb-0 motion-reduce:pb-14 ${side[k] > 0 ? "md:flex md:flex-col md:items-end md:text-right" : ""}`}
+                >
                   <p className="film-cap-fade font-[family-name:var(--font-display)] text-sm tracking-[0.3em] text-glow">
                     {s.caption.kicker} <span className="text-paper/35">/ {String(chapters.length).padStart(2, "0")}</span>
                   </p>
-                  <h3 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(48px,9vw,128px)] leading-[0.9] font-medium tracking-[-0.03em] [perspective:600px]">
+                  <h3 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(48px,7.5vw,112px)] leading-[0.9] font-medium tracking-[-0.03em] [perspective:600px]">
                     {s.caption.title.split(" ").map((w, i) => (
                       <span key={i} className="film-word inline-block" style={{ ["--i" as string]: i }}>
                         {w}
