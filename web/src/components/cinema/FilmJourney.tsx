@@ -4,6 +4,7 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { stillSrc, type Still } from "@/lib/cinema";
 import { FrameStore, drawCover, pickCoverWidth, type Clip } from "@/lib/film";
 import { perfTier } from "@/lib/perf";
+import { getLenis } from "@/lib/lenis";
 import { Dust } from "./Dust";
 import { CoverFrame, focusOf, type Shot } from "./Shot";
 
@@ -47,6 +48,8 @@ const RESUME = 0.75;
  */
 const FOLLOW = 0.075;
 const CAM = 0.06;
+/** the film follows tighter while a gesture carries it from stop to stop (the scroll itself is eased) */
+const FOLLOW_STEP = 0.16;
 /** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
 const ZIG = 6;
 const ZOOM = 1.15;
@@ -101,15 +104,26 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     // while the opening lifts, reaches each stop as its caption part fills the screen, and holds
     // under a content section until that section's end is back on screen
     let keys: [number, number][] = [];
+    // the stretches the film plays through by itself, one per gesture: opening → first stop,
+    // stop → stop, end of a content section → next stop (content sections scroll freely)
+    let segs: [number, number][] = [];
     const measure = () => {
       const vh = window.innerHeight;
       const y = (e: Element) => e.getBoundingClientRect().top + window.scrollY;
       keys = [];
+      segs = [];
+      let from = y(el);
       restEls.forEach((r, k) => {
         if (k === 0) keys.push([y(stopEls[0]) - vh, 0]);
-        keys.push([y(r), k]);
+        const ry = y(r);
+        keys.push([ry, k]);
+        segs.push([from, ry]);
+        from = ry;
         const a = afterEls.get(k);
-        if (a && k < n - 1) keys.push([y(a) + a.offsetHeight - vh, k]);
+        if (a && k < n - 1) {
+          from = y(a) + a.offsetHeight - vh;
+          keys.push([from, k]);
+        }
       });
     };
     const at = (sy: number) => {
@@ -157,7 +171,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       last = now;
       const target = at(window.scrollY);
       // one damping layer on top of Lenis: the film eases in and out of every move
-      pos += (target - pos) * (1 - Math.pow(1 - FOLLOW, dt * 60));
+      pos += (target - pos) * (1 - Math.pow(1 - (goal === null ? FOLLOW : FOLLOW_STEP), dt * 60));
       if (Math.abs(target - pos) < 2e-4) pos = target;
       const f = pos;
       // zigzag: on wide screens the picture slides away from the side its title is on; the
@@ -252,6 +266,85 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     };
     if (cam && fine) window.addEventListener("pointermove", onPointer, { passive: true });
 
+    // one gesture = one stop: every wheel gesture, swipe or arrow key inside the film moves the
+    // goal one stop on; gestures during a move add stops (two scrolls, two stops) instead of being
+    // swallowed, and the scroll is never locked. A trackpad's inertia tail is part of its gesture.
+    const TOL = 4;
+    let goal: number | null = null;
+    let goalTimer = 0;
+    const next = (from: number, dir: 1 | -1) => {
+      for (const [a0, b0] of segs) {
+        if (dir > 0 && from >= a0 - TOL && from < b0 - TOL) return b0;
+        if (dir < 0 && from > a0 + TOL && from <= b0 + TOL) return a0;
+      }
+      return null;
+    };
+    const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    const here = () => getLenis()?.scroll ?? window.scrollY;
+    /** true when the gesture was taken by the film */
+    const step = (dir: 1 | -1) => {
+      const moving = goal !== null;
+      const to = next(goal ?? here(), dir);
+      if (to === null) return moving; // a move to the end of the film is running: hold the rest
+      const lenis = getLenis();
+      if (!lenis) return false;
+      goal = to;
+      const vh = window.innerHeight;
+      const duration = Math.min(2.2, Math.max(1, 0.85 + (Math.abs(to - here()) / vh) * 0.4));
+      // a new gesture mid-move carries on at speed instead of starting again from rest
+      lenis.scrollTo(to, { duration, easing: moving ? easeOut : easeInOut, force: true, onComplete: () => (goal = null) });
+      // if something else takes the scroll over (a nav link), forget the goal anyway
+      window.clearTimeout(goalTimer);
+      goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
+      return true;
+    };
+    let lastWheel = 0;
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 1) return;
+      const now = performance.now();
+      const fresh = now - lastWheel > 200;
+      lastWheel = now;
+      const dir = e.deltaY > 0 ? 1 : -1;
+      if (goal === null && next(here(), dir) === null) return; // content: the wheel scrolls as usual
+      e.preventDefault();
+      e.stopPropagation();
+      if (fresh) step(dir);
+    };
+    let touchY = 0;
+    let touchDir: 0 | 1 | -1 = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0].clientY;
+      touchDir = 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const dy = touchY - e.touches[0].clientY;
+      if (Math.abs(dy) < 8 && goal === null) return;
+      const dir = dy > 0 ? 1 : -1;
+      if (goal !== null || next(here(), dir) !== null) {
+        e.preventDefault();
+        if (Math.abs(dy) >= 20) touchDir = dir;
+      }
+    };
+    const onTouchEnd = () => {
+      // a frame later: Lenis resets its own animation on touchend, after this listener
+      const dir = touchDir;
+      if (dir) requestAnimationFrame(() => step(dir));
+      touchDir = 0;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || e.altKey || e.metaKey || e.ctrlKey) return;
+      const down = ["ArrowDown", "PageDown"].includes(e.key) || (e.key === " " && !e.shiftKey);
+      const up = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
+      if ((down || up) && step(down ? 1 : -1)) e.preventDefault();
+    };
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("keydown", onKey);
+
     store.onReady = () => {
       drawn = "";
       if (!raf && near) raf = requestAnimationFrame(frame);
@@ -282,6 +375,12 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("wheel", onWheel, { capture: true });
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("keydown", onKey);
+      window.clearTimeout(goalTimer);
       window.clearTimeout(idle);
       window.removeEventListener("scroll", start);
       ro.disconnect();
