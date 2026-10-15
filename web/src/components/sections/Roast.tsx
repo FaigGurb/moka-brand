@@ -14,12 +14,10 @@ const LEVEL_STYLE = [
   { line: 34, color: "#5E3B26", ink: "#F5F1EA", flavor: "#A88A78" },
   { line: 26, color: "#2B1D15", ink: "#F5F1EA", flavor: "#A88A78" },
 ];
-const FLAVOR_HEX = ["#E9B8C0", "#EBD27A", "#D9C7E6", "#A88A78"];
 
 export function Roast() {
   const { t } = useI18n();
   const LEVELS = LEVEL_STYLE.map((s, i) => ({ ...s, ...t.roast.levels[i] }));
-  const FLAVORS = FLAVOR_HEX.map((hex, i) => ({ hex, name: t.roast.flavors[i] }));
   const root = useRef<HTMLElement>(null);
   const [lvl, setLvl] = useState(2);
   const L = LEVELS[lvl];
@@ -129,14 +127,32 @@ export function Roast() {
           <p className="eyebrow text-paper" aria-live="polite">
             {L.label} · {t.roast.line} {L.line}%
           </p>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-dark" aria-label={t.roast.flavorsLabel}>
-            {FLAVORS.map((f) => (
-              <li key={f.name} className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full" style={{ background: f.hex }} aria-hidden="true" />
-                {f.name}
-              </li>
-            ))}
-          </ul>
+          {/* MOKA's own roast spectrum (their Instagram post); the level picked above lights its row */}
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow text-seher">{t.roast.spectrum.title}</p>
+            <ol className="grid gap-px overflow-hidden rounded-sm bg-paper/10 sm:grid-cols-3">
+              {t.roast.spectrum.items.map((it) => {
+                const on = it.level === lvl;
+                return (
+                  <li key={it.level}>
+                    <button
+                      type="button"
+                      onClick={() => setLvl(it.level)}
+                      aria-pressed={on}
+                      className={`flex h-full w-full flex-col gap-2 p-4 text-left transition-colors duration-500 ${on ? "bg-paper/[0.12]" : "bg-espresso hover:bg-paper/[0.06]"}`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <span className="h-3 w-3 flex-none rounded-full ring-1 ring-paper/30" style={{ background: LEVEL_STYLE[it.level].color }} aria-hidden="true" />
+                        <b className={`font-[family-name:var(--font-display)] text-[17px] font-medium ${on ? "text-glow" : ""}`}>{it.name}</b>
+                      </span>
+                      <span className="text-[14px] leading-snug text-muted-dark">{it.text}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="text-xs text-muted-dark">{t.roast.spectrum.source}</p>
+          </div>
           <p className="text-xs text-muted-dark">{t.roast.sample}</p>
         </div>
       </div>

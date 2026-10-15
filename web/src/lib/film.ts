@@ -64,6 +64,8 @@ export class FrameStore {
   private decoding = new Set<number>();
   private aborter = new AbortController();
   private disposed = false;
+  private at = 0;
+  private dir: 1 | -1 = 1;
   /** called when a frame near the current one becomes drawable */
   onReady: (() => void) | null = null;
   loaded = 0;
@@ -71,6 +73,8 @@ export class FrameStore {
   constructor(
     private clip: Clip,
     private width: number,
+    /** phones and weak devices: a smaller window and fewer decodes at once */
+    private light = false,
   ) {
     this.blobs = new Array(clip.frames).fill(null);
   }
@@ -97,6 +101,8 @@ export class FrameStore {
           this.blobs[i] = await res.blob();
           this.loaded++;
           this.onReady?.();
+          // a frame the window wants may have just arrived
+          if (Math.abs(i - this.at) <= 96) this.want(this.at, this.dir);
         } catch {
           return;
         }
@@ -105,34 +111,57 @@ export class FrameStore {
     await Promise.all(Array.from({ length: 6 }, worker));
   }
 
-  /** Keeps frames around `at` decoded (more ahead in the scroll direction), frees the rest. */
+  /**
+   * Keeps frames around `at` decoded: every frame close by (more ahead in the scroll direction), and
+   * further out every 4th, then every 8th, so a fast flick always lands near a ready frame instead of
+   * stalling on an old one. Everything else is freed.
+   */
   want(at: number, dir: 1 | -1) {
+    this.at = at;
+    this.dir = dir;
     const n = this.clip.frames;
-    const ahead = 14;
-    const behind = 5;
-    const lo = Math.max(0, dir > 0 ? at - behind : at - ahead);
-    const hi = Math.min(n - 1, dir > 0 ? at + ahead : at + behind);
+    const keep = new Set<number>();
+    const add = (from: number, to: number, step: number) => {
+      for (let r = from; r <= to; r += step) {
+        const a = at + r * dir;
+        const b = at - r * dir;
+        if (a >= 0 && a < n) keep.add(a - (a % step));
+        if (r <= to / 3 && b >= 0 && b < n) keep.add(b - (b % step));
+      }
+    };
+    if (this.light) {
+      add(0, 8, 1);
+      add(12, 40, 4);
+      add(48, 80, 8);
+    } else {
+      add(0, 12, 1);
+      add(16, 48, 4);
+      add(56, 96, 8);
+    }
     for (const [i, d] of this.ready)
-      if (i < lo - 6 || i > hi + 6) {
+      if (!keep.has(i)) {
         release(d);
         this.ready.delete(i);
       }
     // nearest first
-    for (let r = 0; r <= ahead; r++)
-      for (const i of [at + r * dir, at - r * dir]) {
-        if (i < lo || i > hi || this.ready.has(i) || this.decoding.has(i)) continue;
-        const blob = this.blobs[i];
-        if (!blob || this.decoding.size >= 4) continue;
-        this.decoding.add(i);
-        decode(blob)
-          .then((d) => {
-            this.decoding.delete(i);
-            if (this.disposed) return release(d);
-            this.ready.set(i, d);
-            this.onReady?.();
-          })
-          .catch(() => this.decoding.delete(i));
-      }
+    const order = [...keep].sort((x, y) => Math.abs(x - at) - Math.abs(y - at));
+    for (const i of order) {
+      if (this.ready.has(i) || this.decoding.has(i)) continue;
+      const blob = this.blobs[i];
+      if (!blob) continue;
+      if (this.decoding.size >= (this.light ? 2 : 4)) break;
+      this.decoding.add(i);
+      decode(blob)
+        .then((d) => {
+          this.decoding.delete(i);
+          if (this.disposed) return release(d);
+          this.ready.set(i, d);
+          this.onReady?.();
+          // keep filling the window while the scroll rests
+          this.want(this.at, this.dir);
+        })
+        .catch(() => this.decoding.delete(i));
+    }
   }
 
   /** The decoded frame at `i` if it is ready. */
