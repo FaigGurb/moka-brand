@@ -48,8 +48,11 @@ const RESUME = 0.75;
  */
 const FOLLOW = 0.075;
 const CAM = 0.06;
-/** the film follows tighter while a gesture carries it from stop to stop (the scroll itself is eased) */
-const FOLLOW_STEP = 0.16;
+/** while a gesture carries it from stop to stop the scroll itself is eased: the film follows it almost directly */
+const FOLLOW_STEP = 0.45;
+/** dolly push: the camera leans in with the film's speed (stops per second → extra zoom), then settles */
+const PUSH = 0.028;
+const PUSH_MAX = 0.07;
 /** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
 const ZIG = 6;
 const ZOOM = 1.15;
@@ -143,6 +146,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let lastWant = -1;
     let drawn = "";
     let pos = 0;
+    let prevF = 0;
+    let push = 0;
     let wide = false;
     const capOp: number[] = [];
     let markOp = -1;
@@ -154,10 +159,6 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       c.width = Math.max(1, Math.round(c.clientWidth * k));
       c.height = Math.max(1, Math.round(c.clientHeight * k));
       wide = window.innerWidth >= 768;
-      if (cam && !wide) {
-        cam.style.transform = "";
-        camTr = "";
-      }
       g.imageSmoothingEnabled = true;
       g.imageSmoothingQuality = "high";
       drawn = "";
@@ -174,15 +175,21 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       pos += (target - pos) * (1 - Math.pow(1 - (goal === null ? FOLLOW : FOLLOW_STEP), dt * 60));
       if (Math.abs(target - pos) < 2e-4) pos = target;
       const f = pos;
+      // the camera leans in while the film moves and settles when it rests
+      const speed = dt > 0 ? Math.abs(f - prevF) / dt : 0;
+      prevF = f;
+      push += (Math.min(PUSH_MAX, speed * PUSH) - push) * (1 - Math.pow(1 - 0.12, dt * 60));
       // zigzag: on wide screens the picture slides away from the side its title is on; the
       // pointer adds a slight drift (damped slower still)
       const sf = Math.min(n - 2, Math.floor(f));
       const sv = side[sf] + (side[sf + 1] - side[sf]) * smooth(f - sf);
-      if (cam && wide) {
+      if (cam) {
         const k = 1 - Math.pow(1 - CAM, dt * 60);
         cx += (mx - cx) * k;
         cy += (my - cy) * k;
-        const tr = `translate3d(${(-sv * ZIG).toFixed(2)}%,0,0) translate3d(${(cx * -14).toFixed(1)}px,${(cy * -9).toFixed(1)}px,0) scale(${ZOOM})`;
+        const zig = wide ? -sv * ZIG : 0;
+        const zoom = (wide ? ZOOM : 1) * (1 + push);
+        const tr = `translate3d(${zig.toFixed(2)}%,0,0) translate3d(${(cx * -14).toFixed(1)}px,${(cy * -9).toFixed(1)}px,0) scale(${zoom.toFixed(4)})`;
         if (tr !== camTr) {
           camTr = tr;
           cam.style.transform = tr;
@@ -291,7 +298,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       if (!lenis) return false;
       goal = to;
       const vh = window.innerHeight;
-      const duration = Math.min(2.2, Math.max(1, 0.85 + (Math.abs(to - here()) / vh) * 0.4));
+      const duration = Math.min(1.2, Math.max(0.7, 0.55 + (Math.abs(to - here()) / vh) * 0.2));
       // a new gesture mid-move carries on at speed instead of starting again from rest
       lenis.scrollTo(to, { duration, easing: moving ? easeOut : easeInOut, force: true, onComplete: () => (goal = null) });
       // if something else takes the scroll over (a nav link), forget the goal anyway
@@ -351,6 +358,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     };
     size();
     pos = at(window.scrollY);
+    prevF = pos;
     const ro = new ResizeObserver(size);
     ro.observe(el);
     ro.observe(c);
