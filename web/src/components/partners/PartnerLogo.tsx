@@ -20,7 +20,7 @@ export const LOGOS: Partial<Record<PartnerId, { src: string; w: number; h: numbe
 };
 
 /** Plate background for a partner: paper behind real logos, a dashed dark frame for the placeholder. */
-export const plateTone = (id: PartnerId) => (LOGOS[id] ? "bg-paper" : "border border-dashed border-paper/35 bg-espresso-2");
+export const plateTone = (id: PartnerId) => (LOGOS[id] ? "bg-white ring-1 ring-black/5" : "border border-dashed border-paper/35 bg-espresso-2");
 
 /** What goes inside a plate: the partner's own logo, or the typeset name with a "logo pending" label. */
 export function PartnerLogo({ id, name, pending }: { id: PartnerId; name: string; pending: string }) {

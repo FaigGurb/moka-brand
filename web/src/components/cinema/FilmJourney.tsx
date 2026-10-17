@@ -162,6 +162,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let indexOn = -1;
     let active = -1;
     let filmTop = 0;
+    let filmEnd = 0;
     let markOp = -1;
     const shadeOp = [-1, -1];
     const size = () => {
@@ -176,6 +177,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       drawn = "";
       measure();
       filmTop = stopEls[0].getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.5;
+      filmEnd = el.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.5;
     };
 
     let last = performance.now();
@@ -268,7 +270,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       if (index) {
         const frac = f - Math.floor(f);
         const capMax = capOp.length ? Math.max(...capOp) : 0;
-        const on = window.scrollY > filmTop && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
+        const on = window.scrollY > filmTop && window.scrollY < filmEnd && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
         if (on !== indexOn) {
           indexOn = on;
           index.dataset.on = String(on);
@@ -423,6 +425,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     ro.observe(c);
     const io = new IntersectionObserver(([e]) => {
       near = e.isIntersecting;
+      // the frame loop stops off screen: hide the (fixed) chapter index with it
+      if (!near && index) {
+        indexOn = 0;
+        index.dataset.on = "0";
+      }
       if (near && !raf) {
         last = performance.now();
         raf = requestAnimationFrame(frame);
@@ -464,7 +471,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
   const last = stops[n - 1].shot;
 
   return (
-    <div ref={root} className="relative">
+    // clip: the sticky backdrop (-mb-100svh) would otherwise hang a screen below the film over the next section
+    <div ref={root} className="relative overflow-clip">
       {/* the film: sticky behind everything in this wrapper (motion only) */}
       <div aria-hidden="true" className="sticky top-0 z-0 -mb-[100svh] h-[100svh] overflow-hidden bg-black motion-reduce:hidden">
         {/* the first frame as a picture, so there is an image before the canvas has decoded anything */}

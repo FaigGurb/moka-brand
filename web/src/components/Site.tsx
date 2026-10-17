@@ -19,6 +19,7 @@ import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
 import { HeadingReveal } from "@/components/fx/HeadingReveal";
 import { Marquee } from "@/components/fx/Marquee";
+import { ToneBand, ToneShift } from "@/components/fx/ToneShift";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
 
@@ -35,15 +36,29 @@ export function Site({ locale }: { locale: Locale }) {
       <Nav />
       <main lang={locale}>
         {/* the coffee film runs under the hero, its chapters and the roast, brewing and packaging sections */}
-        <BeanStory lead={<Hero />} roast={<Roast />} brew={<BrewGuide />} packs={<Tiers />} />
-        <Concept />
-        <DayPalette />
-        <Partners />
-        <Store />
-        <Marquee />
-        <Apps />
-        <Experience />
-        <FinalCta />
+        <ToneBand tone="ink">
+          <BeanStory lead={<Hero />} roast={<Roast />} brew={<BrewGuide />} packs={<Tiers />} />
+        </ToneBand>
+        <ToneBand tone="paper">
+          <Concept />
+        </ToneBand>
+        <ToneBand tone="ink">
+          <DayPalette />
+        </ToneBand>
+        <ToneBand tone="paper">
+          <Partners />
+        </ToneBand>
+        <ToneBand tone="ink">
+          <Store />
+          <Marquee />
+        </ToneBand>
+        <ToneBand tone="paper">
+          <Apps />
+        </ToneBand>
+        <ToneBand tone="ink">
+          <Experience />
+          <FinalCta />
+        </ToneBand>
       </main>
       <Footer />
       <ScrollRefresh />
@@ -52,6 +67,7 @@ export function Site({ locale }: { locale: Locale }) {
       <HeadingReveal />
       <Cursor />
       <DayAmbient />
+      <ToneShift />
       <div className="grain" aria-hidden="true" />
       <Preloader />
     </LocaleProvider>
