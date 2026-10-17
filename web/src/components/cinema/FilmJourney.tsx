@@ -497,7 +497,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     };
     window.addEventListener("scroll", start, { passive: true });
     // …or as soon as the page has loaded: on a real connection the first stretch must be in before the first gesture
-    const onLoaded = () => window.setTimeout(start, 300);
+    // (in the first idle moment after load, so it doesn't add to the page's startup work)
+    const onLoaded = () => (window.requestIdleCallback ? window.requestIdleCallback(start, { timeout: 1200 }) : window.setTimeout(start, 300));
     if (document.readyState === "complete") onLoaded();
     else window.addEventListener("load", onLoaded, { once: true });
     const idle = window.setTimeout(start, 2500);

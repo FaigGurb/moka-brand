@@ -5,6 +5,7 @@ import { Lockup } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
 import { Dust } from "../cinema/Dust";
 import { BeanRain } from "../cinema/BeanRain";
+import { dropBeans } from "../fx/BeanDrop";
 import { LoopVideo } from "../cinema/LoopVideo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
@@ -118,6 +119,15 @@ export function Hero() {
                 {t.hero.ar}
               </MagneticButton>
             </div>
+            {/* a small toy: real beans fall, bounce and settle at the foot of the screen */}
+            <p className="hero-fade flex items-center gap-2 text-[15px] text-paper/60 motion-reduce:hidden">
+              <button type="button" onClick={() => dropBeans(1)} className="underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper">
+                {t.hero.drop}
+              </button>
+              <button type="button" onClick={() => dropBeans(20)} className="underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper">
+                {t.hero.dropMany}
+              </button>
+            </p>
           </div>
         </div>
       </div>

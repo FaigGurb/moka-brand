@@ -28,6 +28,8 @@ const az = {
     text: "MOKA-nın loqosunda qəhvənin dörd yolu gizlənib: moka pot, fincan, Chemex və V60. Hərfləri kəsən xətt isə fincandakı qəhvənin səviyyəsidir. Bütün kimlik bu xəttin üzərində qurulur.",
     cta: "Filmi izlə",
     ar: "AR demo",
+    drop: "Bir dən at",
+    dropMany: "ya 20-sini",
     logo: "MOKA loqosu",
     tilt: "Telefonu əy",
   },
@@ -179,6 +181,11 @@ const az = {
     cupAlt: "Keramika fincan kəsiyi: qəhvə içindəki incə xəttə qədər doldurulub",
     ritualTitle: "Hər fincan düz xəttə qədər",
     ritualText: "Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
+    real: { title: "Bu gün kafedə", credit: "Kadrlar: MOKA-nın Instagram səhifəsi", shots: [
+      { src: "sign", title: "Lövhə", alt: "Divarda metal MOKA hərfi və ROASTERY & EATERY yazısı" },
+      { src: "led", title: "LED xətlər artıq var", alt: "Barista barda işləyir, tavanda isti LED xətlər" },
+      { src: "window", title: "Götür pəncərəsi", alt: "Küçəyə açılan pəncərədə barista, altında MOKA loqosu" },
+    ] },
   },
   apps: {
     eyebrow: "Tətbiq",
@@ -349,6 +356,8 @@ const en: Dict = {
     text: "Four ways to make coffee are hidden in MOKA's logo: the moka pot, the cup, the Chemex and the V60. The line cutting through the letters is the level of coffee in the cup. The whole identity is built on that line.",
     cta: "Watch the film",
     ar: "AR demo",
+    drop: "Drop a bean",
+    dropMany: "or 20",
     logo: "MOKA logo",
     tilt: "Tilt your phone",
   },
@@ -499,6 +508,11 @@ const en: Dict = {
     cupAlt: "Cross-section of a ceramic cup: coffee filled up to a fine line inside",
     ritualTitle: "Every cup exactly to the line",
     ritualText: "Dine-in cups have a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest sees it and remembers it. The “Hit the line” game is the digital version of this ritual.",
+    real: { title: "In the café today", credit: "Footage: MOKA's Instagram", shots: [
+      { src: "sign", title: "The sign", alt: "A metal MOKA letter and ROASTERY & EATERY on the wall" },
+      { src: "led", title: "The LED lines are already there", alt: "A barista at the bar under warm LED lines on the ceiling" },
+      { src: "window", title: "Take-away window", alt: "A barista in the street window, the MOKA logo below" },
+    ] },
   },
   apps: {
     eyebrow: "Applications",
@@ -667,6 +681,8 @@ const ru: Dict = {
     text: "В логотипе MOKA спрятаны четыре способа приготовить кофе: мока, чашка, Chemex и V60. Линия, разрезающая буквы, — это уровень кофе в чашке. На этой линии построен весь стиль.",
     cta: "Смотреть фильм",
     ar: "AR-демо",
+    drop: "Бросить зерно",
+    dropMany: "или 20",
     logo: "Логотип MOKA",
     tilt: "Наклоните телефон",
   },
@@ -817,6 +833,11 @@ const ru: Dict = {
     cupAlt: "Разрез керамической чашки: кофе налит до тонкой линии внутри",
     ritualTitle: "Каждая чашка — ровно до линии",
     ritualText: "Внутри чашек для зала нанесена тонкая линия, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её замечает и запоминает. Игра «Поймай линию» — цифровая версия этого ритуала.",
+    real: { title: "Сегодня в кофейне", credit: "Кадры: Instagram MOKA", shots: [
+      { src: "sign", title: "Вывеска", alt: "Металлическая буква MOKA и надпись ROASTERY & EATERY на стене" },
+      { src: "led", title: "LED-линии уже есть", alt: "Бариста за баром под тёплыми LED-линиями на потолке" },
+      { src: "window", title: "Окно навынос", alt: "Бариста в окне на улицу, под ним логотип MOKA" },
+    ] },
   },
   apps: {
     eyebrow: "Применение",

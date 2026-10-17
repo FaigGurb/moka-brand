@@ -29,7 +29,16 @@ export function Tiers() {
             invalidateOnRefresh: true,
           },
         });
-        return () => tween.kill();
+        // the slogan behind the packs drifts slower than they do: depth without touching the packs
+        const word = gsap.to(".t-word", {
+          x: () => -distance() * 0.35,
+          ease: "none",
+          scrollTrigger: { trigger: ".t-pin", start: "top top", end: () => `+=${distance()}`, scrub: 1, invalidateOnRefresh: true },
+        });
+        return () => {
+          tween.kill();
+          word.kill();
+        };
       });
       return () => mm.revert();
     },
@@ -38,8 +47,15 @@ export function Tiers() {
 
   return (
     <section id="paket" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
-      <div className="t-pin overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
-        <div tabIndex={0} aria-label={t.tiers.title} className="t-track no-scrollbar focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
+      <div className="t-pin relative overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
+        {/* MOKA's official slogan as a giant outline behind the gallery (never on the packs themselves) */}
+        <p
+          aria-hidden="true"
+          className="t-word pointer-events-none absolute top-[58%] left-[18vw] -translate-y-1/2 font-[family-name:var(--font-display)] text-[clamp(120px,22vw,380px)] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-transparent [-webkit-text-stroke:1.5px_rgb(255_255_255/0.24)] motion-reduce:hidden"
+        >
+          In coffee we trust.
+        </p>
+        <div tabIndex={0} aria-label={t.tiers.title} className="t-track relative no-scrollbar focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-seher">{t.tiers.eyebrow}</p>
             <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.tiers.title}</h2>
