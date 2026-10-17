@@ -103,7 +103,17 @@ export function Hero() {
           <div className="flex flex-col gap-7 md:pb-3">
             <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/70 sm:text-[17px]">{t.hero.text}</p>
             <div className="hero-fade flex flex-wrap gap-3">
-              <MagneticButton href="#konsepsiya">{t.hero.cta}</MagneticButton>
+              <MagneticButton
+                href="#proses"
+                onClick={(e) => {
+                  // the film plays itself, stop to stop (FilmJourney listens); without motion the link just jumps
+                  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                  e.preventDefault();
+                  window.dispatchEvent(new Event("moka:tour"));
+                }}
+              >
+                {t.hero.cta}
+              </MagneticButton>
               <MagneticButton href={L.ar} variant="ghost">
                 {t.hero.ar}
               </MagneticButton>

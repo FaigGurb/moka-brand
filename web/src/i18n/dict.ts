@@ -26,7 +26,7 @@ const az = {
     eyebrow: "Roastery & Eatery · Bakı · Korporativ kimlik konsepti",
     lines: ["4 hərf.", "4 dəmləmə.", "1 xətt."],
     text: "MOKA-nın loqosunda qəhvənin dörd yolu gizlənib: moka pot, fincan, Chemex və V60. Hərfləri kəsən xətt isə fincandakı qəhvənin səviyyəsidir. Bütün kimlik bu xəttin üzərində qurulur.",
-    cta: "Konsepsiyanı kəşf et",
+    cta: "Filmi izlə",
     ar: "AR demo",
     logo: "MOKA loqosu",
     tilt: "Telefonu əy",
@@ -42,7 +42,7 @@ const az = {
     ],
   },
   beans: {
-    eyebrow: "Proses · Dəndən fincana",
+    eyebrow: "Proses",
     title: "Bir fincanın yolu",
     steps: [
       { title: "Dən", text: "Yaşıl dən hələ heç nə vəd etmir: nə ətri var, nə dadı. Hər partiyanın mənşəyi paketdə yazılır.", tags: ["Seçilmiş yaşıl dən", "Mənşə paketdə"] },
@@ -54,7 +54,7 @@ const az = {
     alt: "Animasiya: qəhvə dənələri qovrulur, üyüdülür və Chemex-də dəmlənir; qəhvə imza xəttinə qədər dolur.",
   },
   day: {
-    eyebrow: "Rəng · Bakıda bir gün",
+    eyebrow: "Rəng",
     // Brand names stay Azerbaijani in every language; `sub` translates them.
     slides: [
       { sub: "", src: "Palıd panellərdə səhər işığı" },
@@ -73,7 +73,7 @@ const az = {
     ],
   },
   roast: {
-    eyebrow: "Öz qovurmamız · Qovurma xətti",
+    eyebrow: "Öz qovurmamız",
     title: "Xəttin hündürlüyü qovurmanı göstərir",
     text: "Paket dəyişmir: hər paketin yanında kiçik bir dən kartı verilir. Kartda xətt açıq qovurmada yuxarıda, tünddə aşağıda olur. Rəfdə yan-yana duran kartlar bir şkala yaradır: müştəri oxumadan seçir. Dad rəngi isə nə dadacağını göstərir.",
     house: { title: "MOKA-da qovrulur", text: "MOKA öz qovurmasına yenicə başlayıb: seçilmiş yaşıl dənlər Bakıda, öz aparatında qovrulur və MOKA adı ilə satılır. Barda həm öz qovurması, həm də Pitti Caffè dəmlənir.", roaster: "Qovurma aparatı", roasterName: "Besca BSC-05 · 5 kq-lıq partiya", drawing: "Qovurma aparatının sxemi: barabanda dənlər fırlanır və yaşıldan tünd qəhvəyiyə qədər qovrulur", drawingNote: "Sxem", card: "DƏN KARTI" },
@@ -122,7 +122,7 @@ const az = {
     ratio: "Nisbət",
   },
   tiers: {
-    eyebrow: "Qablaşdırma · rəsmi dizayn",
+    eyebrow: "Qablaşdırma",
     title: "Paket dəyişmir. İdeya onsuz da içindədir.",
     text: "MOKA-nın qablaşdırması olduğu kimi qalır: qara paket, ağ stəkan, K simvolu. Konsepsiya paketə yeni element əlavə etmir. K-nı kəsən boşluq elə imza xəttidir, fincandakı qəhvənin səviyyəsi.",
     hint: "Aşağı sürüşdürün →",
@@ -137,7 +137,7 @@ const az = {
     ],
   },
   partners: {
-    eyebrow: "Rəsmi distribyutor · İtaliyadan Bakıya",
+    eyebrow: "Rəsmi distribyutor",
     title: "Dəndən vitrinə qədər bütün bar",
     text: "MOKA Azərbaycanda beş İtaliya brendinin rəsmi distribyutorudur və hamısı MOKA-nın öz barında da işləyir. Xətt bir fincanın yolunu izləyir: qəhvə, üyütmə, espresso, sirop, vitrin.",
     site: "Rəsmi sayt",
@@ -156,6 +156,19 @@ const az = {
     page: "Tərəfdaşlar haqqında ətraflı",
     note: "Brend adları, loqolar və saytlar sahiblərinə məxsusdur.",
   },
+  bar: {
+    eyebrow: "Barda",
+    title: "Hər fincan əllə hazırlanır",
+    text: "Bu kadrlar MOKA-nın öz barındandır: Mazzer-də üyütmə, tamp, espresso və süd ilə latte art. Nizami parkındakı kafe gecə-gündüz açıqdır.",
+    credit: "Kadrlar: MOKA-nın Instagram səhifəsi, @mokacoffeebaku",
+    video: "Video: barista qəhvəni üyüdür, tamp edir, espresso çəkir və latte art çəkir",
+    shots: [
+      { src: "grind", title: "Üyütmə", alt: "Barista Mazzer üyüdücüsündən portafiltrə qəhvə alır" },
+      { src: "tamp", title: "Tamp", alt: "Portafiltrdəki qəhvə tamp ilə sıxılır" },
+      { src: "latte", title: "Latte art", alt: "Barista fincana süd tökərək naxış çəkir" },
+      { src: "cat", title: "Ev heyvanları da qonaqdır", alt: "Kafenin qapısında MOKA yastığı üstündə yatan pişik" }
+    ],
+  },
   store: {
     eyebrow: "Kafedə",
     title: "Xətt işığa çevrilir",
@@ -168,8 +181,8 @@ const az = {
     ritualText: "Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
   },
   apps: {
-    eyebrow: "Tətbiq · Brend real həyatda",
-    title: "Stəkandan Instagram-a qədər",
+    eyebrow: "Tətbiq",
+    title: "Stəkandan Instagram‑a qədər",
     text: "Bütün tətbiqlər eyni qayda ilə qurulub: hərflər, xətt və günün rəngləri. Stəkan MOKA-nın rəsmi stəkanıdır: fırladın və ölçüsünü dəyişin. Yanda isə hazırladığımız lövhələr bir profildə toplanıb.",
     cup: {
       title: "Götür stəkanı",
@@ -334,7 +347,7 @@ const en: Dict = {
     eyebrow: "Roastery & Eatery · Baku · Brand identity concept",
     lines: ["4 letters.", "4 brews.", "1 line."],
     text: "Four ways to make coffee are hidden in MOKA's logo: the moka pot, the cup, the Chemex and the V60. The line cutting through the letters is the level of coffee in the cup. The whole identity is built on that line.",
-    cta: "Explore the concept",
+    cta: "Watch the film",
     ar: "AR demo",
     logo: "MOKA logo",
     tilt: "Tilt your phone",
@@ -350,7 +363,7 @@ const en: Dict = {
     ],
   },
   beans: {
-    eyebrow: "Process · From bean to cup",
+    eyebrow: "Process",
     title: "The journey of a cup",
     steps: [
       { title: "Bean", text: "A green bean promises nothing yet: no aroma, no flavour. The origin of every batch is printed on the bag.", tags: ["Selected green beans", "Origin on the bag"] },
@@ -362,7 +375,7 @@ const en: Dict = {
     alt: "Animation: coffee beans are roasted, ground and brewed in a Chemex; the coffee fills up to the signature line.",
   },
   day: {
-    eyebrow: "Colour · A day in Baku",
+    eyebrow: "Colour",
     slides: [
       { sub: "Morning", src: "Morning light on the oak panels" },
       { sub: "Noon", src: "The glowing bamboo poles" },
@@ -380,7 +393,7 @@ const en: Dict = {
     ],
   },
   roast: {
-    eyebrow: "Roasted in-house · The roast line",
+    eyebrow: "Roasted in-house",
     title: "The height of the line shows the roast",
     text: "The bag stays as it is: every bag comes with a small bean card. On the card the line sits high for light roasts and low for dark ones. Cards standing side by side on the shelf become a scale: customers choose without reading. The flavour colour shows what you will taste.",
     house: { title: "Roasted at MOKA", text: "MOKA has just started roasting its own: selected green coffee is roasted in Baku, on its own roaster, and sold under the MOKA name. The bar brews both its own roasts and Pitti Caffè.", roaster: "Roaster", roasterName: "Besca BSC-05 · 5 kg batches", drawing: "Roaster diagram: beans tumble in the drum and roast from green to dark brown", drawingNote: "Diagram", card: "BEAN CARD" },
@@ -429,7 +442,7 @@ const en: Dict = {
     ratio: "Ratio",
   },
   tiers: {
-    eyebrow: "Packaging · official design",
+    eyebrow: "Packaging",
     title: "The packaging stays. The idea is already in it.",
     text: "MOKA’s packaging stays exactly as it is: the black bag, the white cup, the K mark. The concept adds nothing to the pack. The gap that cuts the K is the signature line itself, the level of coffee in the cup.",
     hint: "Keep scrolling →",
@@ -444,7 +457,7 @@ const en: Dict = {
     ],
   },
   partners: {
-    eyebrow: "Official distributor · From Italy to Baku",
+    eyebrow: "Official distributor",
     title: "The whole bar, from bean to showcase",
     text: "MOKA is the official distributor of five Italian brands in Azerbaijan, and all of them work in MOKA’s own bar too. The line follows the path of a cup: coffee, grinding, espresso, syrup, showcase.",
     site: "Official site",
@@ -463,6 +476,19 @@ const en: Dict = {
     page: "More about our partners",
     note: "Brand names, logos and websites belong to their owners.",
   },
+  bar: {
+    eyebrow: "At the bar",
+    title: "Every cup is made by hand",
+    text: "This is MOKA's own bar: grinding on a Mazzer, tamping, the espresso shot and latte art. The café by Nizami Park never closes.",
+    credit: "Footage: MOKA's Instagram, @mokacoffeebaku",
+    video: "Video: a barista grinds, tamps, pulls an espresso and pours latte art",
+    shots: [
+      { src: "grind", title: "Grind", alt: "A barista takes coffee from the Mazzer grinder into the portafilter" },
+      { src: "tamp", title: "Tamp", alt: "The coffee in the portafilter is pressed with a tamper" },
+      { src: "latte", title: "Latte art", alt: "A barista pours milk into the cup, drawing a pattern" },
+      { src: "cat", title: "Pets are guests too", alt: "A cat asleep on a MOKA cushion at the café door" }
+    ],
+  },
   store: {
     eyebrow: "In the café",
     title: "The line becomes light",
@@ -475,7 +501,7 @@ const en: Dict = {
     ritualText: "Dine-in cups have a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest sees it and remembers it. The “Hit the line” game is the digital version of this ritual.",
   },
   apps: {
-    eyebrow: "Applications · The brand in real life",
+    eyebrow: "Applications",
     title: "From the cup to Instagram",
     text: "Every application follows the same rules: the letters, the line and the colours of the day. The cup is MOKA’s official cup: spin it and change its size. Next to it, the boards we designed are collected in one profile.",
     cup: {
@@ -639,7 +665,7 @@ const ru: Dict = {
     eyebrow: "Roastery & Eatery · Баку · Концепт фирменного стиля",
     lines: ["4 буквы.", "4 способа.", "1 линия."],
     text: "В логотипе MOKA спрятаны четыре способа приготовить кофе: мока, чашка, Chemex и V60. Линия, разрезающая буквы, — это уровень кофе в чашке. На этой линии построен весь стиль.",
-    cta: "Узнать концепцию",
+    cta: "Смотреть фильм",
     ar: "AR-демо",
     logo: "Логотип MOKA",
     tilt: "Наклоните телефон",
@@ -655,7 +681,7 @@ const ru: Dict = {
     ],
   },
   beans: {
-    eyebrow: "Процесс · От зерна до чашки",
+    eyebrow: "Процесс",
     title: "Путь одной чашки",
     steps: [
       { title: "Зерно", text: "Зелёное зерно пока ничего не обещает: ни аромата, ни вкуса. Происхождение каждой партии указано на пачке.", tags: ["Отборное зелёное зерно", "Происхождение на пачке"] },
@@ -667,7 +693,7 @@ const ru: Dict = {
     alt: "Анимация: кофейные зёрна обжариваются, мелются и завариваются в Chemex; кофе наполняется до фирменной линии.",
   },
   day: {
-    eyebrow: "Цвет · Один день в Баку",
+    eyebrow: "Цвет",
     slides: [
       { sub: "Утро", src: "Утренний свет на дубовых панелях" },
       { sub: "Полдень", src: "Светящиеся бамбуковые стволы" },
@@ -685,7 +711,7 @@ const ru: Dict = {
     ],
   },
   roast: {
-    eyebrow: "Своя обжарка · Линия обжарки",
+    eyebrow: "Своя обжарка",
     title: "Высота линии показывает обжарку",
     text: "Пачка остаётся прежней: к каждой пачке прилагается маленькая карточка зерна. На карточке линия у светлой обжарки высоко, у тёмной — низко. Карточки на полке складываются в шкалу: покупатель выбирает, не читая. Цвет вкуса подсказывает, что вы почувствуете.",
     house: { title: "Обжарено в MOKA", text: "MOKA недавно начала обжаривать сама: отборное зелёное зерно обжаривают в Баку, на собственном ростере, и продают под именем MOKA. В баре варят и собственную обжарку, и Pitti Caffè.", roaster: "Ростер", roasterName: "Besca BSC-05 · партии по 5 кг", drawing: "Схема ростера: зёрна вращаются в барабане и обжариваются от зелёного до тёмно-коричневого", drawingNote: "Схема", card: "КАРТОЧКА ЗЕРНА" },
@@ -734,7 +760,7 @@ const ru: Dict = {
     ratio: "Пропорция",
   },
   tiers: {
-    eyebrow: "Упаковка · официальный дизайн",
+    eyebrow: "Упаковка",
     title: "Упаковка не меняется. Идея уже в ней.",
     text: "Упаковка MOKA остаётся прежней: чёрная пачка, белый стакан, знак K. Концепция ничего не добавляет на пачку. Просвет, разрезающий K, и есть фирменная линия — уровень кофе в чашке.",
     hint: "Листайте дальше →",
@@ -749,7 +775,7 @@ const ru: Dict = {
     ],
   },
   partners: {
-    eyebrow: "Официальный дистрибьютор · Из Италии в Баку",
+    eyebrow: "Официальный дистрибьютор",
     title: "Весь бар — от зерна до витрины",
     text: "MOKA — официальный дистрибьютор пяти итальянских брендов в Азербайджане, и все они работают в собственном баре MOKA. Линия повторяет путь чашки: кофе, помол, эспрессо, сироп, витрина.",
     site: "Официальный сайт",
@@ -768,6 +794,19 @@ const ru: Dict = {
     page: "Подробнее о партнёрах",
     note: "Названия брендов, логотипы и сайты принадлежат их владельцам.",
   },
+  bar: {
+    eyebrow: "За баром",
+    title: "Каждая чашка готовится вручную",
+    text: "Это бар самой MOKA: помол на Mazzer, темпер, эспрессо и латте-арт. Кофейня у парка Низами открыта круглосуточно.",
+    credit: "Кадры: Instagram MOKA, @mokacoffeebaku",
+    video: "Видео: бариста мелет кофе, темперует, готовит эспрессо и рисует латте-арт",
+    shots: [
+      { src: "grind", title: "Помол", alt: "Бариста набирает кофе из кофемолки Mazzer в холдер" },
+      { src: "tamp", title: "Темпер", alt: "Кофе в холдере прессуется темпером" },
+      { src: "latte", title: "Латте-арт", alt: "Бариста вливает молоко в чашку, рисуя узор" },
+      { src: "cat", title: "Питомцам тоже рады", alt: "Кот спит на подушке MOKA у входа в кофейню" }
+    ],
+  },
   store: {
     eyebrow: "В кофейне",
     title: "Линия становится светом",
@@ -780,7 +819,7 @@ const ru: Dict = {
     ritualText: "Внутри чашек для зала нанесена тонкая линия, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её замечает и запоминает. Игра «Поймай линию» — цифровая версия этого ритуала.",
   },
   apps: {
-    eyebrow: "Применение · Бренд в жизни",
+    eyebrow: "Применение",
     title: "От стакана до Instagram",
     text: "Все носители построены по одним правилам: буквы, линия и цвета дня. Стакан — официальный стакан MOKA: поверните его и смените размер. Рядом — наши макеты, собранные в одном профиле.",
     cup: {

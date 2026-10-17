@@ -162,6 +162,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let indexOn = -1;
     let active = -1;
     let filmTop = 0;
+    let filmEnd = 0;
     let markOp = -1;
     const shadeOp = [-1, -1];
     const size = () => {
@@ -176,6 +177,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       drawn = "";
       measure();
       filmTop = stopEls[0].getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.5;
+      filmEnd = el.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * 0.5;
     };
 
     let last = performance.now();
@@ -268,7 +270,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       if (index) {
         const frac = f - Math.floor(f);
         const capMax = capOp.length ? Math.max(...capOp) : 0;
-        const on = window.scrollY > filmTop && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
+        const on = window.scrollY > filmTop && window.scrollY < filmEnd && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
         if (on !== indexOn) {
           indexOn = on;
           index.dataset.on = String(on);
@@ -351,8 +353,48 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
       return true;
     };
+    // the tour (hero "watch the film"): the film plays itself stop by stop, holding on each title,
+    // gliding over the content sections, until the cup; any wheel, touch or key hands control back
+    const HOLD = 1700;
+    let tour = false;
+    let tourTimer = 0;
+    const stopTour = () => {
+      tour = false;
+      window.clearTimeout(tourTimer);
+    };
+    const tourNext = () => {
+      if (!tour) return;
+      if (goal !== null) {
+        tourTimer = window.setTimeout(tourNext, 200);
+        return;
+      }
+      const h = here();
+      if (!step(1)) {
+        // inside a content section: glide on to where the film starts moving again
+        const to = segs.find(([a0]) => a0 > h + TOL)?.[0];
+        const lenis = getLenis();
+        if (to === undefined || !lenis) return stopTour();
+        goal = to;
+        const duration = Math.min(4, Math.max(STEP_MIN, (Math.abs(to - h) / window.innerHeight) * 0.6));
+        lenis.scrollTo(to, { duration, easing: easeInOut, force: true, onComplete: () => (goal = null) });
+        window.clearTimeout(goalTimer);
+        goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
+      }
+      tourTimer = window.setTimeout(function wait() {
+        if (!tour) return;
+        if (goal !== null) tourTimer = window.setTimeout(wait, 200);
+        else tourTimer = window.setTimeout(tourNext, HOLD);
+      }, 300);
+    };
+    const onTour = () => {
+      stopTour();
+      tour = true;
+      tourNext();
+    };
+    const onPointerDown = () => tour && stopTour();
     let lastWheel = 0;
     const onWheel = (e: WheelEvent) => {
+      if (tour) stopTour();
       if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 1) return;
       const now = performance.now();
       const fresh = now - lastWheel > 200;
@@ -366,6 +408,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let touchY = 0;
     let touchDir: 0 | 1 | -1 = 0;
     const onTouchStart = (e: TouchEvent) => {
+      if (tour) stopTour();
       touchY = e.touches[0].clientY;
       touchDir = 0;
     };
@@ -385,6 +428,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       touchDir = 0;
     };
     const onKey = (e: KeyboardEvent) => {
+      if (tour) stopTour();
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || e.altKey || e.metaKey || e.ctrlKey) return;
       const down = ["ArrowDown", "PageDown"].includes(e.key) || (e.key === " " && !e.shiftKey);
@@ -405,6 +449,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
     };
     index?.addEventListener("click", onIndex);
+    window.addEventListener("moka:tour", onTour);
+    window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -423,6 +469,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     ro.observe(c);
     const io = new IntersectionObserver(([e]) => {
       near = e.isIntersecting;
+      // the frame loop stops off screen: hide the (fixed) chapter index with it
+      if (!near && index) {
+        indexOn = 0;
+        index.dataset.on = "0";
+      }
       if (near && !raf) {
         last = performance.now();
         raf = requestAnimationFrame(frame);
@@ -443,6 +494,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
       index?.removeEventListener("click", onIndex);
+      window.removeEventListener("moka:tour", onTour);
+      window.removeEventListener("pointerdown", onPointerDown);
+      stopTour();
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
@@ -464,7 +518,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
   const last = stops[n - 1].shot;
 
   return (
-    <div ref={root} className="relative">
+    // clip: the sticky backdrop (-mb-100svh) would otherwise hang a screen below the film over the next section
+    <div ref={root} className="relative overflow-clip">
       {/* the film: sticky behind everything in this wrapper (motion only) */}
       <div aria-hidden="true" className="sticky top-0 z-0 -mb-[100svh] h-[100svh] overflow-hidden bg-black motion-reduce:hidden">
         {/* the first frame as a picture, so there is an image before the canvas has decoded anything */}
@@ -553,7 +608,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
                   className={`film-cap pointer-events-auto mx-auto w-full max-w-[1320px] px-5 pb-16 md:px-12 md:pb-0 motion-reduce:pb-14 ${side[k] > 0 ? "md:flex md:flex-col md:items-end md:text-right" : ""}`}
                 >
                   <p className="film-cap-fade font-[family-name:var(--font-display)] text-sm tracking-[0.3em] text-glow">
-                    {s.caption.kicker} <span className="text-paper/35">/ {String(chapters.length).padStart(2, "0")}</span>
+                    {s.caption.kicker} <span className="text-paper/60">/ {String(chapters.length).padStart(2, "0")}</span>
                   </p>
                   <h3 className="mt-3 font-[family-name:var(--font-display)] text-[clamp(48px,7.5vw,112px)] leading-[0.9] font-medium tracking-[-0.03em] [perspective:600px]">
                     {s.caption.title.split(" ").map((w, i) => (

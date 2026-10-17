@@ -115,7 +115,7 @@ export function BrewGuide() {
         <div className="bg-rise grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
           <div>
             <p className="eyebrow text-seher">{b.eyebrow}</p>
-            <h2 className="mt-4 text-[clamp(32px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">{b.title}</h2>
+            <h2 className="mt-4 text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{b.title}</h2>
           </div>
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">{b.text}</p>
         </div>
@@ -160,7 +160,7 @@ export function BrewGuide() {
                 <button
                   type="button"
                   onClick={() => (done ? (setElapsed(0), setRunning(true)) : setRunning((x) => !x))}
-                  className="flex-1 bg-paper py-3.5 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow"
+                  className="flex-1 bg-paper py-3.5 text-[13px] font-semibold text-espresso transition-colors hover:bg-glow"
                 >
                   {running ? b.pause : elapsed > 0 && !done ? b.resume : b.start}
                 </button>
@@ -170,7 +170,7 @@ export function BrewGuide() {
                     setRunning(false);
                     setElapsed(0);
                   }}
-                  className="border border-paper/30 px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] uppercase"
+                  className="border border-paper/30 px-5 py-3.5 text-[13px] font-semibold"
                 >
                   {b.reset}
                 </button>
@@ -209,7 +209,7 @@ export function BrewGuide() {
                 [b.ratio, r.id === "O" ? "1:2" : r.id === "M" ? "≈ 1:9" : `1:${Math.round(water / coffee)}`],
               ].map(([k, v]) => (
                 <div key={k} className="bg-espresso p-4">
-                  <dt className="text-[12px] font-bold tracking-[0.12em] text-muted-dark uppercase">{k}</dt>
+                  <dt className="text-[12px] font-semibold text-muted-dark">{k}</dt>
                   <dd className="mt-1 font-[family-name:var(--font-display)] text-2xl md:text-3xl">{v}</dd>
                 </div>
               ))}

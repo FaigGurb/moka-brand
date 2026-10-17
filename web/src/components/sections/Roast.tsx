@@ -72,7 +72,7 @@ export function Roast() {
             className="r-fill absolute inset-x-0 bottom-0 flex flex-col justify-between px-[9%] py-4 transition-[height,background-color,color] duration-700 ease-[var(--ease-brand)]"
             style={{ height: `${L.line}%`, background: L.color, color: L.ink }}
           >
-            <span className="text-[11px] font-bold tracking-[0.18em] uppercase">{L.label}</span>
+            <span className="text-[11px] font-semibold">{L.label}</span>
             <span className="flex gap-1.5" aria-hidden="true">
               {LEVELS.map((_, i) => (
                 <i key={i} className="block h-3 w-3 border-2 border-current" style={{ background: i <= lvl ? "currentColor" : "transparent" }} />
@@ -83,7 +83,7 @@ export function Roast() {
 
         <div className="r-copy flex flex-col gap-6">
           <p className="eyebrow text-seher">{t.roast.eyebrow}</p>
-          <h2 className="text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">
+          <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">
             {t.roast.title}
           </h2>
           <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">
@@ -99,7 +99,7 @@ export function Roast() {
             </div>
             <figure className="flex flex-col items-center gap-1 text-paper">
               <RoasterDrum label={t.roast.house.drawing} className="w-[168px] max-w-full" />
-              <figcaption className="text-[10px] font-bold tracking-[0.14em] text-muted-dark uppercase">{t.roast.house.drawingNote}</figcaption>
+              <figcaption className="text-[10px] font-semibold text-muted-dark">{t.roast.house.drawingNote}</figcaption>
             </figure>
           </div>
           <fieldset className="mt-2 flex flex-col gap-3">

@@ -46,7 +46,8 @@ html {
 }
 
 body {
-  background: var(--color-espresso);
+  /* the home page's bands set --page-bg (fx/ToneShift.tsx) */
+  background: var(--page-bg, var(--color-espresso));
   color: var(--color-paper);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -68,12 +69,14 @@ h1, h2, h3 {
   outline-offset: 3px;
 }
 
+/* the section's place in the story, said quietly in sentence case: one grey line, no tracked capitals
+   (unlayered, so it wins over the colour utilities sections still pass) */
 .eyebrow {
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-muted-dark);
 }
 
 /* Line-reveal helper: each word sits in a mask so it can rise into view. */
@@ -155,6 +158,29 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .grain { animation: none; } .preloader { display: none; } }
 /* phones: no full-screen animated layer over the scrolling page */
 @media (hover: none), (pointer: coarse) { .grain { display: none; } }
+
+/* ---------- tone bands (fx/ToneShift.tsx): black ↔ cup white, blended with the scroll ---------- */
+/* the band's sections let the page colour through */
+[data-tone] > section { background-color: transparent; }
+/* ink: MOKA's black is neutral; the brown espresso of the system stays for the brand book and print */
+.tone-ink {
+  --color-espresso: #000;
+  --color-espresso-2: #141414;
+  --color-espresso-3: #2a2a2a;
+  --color-muted-dark: #a9a9a5;
+}
+/* paper: the dark-ground tokens turn over, so sections written for black read black on white */
+.tone-paper {
+  --color-paper: #000;
+  --color-paper-2: #1a1a1a;
+  --color-black: #f1f0ed;
+  --color-espresso: #f1f0ed;
+  --color-espresso-2: #e6e5e1;
+  --color-espresso-3: #d2d0cb;
+  --color-muted-dark: #55544f;
+  --color-glow: #9a6a1c;
+  color: var(--color-paper);
+}
 
 /* ---------- living background: the day colour (Baku time) ---------- */
 :root { --day: #f2c76e; --day-rgb: 242 199 110; }

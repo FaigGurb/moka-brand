@@ -8,13 +8,14 @@ type Props = {
   variant?: "solid" | "ghost";
   tone?: "light" | "dark";
   external?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 /**
  * A link styled as a button that leans toward the pointer and slides its arrow on hover.
  * Movement is skipped on touch devices and for reduced motion.
  */
-export function MagneticButton({ href, children, variant = "solid", tone = "light", external }: Props) {
+export function MagneticButton({ href, children, variant = "solid", tone = "light", external, onClick }: Props) {
   const ref = useRef<HTMLAnchorElement>(null);
 
   const onMove = (e: React.PointerEvent<HTMLAnchorElement>) => {
@@ -44,8 +45,9 @@ export function MagneticButton({ href, children, variant = "solid", tone = "ligh
       href={href}
       onPointerMove={onMove}
       onPointerLeave={onLeave}
+      onClick={onClick}
       {...(external ? { target: "_blank", rel: "noopener" } : {})}
-      className={`group inline-flex min-h-[52px] items-center gap-3 px-6 text-[13px] font-bold tracking-[0.14em] uppercase transition-[transform,background-color,border-color] duration-300 ease-[var(--ease-brand)] ${
+      className={`group inline-flex min-h-[52px] items-center gap-3 px-6 font-[family-name:var(--font-display)] text-[16px] font-medium transition-[transform,background-color,border-color] duration-300 ease-[var(--ease-brand)] ${
         variant === "solid" ? solid : ghost
       }`}
     >
