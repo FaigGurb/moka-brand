@@ -12,7 +12,7 @@
 <script src="../../vendor/aframe-1.5.0.min.js"></script>
 <script src="../../vendor/mindar-image-aframe-1.2.5.prod.js"></script>
 <style>
-  :root{--esp:#1B1714;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
+  :root{--esp:#000;--paper:#F5F1EA;--oak:#C89B6D;--bamboo:#D9B56A;--muted:#B8B0A6;--display:'League Spartan','Montserrat',Futura,sans-serif}
   html,body{margin:0;height:100%;overflow:hidden;background:var(--esp);font-family:Mulish,"Helvetica Neue",Arial,sans-serif;color:var(--paper)}
   a-scene{position:fixed;inset:0}
   /* the camera <video> sits at z-index -2: keep the page see-through while AR runs */
@@ -22,10 +22,10 @@
   .ui.top{top:env(safe-area-inset-top,0px)}
   .ui > *{pointer-events:auto}
   .wm{height:18px;width:auto;color:var(--paper)}
-  .back{display:inline-flex;align-items:center;gap:6px;color:var(--paper);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 12px 0 8px;background:rgba(27,23,20,.78);border:1.5px solid rgba(245,241,234,.4)}
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--paper);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 12px 0 8px;background:rgba(0,0,0,.78);border:1.5px solid rgba(245,241,234,.4)}
   .back .ar{width:16px;height:16px}
-  .pill{background:rgba(27,23,20,.8);border:1.5px solid var(--paper);padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-  .tip{position:fixed;left:16px;right:16px;top:calc(76px + env(safe-area-inset-top,0px));z-index:10;background:rgba(27,23,20,.9);border-left:4px solid var(--bamboo);padding:12px 14px;font-size:14px;line-height:1.45;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s;pointer-events:none}
+  .pill{background:rgba(0,0,0,.8);border:1.5px solid var(--paper);padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .tip{position:fixed;left:16px;right:16px;top:calc(76px + env(safe-area-inset-top,0px));z-index:10;background:rgba(0,0,0,.9);border-left:4px solid var(--bamboo);padding:12px 14px;font-size:14px;line-height:1.45;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s;pointer-events:none}
   .tip.show{opacity:1;transform:none}
   .card{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:10;background:var(--paper);color:var(--esp);padding:16px 18px;display:flex;flex-direction:column;gap:4px;transform:translateY(150%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
   .card.show{transform:none}
@@ -36,7 +36,7 @@
   .card .bar i{position:absolute;left:0;top:0;bottom:0;width:42%;background:#8A5A3B}
   .card .acts{display:flex;gap:8px;margin-top:10px}
   .card button{font:inherit;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;min-height:44px;padding:0 14px;border:0;cursor:pointer;background:var(--esp);color:var(--paper)}
-  .card button.ghost{background:transparent;color:var(--esp);border:1.5px solid rgba(27,23,20,.35)}
+  .card button.ghost{background:transparent;color:var(--esp);border:1.5px solid rgba(0,0,0,.35)}
   .intro{position:fixed;inset:0;z-index:20;background:var(--esp);overflow-y:auto}
   .intro .in{min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:calc(24px + env(safe-area-inset-top,0px)) 24px calc(24px + env(safe-area-inset-bottom,0px));max-width:520px;margin:0 auto}
   .intro .bar{display:flex;justify-content:space-between;align-items:center;gap:12px}
@@ -86,7 +86,7 @@
   <span class="o" data-t="origin">Kolumbiya</span>
   <span class="n" data-t="notes"></span>
   <div class="bar" aria-hidden="true"><i></i></div>
-  <div class="acts"><button type="button" id="replay" data-t="replay">Yenidən tök</button><a class="back" style="background:transparent;color:#1B1714;border-color:rgba(27,23,20,.35)" data-home href="../../" data-t="site">Sayt</a></div>
+  <div class="acts"><button type="button" id="replay" data-t="replay">Yenidən tök</button><a class="back" style="background:transparent;color:#1B1714;border-color:rgba(0,0,0,.35)" data-home href="../../" data-t="site">Sayt</a></div>
 </div>
 
 <a-scene id="scene" mindar-image="imageTargetSrc: ../target.mind; autoStart: false; uiScanning: no; uiLoading: no; filterMinCF: 0.0001; filterBeta: 0.001; warmupTolerance: 4; missTolerance: 8"
@@ -197,7 +197,7 @@ const COLORS = ['#C89B6D', '#D9B56A', '#A8643A', '#F5F1EA'];
 function tex(id, label, color) {
   const c = document.createElement('canvas'); c.width = 256; c.height = 320;
   const g = c.getContext('2d');
-  g.fillStyle = 'rgba(27,23,20,0.82)'; g.fillRect(0, 0, 256, 320);
+  g.fillStyle = 'rgba(0,0,0,0.82)'; g.fillRect(0, 0, 256, 320);
   g.fillStyle = color; g.fillRect(0, 312, 256, 8);
   drawLetter(g, id, 128, 130, 170, '#F5F1EA');
   g.fillStyle = '#F5F1EA'; g.font = '700 30px Mulish, Arial, sans-serif'; g.textAlign = 'center'; g.fillText(label, 128, 278);

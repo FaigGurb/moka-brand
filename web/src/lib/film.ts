@@ -79,22 +79,44 @@ export class FrameStore {
     this.blobs = new Array(clip.frames).fill(null);
   }
 
-  /** Fetches every frame: every 8th first, then 4th, 2nd, then the rest (6 requests at a time). */
-  async load() {
+  private requested: boolean[] = [];
+
+  /**
+   * The next frame to fetch, by what the visitor will see next: first a skeleton of every 16th frame
+   * (nearest first), so any scroll lands near something; then every frame just ahead in the scroll
+   * direction (a little behind too), the stretch the film is about to play; then every 4th frame,
+   * then the rest, always nearest to where the film is first. On a slow line the frames come in
+   * where they are needed instead of evenly across the whole film.
+   */
+  private nextToFetch(): number {
     const n = this.clip.frames;
-    const order: number[] = [];
-    const seen = new Set<number>();
-    for (const step of [8, 4, 2, 1])
-      for (let i = 0; i < n; i += step)
-        if (!seen.has(i)) {
-          seen.add(i);
-          order.push(i);
-        }
-    if (!seen.has(n - 1)) order.splice(1, 0, n - 1);
-    let k = 0;
+    const at = Math.min(n - 1, Math.max(0, this.at));
+    const dir = this.dir;
+    const free = (i: number) => i >= 0 && i < n && !this.requested[i];
+    const nearest = (ok: (i: number) => boolean, reach = n, back = n) => {
+      for (let r = 0; r < reach; r++) {
+        const a = at + r * dir;
+        if (free(a) && ok(a)) return a;
+        const b = at - r * dir;
+        if (r <= back && free(b) && ok(b)) return b;
+      }
+      return -1;
+    };
+    let i = nearest((k) => k % 16 === 0 || k === n - 1);
+    if (i < 0) i = nearest(() => true, this.light ? 110 : 150, 20);
+    if (i < 0) i = nearest((k) => k % 4 === 0);
+    if (i < 0) i = nearest(() => true);
+    return i;
+  }
+
+  /** Fetches every frame, in the order nextToFetch picks, a few requests at a time. */
+  async load() {
+    this.requested = new Array(this.clip.frames).fill(false);
     const worker = async () => {
-      while (k < order.length && !this.disposed) {
-        const i = order[k++];
+      while (!this.disposed) {
+        const i = this.nextToFetch();
+        if (i < 0) return;
+        this.requested[i] = true;
         try {
           const res = await fetch(frameUrl(this.clip, this.width, i), { signal: this.aborter.signal });
           if (!res.ok) continue;
@@ -108,7 +130,7 @@ export class FrameStore {
         }
       }
     };
-    await Promise.all(Array.from({ length: 6 }, worker));
+    await Promise.all(Array.from({ length: this.light ? 4 : 6 }, worker));
   }
 
   /**

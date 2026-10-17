@@ -12,7 +12,7 @@ export function Footer() {
   const [day, setDay] = useState<DaySlot | null>(null);
   useEffect(() => setDay(daySlot(bakuHour())), []);
   return (
-    <footer className="day-glow overflow-hidden border-t border-paper/10 bg-espresso text-muted-dark">
+    <footer className="day-glow overflow-hidden border-t border-paper/10 bg-black text-muted-dark">
       <div className="mx-auto grid max-w-[1320px] gap-10 px-5 py-14 md:grid-cols-2 md:px-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div className="flex flex-col gap-4">
           <Lockup className="h-9 w-auto self-start text-paper" />

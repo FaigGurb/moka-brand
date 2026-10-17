@@ -19,7 +19,8 @@ export function PageShell({ locale, sub, children }: { locale: Locale; sub: stri
         {DICTS[locale].skip}
       </a>
       <Nav sub={sub} />
-      <main id="main" lang={locale}>
+      {/* the brand book documents the espresso token; the other pages use MOKA's neutral black */}
+      <main id="main" lang={locale} className={sub.startsWith("brand") ? undefined : "tone-ink"}>
         {children}
       </main>
       <Footer />

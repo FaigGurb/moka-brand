@@ -47,7 +47,7 @@ html {
 
 body {
   /* the home page's bands set --page-bg (fx/ToneShift.tsx) */
-  background: var(--page-bg, var(--color-espresso));
+  background: var(--page-bg, #000);
   color: var(--color-paper);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
