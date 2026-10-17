@@ -72,7 +72,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <a href={sub ? HOME[locale] : "#top"} className="text-paper" aria-label={t.logoHome}>
           <Logo className="h-[18px] w-auto" />
         </a>
-        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase 2xl:inline">
+        <span className="hidden border border-paper/30 px-2.5 py-1 text-[13px] whitespace-nowrap text-paper/75 2xl:inline">
           {t.nav.badge}
         </span>
         <ul className="ml-auto hidden items-center gap-5 xl:flex">

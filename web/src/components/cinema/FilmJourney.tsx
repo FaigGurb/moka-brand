@@ -98,7 +98,14 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const g = c.getContext("2d", { alpha: false });
     if (!g) return;
     const low = perfTier() === "low";
-    const width = pickCoverWidth(film, low ? 0.42 : 0.55);
+    // capable screens take frames close to their own size (1920 on large ones); phones the light set
+    let width = low ? pickCoverWidth(film, 0.42) : pickCoverWidth(film, 0.75, 2400);
+    // on a slow line (where the browser tells) one set smaller, so the frames keep up with the scroll
+    const net = (navigator as Navigator & { connection?: { downlink?: number; saveData?: boolean } }).connection;
+    if (net && (net.saveData || (net.downlink ?? 10) < 3)) {
+      const sets = [...film.widths].sort((a, b) => a - b);
+      width = sets[Math.max(0, sets.indexOf(width) - 1)];
+    }
     const store = new FrameStore(film, width, low);
     const stopEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-stop]"));
     const restEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-rest]"));

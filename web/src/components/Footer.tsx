@@ -22,7 +22,7 @@ export function Footer() {
             {PARTNERS.map((b, i) => (
               <span key={b.id}>
                 {i > 0 && " · "}
-                <a className="text-paper/85 hover:text-paper" href={b.url} target="_blank" rel="noopener noreferrer">
+                <a className="text-paper/85 underline decoration-paper/30 underline-offset-4 hover:text-paper" href={b.url} target="_blank" rel="noopener noreferrer">
                   {b.name}
                 </a>
               </span>
