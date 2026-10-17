@@ -147,7 +147,7 @@ const az = {
     text: "MOKA Azərbaycanda beş İtaliya brendinin rəsmi distribyutorudur və hamısı MOKA-nın öz barında da işləyir. Xətt bir fincanın yolunu izləyir: qəhvə, üyütmə, espresso, sirop, vitrin.",
     site: "Rəsmi sayt",
     items: [
-      { step: "Qəhvə", role: "Dən və üyüdülmüş qəhvə", fact: "Milan, İtaliya", bar: "Barımızda: Pitti Caffè espresso" },
+      { step: "Qəhvə", role: "Dən və üyüdülmüş qəhvə", fact: "Corsico (Milan), İtaliya", bar: "Barımızda: Pitti Caffè espresso" },
       { step: "Üyütmə", role: "Peşəkar qəhvə dəyirmanları", fact: "Scorzè, Venesiya", bar: "Barımızda: Robur S · ZM Plus" },
       { step: "Espresso", role: "Espresso maşınları", fact: "1947-dən · Trevizo", bar: "Barımızda: Elektra Indie" },
       { step: "Sirop", role: "Siroplar, püre və kokteyl miksləri", fact: "Orsadrinks brendi · 1992-dən", bar: "Barımızda: ODK siropları" },
@@ -183,7 +183,7 @@ const az = {
     ritualEyebrow: "Xətt ritualı",
     cupAlt: "Keramika fincan kəsiyi: qəhvə içindəki incə xəttə qədər doldurulub",
     ritualTitle: "Hər fincan düz xəttə qədər",
-    ritualText: "Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
+    ritualText: "Konsept təklifi: zal fincanlarının içində incə bir xətt olsun, barista qəhvəni ona qədər doldursun. Kiçik detal, amma hər müştəri onu görər və xatırlayar. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
     real: { title: "Bu gün kafedə", credit: "Kadrlar: MOKA-nın Instagram səhifəsi", shots: [
       { src: "sign", title: "Lövhə", alt: "Divarda metal MOKA hərfi və ROASTERY & EATERY yazısı" },
       { src: "led", title: "LED xətlər artıq var", alt: "Barista barda işləyir, tavanda isti LED xətlər" },
@@ -478,7 +478,7 @@ const en: Dict = {
     text: "MOKA is the official distributor of five Italian brands in Azerbaijan, and all of them work in MOKA’s own bar too. The line follows the path of a cup: coffee, grinding, espresso, syrup, showcase.",
     site: "Official site",
     items: [
-      { step: "Coffee", role: "Beans and ground coffee", fact: "Milan, Italy", bar: "In our bar: Pitti Caffè espresso" },
+      { step: "Coffee", role: "Beans and ground coffee", fact: "Corsico (Milan), Italy", bar: "In our bar: Pitti Caffè espresso" },
       { step: "Grinding", role: "Professional coffee grinders", fact: "Scorzè, Venice", bar: "In our bar: Robur S · ZM Plus" },
       { step: "Espresso", role: "Espresso machines", fact: "Since 1947 · Treviso", bar: "In our bar: Elektra Indie" },
       { step: "Syrup", role: "Syrups, purées and cocktail mixes", fact: "An Orsadrinks brand · since 1992", bar: "In our bar: ODK syrups" },
@@ -514,7 +514,7 @@ const en: Dict = {
     ritualEyebrow: "The line ritual",
     cupAlt: "Cross-section of a ceramic cup: coffee filled up to a fine line inside",
     ritualTitle: "Every cup exactly to the line",
-    ritualText: "Dine-in cups have a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest sees it and remembers it. The “Hit the line” game is the digital version of this ritual.",
+    ritualText: "A concept proposal: dine-in cups with a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest would see it and remember it. The “Hit the line” game is the digital version of this ritual.",
     real: { title: "In the café today", credit: "Footage: MOKA's Instagram", shots: [
       { src: "sign", title: "The sign", alt: "A metal MOKA letter and ROASTERY & EATERY on the wall" },
       { src: "led", title: "The LED lines are already there", alt: "A barista at the bar under warm LED lines on the ceiling" },
@@ -807,7 +807,7 @@ const ru: Dict = {
     text: "MOKA — официальный дистрибьютор пяти итальянских брендов в Азербайджане, и все они работают в собственном баре MOKA. Линия повторяет путь чашки: кофе, помол, эспрессо, сироп, витрина.",
     site: "Официальный сайт",
     items: [
-      { step: "Кофе", role: "Зерно и молотый кофе", fact: "Милан, Италия", bar: "В нашем баре: эспрессо Pitti Caffè" },
+      { step: "Кофе", role: "Зерно и молотый кофе", fact: "Корсико (Милан), Италия", bar: "В нашем баре: эспрессо Pitti Caffè" },
       { step: "Помол", role: "Профессиональные кофемолки", fact: "Скорце, Венеция", bar: "В нашем баре: Robur S · ZM Plus" },
       { step: "Эспрессо", role: "Эспрессо-машины", fact: "С 1947 года · Тревизо", bar: "В нашем баре: Elektra Indie" },
       { step: "Сироп", role: "Сиропы, пюре и коктейльные миксы", fact: "Бренд Orsadrinks · с 1992 года", bar: "В нашем баре: сиропы ODK" },
@@ -843,7 +843,7 @@ const ru: Dict = {
     ritualEyebrow: "Ритуал линии",
     cupAlt: "Разрез керамической чашки: кофе налит до тонкой линии внутри",
     ritualTitle: "Каждая чашка — ровно до линии",
-    ritualText: "Внутри чашек для зала нанесена тонкая линия, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её замечает и запоминает. Игра «Поймай линию» — цифровая версия этого ритуала.",
+    ritualText: "Предложение концепта: тонкая линия внутри чашек для зала, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её заметит и запомнит. Игра «Поймай линию» — цифровая версия этого ритуала.",
     real: { title: "Сегодня в кофейне", credit: "Кадры: Instagram MOKA", shots: [
       { src: "sign", title: "Вывеска", alt: "Металлическая буква MOKA и надпись ROASTERY & EATERY на стене" },
       { src: "led", title: "LED-линии уже есть", alt: "Бариста за баром под тёплыми LED-линиями на потолке" },

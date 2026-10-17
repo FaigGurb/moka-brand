@@ -71,7 +71,7 @@
       rule2:'Ardıcıl tutduqca vurğu artır (×2, ×3). Yaşıl dən seriyanı sıfırlayır. Rəng fonu günün saatına görə dəyişir.',
       start:'Başla',result:'Nəticə',again:'Yenidən',share:'Paylaş',hint:'Sürüşdür: stəkan · ← → klaviatura',
       caught:'Tutuldu',gold:'Qızıl',green:'Yaşıl',combo:'Ən uzun seriya',
-      v:['Bakının ən sürətli baristası!','Əla reaksiya.','Yaxşı tutdun.','Dənlər qaçdı. Yenidən cəhd et.'],
+      v:['Bakının ən sürətli baristası!','Əla reaksiya.','Yaxşı tutdun.','Yaxşı başlanğıc. Bir daha?'],newBest:'Yeni rekord!',
       best:'Ən yaxşı nəticən',copied:'Nəticə kopyalandı',shareText:'MOKA "Dən yağışı" oyununda nəticəm: ',
       clubPts:'xal qazandın',clubCap:'Bu gün bu oyunun xal limiti dolub',canvas:'Yağan qəhvə dənələri və stəkan',
       day:['Səhər','Günorta','Axşam','Şəhər']},
@@ -81,7 +81,7 @@
       rule2:'Catch in a row to raise the multiplier (×2, ×3). A green bean resets the streak. The background follows the time of day.',
       start:'Start',result:'Result',again:'Play again',share:'Share',hint:'Slide: cup · ← → keys',
       caught:'Caught',gold:'Golden',green:'Green',combo:'Longest streak',
-      v:['The fastest barista in Baku!','Great reflexes.','Nice catching.','The beans got away. Try again.'],
+      v:['The fastest barista in Baku!','Great reflexes.','Nice catching.','A good start. Once more?'],newBest:'New best!',
       best:'Your best',copied:'Result copied',shareText:'My score in MOKA "Bean rain": ',
       clubPts:'points earned',clubCap:"Today's points limit for this game is reached",canvas:'Falling coffee beans and a cup',
       day:['Morning','Noon','Evening','City']},
@@ -91,7 +91,7 @@
       rule2:'Ловите подряд — растёт множитель (×2, ×3). Зелёное зерно обнуляет серию. Фон меняется по времени дня.',
       start:'Начать',result:'Результат',again:'Ещё раз',share:'Поделиться',hint:'Ведите: стакан · ← → клавиши',
       caught:'Поймано',gold:'Золотые',green:'Зелёные',combo:'Лучшая серия',
-      v:['Самый быстрый бариста Баку!','Отличная реакция.','Хорошо ловите.','Зёрна убежали. Попробуйте ещё.'],
+      v:['Самый быстрый бариста Баку!','Отличная реакция.','Хорошо ловите.','Хорошее начало. Ещё раз?'],newBest:'Новый рекорд!',
       best:'Ваш лучший результат',copied:'Результат скопирован',shareText:'Мой результат в MOKA «Зерновой дождь»: ',
       clubPts:'баллов получено',clubCap:'Дневной лимит баллов за эту игру исчерпан',canvas:'Падающие кофейные зёрна и стакан',
       day:['Утро','День','Вечер','Город']}
@@ -106,6 +106,8 @@
     lang=l;t=T[l];try{localStorage.setItem('moka-lang',l)}catch(e){}
     document.documentElement.lang=l;document.title=t.title+' — MOKA';
     document.querySelectorAll('[data-t]').forEach(function(el){el.textContent=t[el.getAttribute('data-t')]});
+    // touch screens have no arrow keys: keep only the first part of the hint
+    if(matchMedia('(hover: none)').matches){var h=document.querySelector('[data-t=hint]');if(h)h.textContent=t.hint.split(' · ')[0];}
     document.querySelectorAll('.langs button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.lang===l?'true':'false')});
     var sfx=l==='az'?'':'?lang='+l;
     document.getElementById('back').href='../'+sfx;
@@ -162,7 +164,7 @@
   function finish(){
     st.phase='idle';snd('logo');
     document.getElementById('total').textContent=st.score;
-    var s=st.score;document.getElementById('verdict').textContent=s>=700?t.v[0]:s>=450?t.v[1]:s>=250?t.v[2]:t.v[3];
+    var s=st.score;var prev=0;try{prev=+(localStorage.getItem('moka-rain-best')||0)}catch(e){}var v=s>=700?t.v[0]:s>=450?t.v[1]:s>=250?t.v[2]:t.v[3];document.getElementById('verdict').textContent=(s>prev&&s>0?t.newBest+' ':'')+v;
     var rows=document.getElementById('rows');rows.innerHTML='';
     [[t.caught,st.caught],[t.gold,st.gold],[t.green,st.green],[t.combo,st.best]].forEach(function(r){var d=document.createElement('div');d.innerHTML='<span></span><span></span>';d.children[0].textContent=r[0];d.children[1].textContent=r[1];rows.appendChild(d)});
     var best=0;try{best=+(localStorage.getItem('moka-rain-best')||0);if(s>best){best=s;localStorage.setItem('moka-rain-best',best)}}catch(e){best=Math.max(best,s)}

@@ -70,7 +70,15 @@ export function MenuPage() {
       const el = document.getElementById(`m-${s.id}`);
       if (el) io.observe(el);
     });
-    return () => io.disconnect();
+    // the last section is short: at the foot of the page it never reaches the observed band
+    const atEnd = () => {
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 160) setActive(SECTIONS[SECTIONS.length - 1].id);
+    };
+    window.addEventListener("scroll", atEnd, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", atEnd);
+    };
   }, []);
 
   useGSAP(

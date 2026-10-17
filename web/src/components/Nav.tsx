@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { SoundToggle } from "./SoundToggle";
 import { Cafes } from "./Cafes";
-import { getLenis } from "@/lib/lenis";
-import { HOME, NAV_IDS, links } from "@/lib/site";
+import { getLenis, jumpTo } from "@/lib/lenis";
+import { CONTACT, HOME, NAV_IDS, links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
 import { LOCALES } from "@/i18n/dict";
 
@@ -110,9 +110,10 @@ export function Nav({ sub = "" }: { sub?: string }) {
             </li>
           ))}
         </ul>
-        <LangSwitch className="ml-auto hidden sm:flex xl:ml-0" sub={sub} />
+        <LangSwitch className="ml-auto -mr-1 flex xl:ml-0" sub={sub} />
         <a
           href={home + "#kafeler"}
+          onClick={(e) => !home && jumpTo("#kafeler") && e.preventDefault()}
           className="hidden py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper lg:inline-block"
         >
           {t.contact.title}
@@ -130,7 +131,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
         >
           {t.nav.ar}
         </a>
-        <SoundToggle labelOn={t.nav.soundOn} labelOff={t.nav.soundOff} className="ml-auto -mr-2 sm:ml-0 sm:-mr-0" />
+        <SoundToggle labelOn={t.nav.soundOn} labelOff={t.nav.soundOff} className="-mr-2 sm:-mr-0" />
         <button
           type="button"
           className="flex h-11 w-11 items-center justify-center text-paper xl:hidden"
@@ -151,7 +152,9 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <a href={L.menu} className="mt-3 block border border-glow px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-glow">
           {t.menu.nav}
         </a>
-        <LangSwitch className="mt-4 -ml-2 sm:hidden" sub={sub} />
+        <a href={CONTACT.instagram} target="_blank" rel="noopener noreferrer" className="mt-3 block border border-paper/40 px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-paper">
+          Instagram · {CONTACT.handle} <span aria-hidden="true">↗</span>
+        </a>
         <ul className="mt-6 flex flex-col border-t border-paper/15">
           {NAV_IDS.map((id, i) => (
             <li key={id} className="border-b border-paper/15">

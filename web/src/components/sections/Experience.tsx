@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { ClubCard } from "../ClubCard";
 import { CremaBackground } from "../fx/CremaBackground";
-import { Letter } from "../Logo";
+import { Letter, Lockup } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
@@ -45,13 +45,11 @@ export function Experience() {
         <div className="x-grid mt-14 grid gap-6 md:grid-cols-2">
           <div className="x-card group flex flex-col overflow-hidden bg-espresso-2 text-paper">
             <a href={LINKS.ar} className="relative block aspect-[2/1] overflow-hidden bg-espresso-3" tabIndex={-1} aria-hidden="true">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={LINKS.arCard}
-                alt=""
-                className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]"
-                loading="lazy"
-              />
+              {/* the official lockup and the K (the printed AR target still carries MOKA's older card art) */}
+              <span className="flex h-full w-full items-center justify-center gap-[8%] bg-black px-[10%] transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]">
+                <Lockup className="w-[52%] text-paper" />
+                <Letter id="K" className="h-[46%] w-auto text-paper" />
+              </span>
             </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
               <p className="eyebrow text-gunorta">{t.exp.arEyebrow}</p>

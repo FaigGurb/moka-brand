@@ -1,5 +1,6 @@
 "use client";
 
+import { jumpTo } from "@/lib/lenis";
 import { useRef, useState } from "react";
 import { Lockup } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
@@ -102,7 +103,7 @@ export function Hero() {
             ))}
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
-            <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/70 sm:text-[17px]">{t.hero.text}</p>
+            <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/80 [text-shadow:0_1px_14px_rgb(0_0_0/0.9)] sm:text-[17px]">{t.hero.text}</p>
             <div className="hero-fade flex flex-wrap gap-3">
               <MagneticButton
                 href="#proses"
@@ -120,7 +121,7 @@ export function Hero() {
               </MagneticButton>
             </div>
             {/* where and when, for guests who came for a coffee rather than the story */}
-            <a href="#kafeler" className="hero-fade group flex flex-col gap-0.5 self-start text-[15px] text-paper/75 transition-colors hover:text-paper">
+            <a href="#kafeler" onClick={(e) => jumpTo("#kafeler") && e.preventDefault()} className="hero-fade group order-first flex flex-col gap-0.5 self-start text-[15px] text-paper/75 transition-colors hover:text-paper md:order-none">
               <span className="text-paper underline decoration-paper/30 underline-offset-4 group-hover:decoration-paper">{t.contact.title} ↓</span>
               {t.contact.places.map((p) => (
                 <span key={p.name}>

@@ -18,6 +18,7 @@ import { Preloader } from "@/components/fx/Preloader";
 import { Cursor } from "@/components/fx/Cursor";
 import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
+import { BackToTop } from "@/components/fx/BackToTop";
 import { HeadingReveal } from "@/components/fx/HeadingReveal";
 import { Marquee } from "@/components/fx/Marquee";
 import { ToneBand } from "@/components/fx/ToneShift";
@@ -68,6 +69,7 @@ export function Site({ locale }: { locale: Locale }) {
       <ScrollRefresh />
       <SmoothScroll />
       <ScrollLine />
+      <BackToTop label={DICTS[locale].final.top} />
       <HeadingReveal />
       <Cursor />
       <DayAmbient />

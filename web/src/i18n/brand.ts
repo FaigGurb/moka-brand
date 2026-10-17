@@ -190,7 +190,7 @@ const az = {
     no: "Belə demirik",
     traits: [
       { name: "Sadə", desc: "Qısa cümlə, gündəlik söz.", yes: "Bu gün barda: Efiopiya, açıq qovurma.", no: "Unikal qəhvə təcrübəsi ilə tanış olmağa tələsin!" },
-      { name: "Dəqiq", desc: "Rəqəm və fakt, şişirtmə yox.", yes: "15 q qəhvə, 250 q su, 3 dəqiqə.", no: "Şəhərin ən yaxşı qəhvəsi." },
+      { name: "Dəqiq", desc: "Rəqəm və fakt, şişirtmə yox.", yes: "15 q qəhvə, 250 q su, 3 dəqiqə.", no: "Dünyanın ən dadlı qəhvəsi, zəmanətlə!" },
       { name: "İsti", desc: "Səmimi, bakılı, tələsməyən.", yes: "Gəl, otur. Qəhvə hazırdır.", no: "Hörmətli müştərilər, nəzərinizə çatdırırıq ki…" },
       { name: "Oyunbaz", desc: "Hərflər və xətlə oynayırıq, amma ölçülü.", yes: "K = Chemex. Bu gün xəttə qədər doldururuq.", no: "Qəhvəəəə 🔥🔥🔥 MOKA-da!!!" },
     ],
@@ -472,7 +472,7 @@ const en: BrandDict = {
     no: "We don't say",
     traits: [
       { name: "Simple", desc: "Short sentences, everyday words.", yes: "On the bar today: Ethiopia, light roast.", no: "Hurry to discover a unique coffee experience!" },
-      { name: "Precise", desc: "Numbers and facts, no hype.", yes: "15 g coffee, 250 g water, 3 minutes.", no: "The best coffee in town." },
+      { name: "Precise", desc: "Numbers and facts, no hype.", yes: "15 g coffee, 250 g water, 3 minutes.", no: "The tastiest coffee in the world, guaranteed!" },
       { name: "Warm", desc: "Sincere, local, unhurried.", yes: "Come in, sit down. Coffee's ready.", no: "Dear customers, please be informed that…" },
       { name: "Playful", desc: "We play with letters and the line, in moderation.", yes: "K = Chemex. Today we fill to the line.", no: "Cofffeeee 🔥🔥🔥 at MOKA!!!" },
     ],
@@ -752,7 +752,7 @@ const ru: BrandDict = {
     no: "Мы не говорим",
     traits: [
       { name: "Просто", desc: "Короткие фразы, обычные слова.", yes: "Сегодня на баре: Эфиопия, светлая обжарка.", no: "Спешите открыть для себя уникальный кофейный опыт!" },
-      { name: "Точно", desc: "Цифры и факты, без преувеличений.", yes: "15 г кофе, 250 г воды, 3 минуты.", no: "Лучший кофе в городе." },
+      { name: "Точно", desc: "Цифры и факты, без преувеличений.", yes: "15 г кофе, 250 г воды, 3 минуты.", no: "Самый вкусный кофе в мире, гарантированно!" },
       { name: "Тепло", desc: "Искренне, по-бакински, без спешки.", yes: "Заходите, садитесь. Кофе готов.", no: "Уважаемые клиенты, доводим до вашего сведения…" },
       { name: "Игриво", desc: "Играем буквами и линией, но в меру.", yes: "K = Chemex. Сегодня наливаем до линии.", no: "Кофеееее 🔥🔥🔥 в MOKA!!!" },
     ],
