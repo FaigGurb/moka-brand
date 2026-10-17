@@ -5,6 +5,8 @@ import { gsap, useGSAP } from "@/lib/gsap";
 import { LETTERS, halves, pts } from "@/lib/logo";
 import { useI18n } from "@/i18n/context";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 /** Concept view of the café's main wall: the wordmark lit by a warm LED line at the signature height. */
 function Wall({ alt }: { alt: string }) {
   return (
@@ -131,6 +133,31 @@ export function Store() {
               {t.store.ritualText}
             </p>
           </div>
+        </div>
+
+        {/* the real café, in MOKA's own footage: the concept above grows out of what is already there */}
+        <div className="mt-20 flex flex-col gap-6 md:mt-28">
+          <h3 className="font-[family-name:var(--font-display)] text-[clamp(28px,3.2vw,44px)] leading-tight font-medium tracking-[-0.02em]">
+            {t.store.real.title}
+          </h3>
+          <ul className="grid grid-cols-3 gap-2 md:gap-4">
+            {t.store.real.shots.map((s) => (
+              <li key={s.src}>
+                <figure className="flex flex-col gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`${BASE}/cinema/bar/${s.src}.webp`}
+                    alt={s.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[9/14] w-full bg-espresso-2 object-cover"
+                  />
+                  <figcaption className="font-[family-name:var(--font-display)] text-[13px] leading-snug md:text-[17px]">{s.title}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[13px] text-muted-dark">{t.store.real.credit}</p>
         </div>
       </div>
     </section>

@@ -179,6 +179,11 @@ const az = {
     cupAlt: "Keramika fincan kəsiyi: qəhvə içindəki incə xəttə qədər doldurulub",
     ritualTitle: "Hər fincan düz xəttə qədər",
     ritualText: "Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
+    real: { title: "Bu gün kafedə", credit: "Kadrlar: MOKA-nın Instagram səhifəsi", shots: [
+      { src: "sign", title: "Lövhə", alt: "Divarda metal MOKA hərfi və ROASTERY & EATERY yazısı" },
+      { src: "led", title: "LED xətlər artıq var", alt: "Barista barda işləyir, tavanda isti LED xətlər" },
+      { src: "window", title: "Götür pəncərəsi", alt: "Küçəyə açılan pəncərədə barista, altında MOKA loqosu" },
+    ] },
   },
   apps: {
     eyebrow: "Tətbiq",
@@ -499,6 +504,11 @@ const en: Dict = {
     cupAlt: "Cross-section of a ceramic cup: coffee filled up to a fine line inside",
     ritualTitle: "Every cup exactly to the line",
     ritualText: "Dine-in cups have a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest sees it and remembers it. The “Hit the line” game is the digital version of this ritual.",
+    real: { title: "In the café today", credit: "Footage: MOKA's Instagram", shots: [
+      { src: "sign", title: "The sign", alt: "A metal MOKA letter and ROASTERY & EATERY on the wall" },
+      { src: "led", title: "The LED lines are already there", alt: "A barista at the bar under warm LED lines on the ceiling" },
+      { src: "window", title: "Take-away window", alt: "A barista in the street window, the MOKA logo below" },
+    ] },
   },
   apps: {
     eyebrow: "Applications",
@@ -817,6 +827,11 @@ const ru: Dict = {
     cupAlt: "Разрез керамической чашки: кофе налит до тонкой линии внутри",
     ritualTitle: "Каждая чашка — ровно до линии",
     ritualText: "Внутри чашек для зала нанесена тонкая линия, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её замечает и запоминает. Игра «Поймай линию» — цифровая версия этого ритуала.",
+    real: { title: "Сегодня в кофейне", credit: "Кадры: Instagram MOKA", shots: [
+      { src: "sign", title: "Вывеска", alt: "Металлическая буква MOKA и надпись ROASTERY & EATERY на стене" },
+      { src: "led", title: "LED-линии уже есть", alt: "Бариста за баром под тёплыми LED-линиями на потолке" },
+      { src: "window", title: "Окно навынос", alt: "Бариста в окне на улицу, под ним логотип MOKA" },
+    ] },
   },
   apps: {
     eyebrow: "Применение",
