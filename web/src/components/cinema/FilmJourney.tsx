@@ -592,15 +592,19 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       {/* the film: sticky behind everything in this wrapper (motion only) */}
       <div aria-hidden="true" className="sticky top-0 z-0 -mb-[100svh] h-[100svh] overflow-hidden bg-black motion-reduce:hidden">
         {/* the first frame as a picture, so there is an image before the canvas has decoded anything */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={stillSrc(first.still, first.still.widths[1] ?? first.still.widths[0])}
-          alt=""
-          fetchPriority="low"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: first.focus ?? "50% 50%" }}
-        />
+        {/* (phones take the smallest still: it only covers the moment before the canvas draws) */}
+        <picture>
+          <source media="(max-width: 767px)" srcSet={stillSrc(first.still, first.still.widths[0])} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={stillSrc(first.still, first.still.widths[1] ?? first.still.widths[0])}
+            alt=""
+            fetchPriority="low"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: first.focus ?? "50% 50%" }}
+          />
+        </picture>
         <div data-film-cam className="absolute inset-0 will-change-transform">
           <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
           {mark && (

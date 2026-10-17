@@ -69,6 +69,7 @@ export function Store() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
         // The view opens like a window, then the LED line is drawn across the wall.
         gsap.fromTo(
           ".s-frame",
@@ -76,7 +77,9 @@ export function Store() {
           {
             clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
-            scrollTrigger: { trigger: ".s-frame", start: "top 85%", end: "top 25%", scrub: 1 },
+            scrollTrigger: { trigger: ".s-frame", start: "top 85%", end: "top 25%", scrub: fine ? 1 : false, toggleActions: "play none none none" },
+            // touch: one timed reveal (an animated clip-path repaints the whole picture every scroll frame on iOS)
+            ...(fine ? {} : { duration: 1.2, ease: "power3.out" }),
           },
         );
         gsap.from(".s-led", {

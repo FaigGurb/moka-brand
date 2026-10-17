@@ -28,7 +28,9 @@ export function DayPalette() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
+      // the colour story with a mouse or trackpad; touch screens scroll the five colours as plain panels
+      // (iOS tears a full-screen sticky scene that repaints on every scroll frame)
+      mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
         const slides = gsap.utils.toArray<HTMLElement>(".d-slide");
         gsap.set(slides.slice(1), { autoAlpha: 0 });
         const tl = gsap.timeline({
@@ -68,14 +70,14 @@ export function DayPalette() {
     <section id="reng" ref={root} className="bg-espresso text-paper">
       {/* Pinned colour story; hidden for reduced motion, where the swatch grid below says the same. */}
       <div
-        className="d-track motion-reduce:hidden"
-        style={{ height: `${100 + DAY.length * 70}svh` }}
+        className="d-track motion-reduce:hidden scene:h-[var(--track)]"
+        style={{ ["--track" as string]: `${100 + DAY.length * 70}svh` }}
       >
-        <div className="d-pin sticky top-0 h-[100svh] overflow-hidden">
+        <div className="d-pin relative scene:sticky scene:top-0 scene:h-[100svh] scene:overflow-hidden">
           {DAY.map((d) => (
             <div
               key={d.name}
-              className="d-slide absolute inset-0 flex flex-col justify-between px-5 pt-24 pb-16 md:px-10 md:py-24"
+              className="d-slide flex min-h-[56svh] flex-col justify-between px-5 pt-24 pb-16 md:px-10 md:py-24 scene:absolute scene:inset-0 scene:min-h-0"
               style={{ background: d.hex, color: d.ink }}
             >
               <div className="mx-auto flex w-full max-w-[1320px] items-start justify-between gap-8">
