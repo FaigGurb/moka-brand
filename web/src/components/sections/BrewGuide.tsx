@@ -43,8 +43,8 @@ function FillLetter({ index, progress }: { index: number; progress: number }) {
         y={CUT_TOP}
         width={maxX - minX}
         height={CUT_BOTTOM - CUT_TOP}
-        fill={progress >= 1 ? "#ffe2a6" : "#1b1714"}
-        style={{ transition: "fill 600ms", filter: progress >= 1 ? "drop-shadow(0 0 6px #ffe2a6)" : undefined }}
+        fill={progress >= 1 ? "#FFFFFF" : "#000000"}
+        style={{ transition: "fill 600ms", filter: progress >= 1 ? "drop-shadow(0 0 6px #FFFFFF)" : undefined }}
       />
     </svg>
   );

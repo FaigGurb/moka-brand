@@ -88,7 +88,7 @@ export function Concept() {
           {/* the signature line, drawn as the story progresses */}
           <span
             aria-hidden="true"
-            className="c-line pointer-events-none absolute top-[calc(clamp(60px,17vw,170px)*0.5_-_1px)] left-0 h-[3px] w-full origin-left scale-x-0 bg-glow shadow-[0_0_14px_rgba(255,226,166,0.6)]"
+            className="c-line pointer-events-none absolute top-[calc(clamp(60px,17vw,170px)*0.5_-_1px)] left-0 h-[3px] w-full origin-left scale-x-0 bg-glow shadow-[0_0_14px_rgba(255,255,255,0.6)]"
           />
         </div>
 

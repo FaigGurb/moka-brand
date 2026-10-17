@@ -7,13 +7,13 @@ import { useI18n } from "@/i18n/context";
 // "Bakıda bir gün": the secondary palette, named after the hours of a day in the café.
 // Brand colour names stay Azerbaijani in every language; the dictionary adds a translation.
 const DAY_BASE = [
-  { name: "Səhər", hex: "#C89B6D", ink: "#1B1714", time: "08:00" },
-  { name: "Günorta", hex: "#D9B56A", ink: "#1B1714", time: "13:00" },
-  { name: "Axşam", hex: "#A8643A", ink: "#1B1714", time: "19:00" },
-  { name: "Şəhər", hex: "#8E8A84", ink: "#1B1714", time: "22:00" },
-  { name: "Nar", hex: "#8E2F22", ink: "#F5F1EA", time: "" },
+  { name: "Səhər", hex: "#C89B6D", ink: "#000000", time: "08:00" },
+  { name: "Günorta", hex: "#D9B56A", ink: "#000000", time: "13:00" },
+  { name: "Axşam", hex: "#A8643A", ink: "#000000", time: "19:00" },
+  { name: "Şəhər", hex: "#8E8A84", ink: "#000000", time: "22:00" },
+  { name: "Nar", hex: "#8E2F22", ink: "#F6F6F4", time: "" },
 ];
-const BASE_HEX = ["#1B1714", "#F5F1EA", "#C9A882"];
+const BASE_HEX = ["#000000", "#FFFFFF", "#878787"];
 
 export function DayPalette() {
   const { t } = useI18n();
@@ -77,12 +77,17 @@ export function DayPalette() {
           {DAY.map((d) => (
             <div
               key={d.name}
-              className="d-slide flex min-h-[56svh] flex-col justify-between px-5 pt-24 pb-16 md:px-10 md:py-24 scene:absolute scene:inset-0 scene:min-h-0"
-              style={{ background: d.hex, color: d.ink }}
+              className="d-slide relative flex min-h-[56svh] flex-col justify-between overflow-hidden bg-black px-5 pt-24 pb-16 text-paper md:px-10 md:py-24 scene:absolute scene:inset-0 scene:min-h-0"
             >
+              {/* black and white, as MOKA is: the hour's colour is only the lit line at the signature height */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 top-[46%] h-[6px]"
+                style={{ background: d.hex, boxShadow: `0 0 48px 6px ${d.hex}` }}
+              />
               <div className="mx-auto flex w-full max-w-[1320px] items-start justify-between gap-8">
-                <p className="eyebrow eyebrow-on-colour">{t.day.eyebrow}</p>
-                <p className="eyebrow eyebrow-on-colour tabular-nums">
+                <p className="eyebrow">{t.day.eyebrow}</p>
+                <p className="eyebrow tabular-nums">
                   {d.time}
                 </p>
               </div>
@@ -91,7 +96,7 @@ export function DayPalette() {
                   {d.name}
                 </h2>
                 <div className="d-meta mt-6 flex flex-wrap items-baseline gap-x-8 gap-y-2 text-lg font-semibold md:text-xl">
-                  <span className="font-bold tabular-nums">{d.hex}</span>
+                  <span className="flex items-center gap-2 font-bold tabular-nums"><span aria-hidden="true" className="h-3 w-3 rounded-full" style={{ background: d.hex }} />{d.hex}</span>
                   {d.sub && <span>{d.sub}</span>}
                   <span>{d.src}</span>
                 </div>
@@ -122,8 +127,8 @@ export function DayPalette() {
                   style={{
                     background: c.hex,
                     boxShadow:
-                      c.hex === "#1B1714"
-                        ? "inset 0 0 0 1px #3a3530"
+                      c.hex === "#000000"
+                        ? "inset 0 0 0 1px #2e2e2e"
                         : undefined,
                   }}
                 />

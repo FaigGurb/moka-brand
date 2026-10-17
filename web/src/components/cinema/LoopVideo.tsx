@@ -15,9 +15,12 @@ export function LoopVideo({
   focus,
   isActive,
   onPlaying,
+  sharpOnly = false,
   className = "",
 }: {
   loop: Loop;
+  /** play only where the largest encode covers the screen without upscaling (else the sharper still stays) */
+  sharpOnly?: boolean;
   focus?: string;
   isActive?: () => boolean;
   onPlaying?: (playing: boolean) => void;
@@ -36,6 +39,7 @@ export function LoopVideo({
     if (!v || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
     if (nav.connection?.saveData) return;
+    if (sharpOnly && v.clientWidth * Math.min(devicePixelRatio || 1, 2) > Math.max(...loop.widths) * 1.05) return;
     // iOS autoplays only muted video; set the property too (the attribute alone is not enough in React)
     v.muted = true;
 
@@ -91,7 +95,7 @@ export function LoopVideo({
       v.removeEventListener("playing", playing);
       v.pause();
     };
-  }, [loop]);
+  }, [loop, sharpOnly]);
 
   // sources are added only when near the screen; the element has to re-read them
   useEffect(() => {

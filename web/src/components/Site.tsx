@@ -20,7 +20,7 @@ import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
 import { HeadingReveal } from "@/components/fx/HeadingReveal";
 import { Marquee } from "@/components/fx/Marquee";
-import { ToneBand, ToneShift } from "@/components/fx/ToneShift";
+import { ToneBand } from "@/components/fx/ToneShift";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
 
@@ -71,7 +71,6 @@ export function Site({ locale }: { locale: Locale }) {
       <HeadingReveal />
       <Cursor />
       <DayAmbient />
-      <ToneShift />
       <div className="grain" aria-hidden="true" />
       <Preloader />
     </LocaleProvider>

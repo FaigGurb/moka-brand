@@ -49,9 +49,17 @@ export function Nav({ sub = "" }: { sub?: string }) {
   // Highlight the section currently in view.
   useEffect(() => {
     // The hero (#top) is observed too, so nothing stays highlighted after scrolling back up.
-    const els = ["#top", ...NAV_IDS].map((id) => document.querySelector(id)).filter(Boolean) as Element[];
+    // Every section and film chapter is watched: one that has no nav link (Bar, the film's grind/pour
+    // chapters, …) clears the highlight instead of leaving the previous link lit.
+    const nav = new Set<string>(NAV_IDS);
+    const els = Array.from(document.querySelectorAll("#top, main section[id], [data-film-stop]"));
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id === "top" ? "" : `#${e.target.id}`)),
+      (entries) =>
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const id = e.target.id ? `#${e.target.id}` : "";
+          setActive(nav.has(id) ? id : "");
+        }),
       { rootMargin: "-45% 0px -50% 0px" },
     );
     els.forEach((el) => io.observe(el));

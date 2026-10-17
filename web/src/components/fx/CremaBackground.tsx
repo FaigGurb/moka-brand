@@ -34,9 +34,10 @@ void main(){
  vec2 q=vec2(fbm(p+t),fbm(p+vec2(5.2,1.3)-t));
  vec2 w=vec2(fbm(p+3.*q+vec2(1.7,9.2)+t*1.4),fbm(p+3.*q+vec2(8.3,2.8)-t));
  float f=fbm(p+3.4*w);
- vec3 esp=vec3(.106,.090,.078);
- vec3 brown=vec3(.25,.15,.09);
- vec3 crema=mix(vec3(.66,.42,.25),uDay,.45);
+ // MOKA's grey scale: black, graphite and a pale grey crest (no warm tint)
+ vec3 esp=vec3(.035);
+ vec3 brown=vec3(.13);
+ vec3 crema=vec3(.42)+uDay*0.;
  vec3 c=mix(esp,brown,smoothstep(.32,.78,f));
  c=mix(c,crema,smoothstep(.64,.92,f)*.6);
  c=mix(esp,c,uAmp);

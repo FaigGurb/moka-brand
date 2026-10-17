@@ -140,10 +140,10 @@ function Profile() {
 
   const cur = open !== null ? POSTS[open] : null;
   return (
-    <div className="bg-white p-5 text-espresso shadow-[0_30px_80px_-40px_rgba(27,23,20,0.45)] md:p-8">
+    <div className="bg-white p-5 text-espresso shadow-[0_30px_80px_-40px_rgba(0,0,0,0.45)] md:p-8">
       {/* profile header */}
       <div className="flex items-center gap-4 md:gap-6">
-        <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full bg-espresso p-1 ring-2 ring-gunorta ring-offset-2 md:h-[88px] md:w-[88px]">
+        <div className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full bg-espresso p-1 ring-2 ring-black/30 ring-offset-2 md:h-[88px] md:w-[88px]">
           <Logo className="w-[80%] text-paper" />
         </div>
         <div className="min-w-0 flex-1">
@@ -160,7 +160,7 @@ function Profile() {
           href="https://www.instagram.com/mokacoffeebaku/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden shrink-0 bg-espresso px-4 py-2.5 text-[12px] font-semibold text-paper transition-colors hover:bg-axsam sm:inline-block"
+          className="hidden shrink-0 bg-espresso px-4 py-2.5 text-[12px] font-semibold text-paper transition-colors hover:bg-espresso-3 sm:inline-block"
         >
           {ig.follow}
         </a>
@@ -184,7 +184,7 @@ function Profile() {
           >
             <span
               className={`flex h-14 w-14 items-center justify-center rounded-full border-2 transition-colors ${
-                filter === i ? "border-axsam" : "border-espresso/15 group-hover:border-espresso/40"
+                filter === i ? "border-black" : "border-espresso/15 group-hover:border-espresso/40"
               }`}
             >
               <span

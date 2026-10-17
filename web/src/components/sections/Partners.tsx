@@ -94,7 +94,7 @@ export function Partners() {
         {/* a still, warm band of light behind the line (desktop); no blur filter, no animation */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-[46%] -z-10 hidden h-[420px] -translate-y-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,226,166,0.09),transparent_72%)] lg:block"
+          className="pointer-events-none absolute inset-x-0 top-[46%] -z-10 hidden h-[420px] -translate-y-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(255,255,255,0.09),transparent_72%)] lg:block"
         />
 
         <div className="p-head grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
@@ -119,7 +119,7 @@ export function Partners() {
             aria-hidden="true"
             className="pointer-events-none absolute top-2 bottom-2 left-[7px] w-[3px] bg-paper/12 lg:top-[6px] lg:right-0 lg:bottom-auto lg:left-0 lg:h-[3px] lg:w-auto"
           >
-            <span className="p-line absolute inset-0 block origin-top scale-y-[var(--p,1)] bg-glow shadow-[0_0_18px_rgba(255,226,166,0.55)] lg:origin-left lg:scale-x-[var(--p,1)] lg:scale-y-100" />
+            <span className="p-line absolute inset-0 block origin-top scale-y-[var(--p,1)] bg-glow shadow-[0_0_18px_rgba(255,255,255,0.55)] lg:origin-left lg:scale-x-[var(--p,1)] lg:scale-y-100" />
           </li>
           {PARTNERS.map((b, i) => {
             const it = p.items[i];
@@ -127,19 +127,19 @@ export function Partners() {
               <li key={b.id} className="p-st is-on group relative">
                 <span
                   aria-hidden="true"
-                  className="absolute top-1 -left-10 block h-[17px] w-[17px] rounded-full border-[3px] border-paper/30 bg-espresso transition-[background-color,border-color,box-shadow] duration-500 group-[.is-on]:border-glow group-[.is-on]:bg-glow group-[.is-on]:shadow-[0_0_14px_rgba(255,226,166,0.6)] lg:-top-12 lg:left-0"
+                  className="absolute top-1 -left-10 block h-[17px] w-[17px] rounded-full border-[3px] border-paper/30 bg-espresso transition-[background-color,border-color,box-shadow] duration-500 group-[.is-on]:border-glow group-[.is-on]:bg-glow group-[.is-on]:shadow-[0_0_14px_rgba(255,255,255,0.6)] lg:-top-12 lg:left-0"
                 />
                 <div className="p-item grid gap-5 sm:grid-cols-[minmax(0,240px)_minmax(0,1fr)] sm:items-center sm:gap-8 lg:flex lg:flex-col lg:items-stretch lg:gap-5">
                   <h3 className="sr-only">{b.name}</h3>
                   <a
                     href={`${L.partners}#${b.id}`}
-                    className={`group/plate relative grid aspect-[16/10] w-full max-w-[320px] place-items-center overflow-hidden transition-[transform,box-shadow] duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_0_0_1px_var(--color-glow),0_16px_36px_-16px_rgba(255,226,166,0.55)] focus-visible:-translate-y-1 focus-visible:shadow-[0_0_0_3px_var(--color-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:max-w-none ${plateTone(b.id)}`}
+                    className={`group/plate relative grid aspect-[16/10] w-full max-w-[320px] place-items-center overflow-hidden transition-[transform,box-shadow] duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_0_0_1px_var(--color-glow),0_16px_36px_-16px_rgba(255,255,255,0.55)] focus-visible:-translate-y-1 focus-visible:shadow-[0_0_0_3px_var(--color-glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:max-w-none ${plateTone(b.id)}`}
                   >
                     <PartnerLogo id={b.id} name={b.name} pending={p.pending} />
                     <span className="sr-only"> — {p.more}</span>
                   </a>
                   <div className="flex flex-col gap-2">
-                    <span className="text-[12px] font-semibold text-muted-dark transition-colors duration-500 group-[.is-on]:text-seher">
+                    <span className="text-[12px] font-semibold text-muted-dark transition-colors duration-500 group-[.is-on]:text-paper">
                       {String(i + 1).padStart(2, "0")} · {it.step}
                     </span>
                     <p className="text-[15px] leading-snug text-paper/85">{it.role}</p>

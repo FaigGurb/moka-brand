@@ -34,6 +34,8 @@ type Props = {
   /** stop i is the film's frame at i / (stops - 1) (docs/tools/film/chain.sh) */
   film: Clip;
   mark?: Mark;
+  /** label of the "skip the film" button (a guest in a hurry goes straight to the content after it) */
+  skip?: string;
 };
 
 /** scroll (in screen heights) from one stop to the next: short, so one flick carries a whole transition */
@@ -82,7 +84,7 @@ const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
  * stop (an eased scroll through Lenis); content sections scroll freely. Reduced motion: stills with
  * captions in flow.
  */
-export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: Props) {
+export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, skip }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [lite, setLite] = useState(true);
@@ -122,6 +124,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const shades = Array.from(el.querySelectorAll<HTMLElement>("[data-film-shade]"));
     const bigs = Array.from(el.querySelectorAll<HTMLElement>("[data-film-big]"));
     const index = el.querySelector<HTMLElement>("[data-film-index]");
+    const skipBtn = el.querySelector<HTMLElement>("[data-film-skip]");
     const dots = Array.from(el.querySelectorAll<HTMLElement>("[data-film-dot]"));
     const focus = stops.map((s) => focusOf(s.shot));
 
@@ -331,6 +334,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         if (on !== indexOn) {
           indexOn = on;
           index.dataset.on = String(on);
+          if (skipBtn) skipBtn.dataset.on = String(on);
         }
         // the chapter whose stop is nearest
         let best = 0;
@@ -517,6 +521,17 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
     };
     index?.addEventListener("click", onIndex);
+    const onSkip = () => {
+      if (tour) stopTour();
+      const to = el.getBoundingClientRect().bottom + window.scrollY - 72;
+      const lenis = getLenis();
+      if (!lenis) return window.scrollTo({ top: to });
+      goal = to;
+      lenis.scrollTo(to, { duration: 1.4, easing: easeInOut, force: true, onComplete: () => (goal = null) });
+      window.clearTimeout(goalTimer);
+      goalTimer = window.setTimeout(() => (goal = null), 1800);
+    };
+    skipBtn?.addEventListener("click", onSkip);
     window.addEventListener("moka:tour", onTour);
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
@@ -567,6 +582,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
       index?.removeEventListener("click", onIndex);
+      skipBtn?.removeEventListener("click", onSkip);
       window.removeEventListener("moka:tour", onTour);
       window.removeEventListener("pointerdown", onPointerDown);
       stopTour();
@@ -649,12 +665,23 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         <div data-film-shade className="pointer-events-none absolute inset-y-0 right-0 hidden w-[60%] bg-[linear-gradient(to_left,rgba(0,0,0,0.78),rgba(0,0,0,0.35)_55%,transparent)] opacity-0 md:block" />
       </div>
 
+      {skip && (
+        <button
+          type="button"
+          data-film-skip
+          data-on="0"
+          className="film-index fixed right-4 bottom-[calc(16px+env(safe-area-inset-bottom,0px))] z-30 border border-paper/35 bg-black/60 px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] text-paper backdrop-blur-[2px] transition-colors hover:border-paper md:right-5 md:bottom-6"
+        >
+          {skip} <span aria-hidden="true">↓</span>
+        </button>
+      )}
+
       {/* chapter index (wide screens): where you are in the film, and a way to jump */}
       <nav data-film-index data-on="0" aria-label={eyebrow} className="film-index fixed top-1/2 right-5 z-30 hidden -translate-y-1/2 md:block motion-reduce:!hidden">
         <ol className="flex flex-col items-end gap-3">
           {chapters.map(({ k, c }) => (
             <li key={k}>
-              <button type="button" data-film-dot={k} className="film-dot group flex items-center gap-3 py-1 text-right font-[family-name:var(--font-display)] text-[11px] tracking-[0.25em] text-paper/45 uppercase transition-colors hover:text-paper aria-[current=step]:text-paper">
+              <button type="button" data-film-dot={k} className="film-dot group flex items-center gap-3 py-1 text-right font-[family-name:var(--font-display)] text-[13px] text-paper/50 transition-colors hover:text-paper aria-[current=step]:text-paper">
                 <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-500 group-hover:max-w-40 group-hover:opacity-100 group-focus-visible:max-w-40 group-focus-visible:opacity-100">{c.label ?? c.title}</span>
                 <span>{c.kicker}</span>
                 <span aria-hidden="true" className="h-px w-5 bg-current transition-all duration-500 group-aria-[current=step]:w-10 group-aria-[current=step]:bg-glow" />
@@ -700,7 +727,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
                   {s.caption.tags && (
                     <ul className={`film-cap-fade mt-5 flex flex-wrap gap-2 ${side[k] > 0 ? "md:justify-end" : ""}`}>
                       {s.caption.tags.map((t) => (
-                        <li key={t} className="rounded-full border border-paper/25 bg-black/25 px-3.5 py-1.5 font-[family-name:var(--font-display)] text-[11px] tracking-[0.2em] text-paper/85 uppercase backdrop-blur-[2px]">
+                        <li key={t} className="rounded-full border border-paper/25 bg-black/25 px-3.5 py-1.5 font-[family-name:var(--font-display)] text-[13px] text-paper/85 backdrop-blur-[2px]">
                           {t}
                         </li>
                       ))}

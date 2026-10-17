@@ -75,15 +75,15 @@ export function Experience() {
             </div>
           </div>
 
-          <div className="x-card group flex flex-col overflow-hidden bg-seher text-espresso">
-            <a href={LINKS.game} tabIndex={-1} aria-hidden="true" className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#BE8F60]">
+          <div className="x-card group flex flex-col overflow-hidden bg-paper text-black">
+            <a href={LINKS.game} tabIndex={-1} aria-hidden="true" className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#E6E6E3]">
               <svg viewBox="0 0 400 200" className="h-full w-auto" aria-hidden="true">
-                <polygon points="168,10 232,10 212,52 188,52" fill="#F5F1EA" />
-                <rect x="186" y="46" width="28" height="10" fill="#1B1714" />
-                <rect x="197" y="56" width="6" height="70" fill="#5E3B26" className="origin-top transition-transform duration-700 group-hover:scale-y-110" />
-                <path d="M140,80 L260,80 L246,196 L154,196 Z" fill="none" stroke="#1B1714" strokeWidth="5" />
-                <path d="M146,126 L254,126 L247,193 L153,193 Z" fill="#5E3B26" />
-                <rect x="118" y="122" width="164" height="4" fill="#F5F1EA" />
+                <polygon points="168,10 232,10 212,52 188,52" fill="#F6F6F4" />
+                <rect x="186" y="46" width="28" height="10" fill="#000000" />
+                <rect x="197" y="56" width="6" height="70" fill="#000000" className="origin-top transition-transform duration-700 group-hover:scale-y-110" />
+                <path d="M140,80 L260,80 L246,196 L154,196 Z" fill="none" stroke="#000000" strokeWidth="5" />
+                <path d="M146,126 L254,126 L247,193 L153,193 Z" fill="#000000" />
+                <rect x="118" y="122" width="164" height="4" fill="#878787" />
               </svg>
             </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
@@ -160,8 +160,9 @@ export function FinalCta() {
         <h2 className="max-w-[14ch] text-[clamp(40px,7vw,104px)] leading-[0.95] font-medium tracking-[-0.02em]">
           {t.final.title}
         </h2>
-        <div className="h-[3px] w-full bg-gradient-to-r from-glow via-gunorta to-transparent" aria-hidden="true" />
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="h-[3px] w-full bg-gradient-to-r from-glow via-paper/30 to-transparent md:w-[56%]" aria-hidden="true" />
+        {/* text and buttons stay in the left half: the slogan ring turns in the right one */}
+        <div className="flex flex-col items-start gap-8 md:max-w-[52%]">
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">
             {t.final.text}
           </p>

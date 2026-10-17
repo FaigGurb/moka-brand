@@ -47,8 +47,8 @@ function KMark({ cx, y, h, fill }: { cx: number; y: number; h: number; fill: str
 function Level({ y, x1 = 0, x2 = 300, show }: { y: number; x1?: number; x2?: number; show?: boolean }) {
   return (
     <g className="pack-line" data-on={show ? "true" : "false"} aria-hidden="true">
-      <rect x={x1} y={y - 1.6} width={x2 - x1} height={3.2} fill="#FFE2A6" />
-      <rect x={x1} y={y - 5} width={x2 - x1} height={10} fill="#FFE2A6" opacity={0.18} />
+      <rect x={x1} y={y - 1.6} width={x2 - x1} height={3.2} fill="#FFFFFF" />
+      <rect x={x1} y={y - 5} width={x2 - x1} height={10} fill="#FFFFFF" opacity={0.18} />
     </g>
   );
 }

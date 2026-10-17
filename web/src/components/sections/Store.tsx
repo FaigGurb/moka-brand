@@ -7,22 +7,26 @@ import { useI18n } from "@/i18n/context";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-/** Concept view of the café's main wall: the wordmark lit by a warm LED line at the signature height. */
+/**
+ * Concept view of the café's main wall, drawn like an architect's elevation in MOKA's black and
+ * white: the wordmark, the counter and the shelves in fine lines, and one lit LED line at the
+ * signature height running through all of them.
+ */
 function Wall({ alt }: { alt: string }) {
+  const line = "#5c5c5c";
   return (
     <svg viewBox="0 0 1000 620" className="block h-auto w-full" role="img" aria-label={alt}>
       <defs>
         <filter id="store-glow" x="-10%" y="-400%" width="120%" height="900%">
-          <feGaussianBlur stdDeviation="9" />
+          <feGaussianBlur stdDeviation="10" />
         </filter>
       </defs>
-      <rect width="1000" height="620" fill="#77736C" />
-      <rect width="1000" height="40" fill="#2B2420" />
-      <rect x="700" y="40" width="300" height="500" fill="#C89B6D" />
-      {[736, 812, 898, 962].map((x) => (
-        <rect key={x} x={x} y="40" width="4" height="500" fill="#1B1714" opacity=".5" />
+      <rect width="1000" height="620" fill="#0b0b0b" />
+      {/* wall panels */}
+      {[180, 360, 540, 720, 880].map((x) => (
+        <line key={x} x1={x} y1="0" x2={x} y2="540" stroke="#1d1d1d" strokeWidth="1" />
       ))}
-      <g fill="#F5F1EA" transform="translate(70,150) scale(0.86)">
+      <g fill="#F6F6F4" transform="translate(70,150) scale(0.86)">
         {LETTERS.map((l) => {
           const h = halves(l.poly);
           return (
@@ -33,30 +37,34 @@ function Wall({ alt }: { alt: string }) {
           );
         })}
       </g>
-      <g className="s-led" style={{ transformOrigin: "0 216px" }}>
-        <rect x="0" y="212" width="1000" height="8" fill="#F2C76E" filter="url(#store-glow)" opacity=".9" />
-        <rect x="0" y="213" width="1000" height="6" fill="#FFE2A6" />
+      {/* shelves: outlines only, the packs as MOKA prints them (black bag, white cup, grey paper bag) */}
+      <g fill="none" stroke={line} strokeWidth="1.5">
+        <line x1="712" y1="219" x2="968" y2="219" />
+        <line x1="712" y1="372" x2="968" y2="372" />
       </g>
-      <rect x="700" y="219" width="300" height="8" fill="#5E3B26" />
-      <rect x="716" y="150" width="40" height="63" fill="#FFFFFF" />
-      <rect x="716" y="186" width="40" height="27" fill="#8A5A3B" />
-      <rect x="768" y="150" width="40" height="63" fill="#C9A882" />
-      <rect x="820" y="150" width="40" height="63" fill="#1B1714" />
-      <rect x="820" y="186" width="40" height="3" fill="#8E2F22" />
-      <rect x="872" y="150" width="40" height="63" fill="#FFFFFF" />
-      <rect x="872" y="176" width="40" height="37" fill="#C08A55" />
-      <rect x="924" y="150" width="40" height="63" fill="#C9A882" />
-      <rect x="700" y="372" width="300" height="8" fill="#5E3B26" />
-      <rect x="716" y="306" width="40" height="66" fill="#FFFFFF" />
-      <rect x="716" y="346" width="40" height="26" fill="#5E3B26" />
-      <rect x="768" y="306" width="40" height="66" fill="#C9A882" />
-      <rect x="820" y="306" width="40" height="66" fill="#FFFFFF" />
-      <rect x="820" y="336" width="40" height="36" fill="#8C9A5B" />
-      <rect x="60" y="400" width="600" height="140" fill="#1B1714" />
-      <rect x="60" y="400" width="600" height="10" fill="#3A3530" />
-      <polygon points="344,440 376,440 366,458 376,476 345,476 351,458" fill="#F5F1EA" />
-      <path d="M344,444 C336,444 334,450 334,453 C334,459 339,462 345,462" fill="none" stroke="#F5F1EA" strokeWidth="3" />
-      <rect y="540" width="1000" height="80" fill="#5E3B26" />
+      <g strokeWidth="1.5">
+        <rect x="724" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
+        <rect x="776" y="162" width="30" height="50" fill="#F6F6F4" />
+        <rect x="776" y="158" width="30" height="7" fill="#000" stroke="#8a8a8a" />
+        <rect x="818" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
+        <rect x="870" y="160" width="40" height="52" fill="#878787" />
+        <rect x="922" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
+        <rect x="724" y="318" width="30" height="50" fill="#F6F6F4" />
+        <rect x="724" y="314" width="30" height="7" fill="#000" stroke="#8a8a8a" />
+        <rect x="766" y="306" width="40" height="62" fill="#000" stroke="#8a8a8a" />
+        <rect x="818" y="316" width="40" height="52" fill="#878787" />
+      </g>
+      {/* counter */}
+      <rect x="60" y="400" width="600" height="140" fill="#000" stroke={line} strokeWidth="1.5" />
+      <line x1="60" y1="414" x2="660" y2="414" stroke="#2a2a2a" />
+      <polygon points="344,446 376,446 366,464 376,482 345,482 351,464" fill="#F6F6F4" />
+      <path d="M344,450 C336,450 334,456 334,459 C334,465 339,468 345,468" fill="none" stroke="#F6F6F4" strokeWidth="3" />
+      <line x1="0" y1="540" x2="1000" y2="540" stroke={line} strokeWidth="1.5" />
+      {/* the lit line at the signature height */}
+      <g className="s-led" style={{ transformOrigin: "0 216px" }}>
+        <rect x="0" y="210" width="1000" height="12" fill="#FFFFFF" filter="url(#store-glow)" opacity=".55" />
+        <rect x="0" y="214" width="1000" height="4" fill="#FFFFFF" />
+      </g>
     </svg>
   );
 }
@@ -124,12 +132,12 @@ export function Store() {
           <div className="s-ritual flex flex-col gap-5 bg-paper p-8 text-espresso">
             <p className="eyebrow text-axsam-ink">{t.store.ritualEyebrow}</p>
             <svg viewBox="0 0 300 220" className="h-auto w-full max-w-[320px]" role="img" aria-label={t.store.cupAlt}>
-              <path d="M40,30 L260,30 L238,190 L62,190 Z" fill="#1B1714" />
-              <path d="M54,40 L246,40 L227,180 L73,180 Z" fill="#F5F1EA" />
-              <path className="s-cup-fill" d="M63,108 L237,108 L227,180 L73,180 Z" fill="#5E3B26" />
-              <rect x="60" y="104" width="180" height="3" fill="#1B1714" />
-              <path d="M260,62 C300,62 300,130 250,130" fill="none" stroke="#1B1714" strokeWidth="14" />
-              <rect x="14" y="198" width="272" height="14" rx="7" fill="#1B1714" />
+              <path d="M40,30 L260,30 L238,190 L62,190 Z" fill="#000000" />
+              <path d="M54,40 L246,40 L227,180 L73,180 Z" fill="#F6F6F4" />
+              <path className="s-cup-fill" d="M63,108 L237,108 L227,180 L73,180 Z" fill="#3a3a3a" />
+              <rect x="60" y="104" width="180" height="3" fill="#000000" />
+              <path d="M260,62 C300,62 300,130 250,130" fill="none" stroke="#000000" strokeWidth="14" />
+              <rect x="14" y="198" width="272" height="14" rx="7" fill="#000000" />
             </svg>
             <h3 className="text-[28px] leading-tight font-medium">{t.store.ritualTitle}</h3>
             <p className="text-[15px] leading-relaxed text-muted">

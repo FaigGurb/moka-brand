@@ -48,6 +48,7 @@ const az = {
   beans: {
     eyebrow: "Proses",
     title: "Bir fincanın yolu",
+    skip: "Filmi ötür",
     steps: [
       { title: "Dən", text: "Yaşıl dən hələ heç nə vəd etmir: nə ətri var, nə dadı. Hər partiyanın mənşəyi paketdə yazılır.", tags: ["Seçilmiş yaşıl dən", "Mənşə paketdə"] },
       { title: "Qovurma", text: "İstilik dənin rəngini və dadını dəyişir: açıq qovrulmada meyvə və çiçək, ortada balans, tünddə şokolad və güclü gövdə.", tags: ["Besca BSC-05", "5 kq partiya"] },
@@ -68,12 +69,12 @@ const az = {
       { sub: "", src: "Limitli buraxılışların vurğusu" },
     ],
     seasonal: "Mövsümi",
-    title: "Palitra kafenin özündən gəlir",
-    text: "Qara-ağ loqo əsasdır. Köməkçi rənglər interyerdən götürülüb və günün saatlarına görə adlanır: menyuda, Instagram-da və mövsümi kampaniyalarda bu adlar işlədilir.",
+    title: "Qara-ağ, bir xətt rəng",
+    text: "MOKA qara-ağdır. Gün rəngləri yalnız vurğudur — bir xətt, bir nöqtə: interyerdən götürülüb, günün saatlarına görə adlanır və menyuda, Instagram-da, mövsümi kampaniyalarda işlədilə bilər. Konseptin təklifidir.",
     base: [
-      { name: "Espresso", src: "Loqo, paket, fasad" },
-      { name: "Kağız", src: "Stəkan, kağız çanta" },
-      { name: "Kraft", src: "Dən kartı, menyu" },
+      { name: "Qara", src: "Loqo, qara paket, fasad" },
+      { name: "Ağ", src: "Ağ stəkan, fon" },
+      { name: "Boz", src: "Boz kağız çanta, köməkçi mətn" },
     ],
   },
   roast: {
@@ -379,6 +380,7 @@ const en: Dict = {
   beans: {
     eyebrow: "Process",
     title: "The journey of a cup",
+    skip: "Skip the film",
     steps: [
       { title: "Bean", text: "A green bean promises nothing yet: no aroma, no flavour. The origin of every batch is printed on the bag.", tags: ["Selected green beans", "Origin on the bag"] },
       { title: "Roast", text: "Heat changes the bean's colour and taste: fruit and flowers in a light roast, balance in a medium one, chocolate and a strong body in a dark one.", tags: ["Besca BSC-05", "5 kg batch"] },
@@ -398,12 +400,12 @@ const en: Dict = {
       { sub: "Pomegranate", src: "The accent for limited releases" },
     ],
     seasonal: "Seasonal",
-    title: "The palette comes from the café itself",
-    text: "The black-and-white logo leads. The supporting colours are taken from the interior and named after the hours of the day; the names are used on the menu, on Instagram and in seasonal campaigns.",
+    title: "Black and white, one line of colour",
+    text: "MOKA is black and white. The day colours are only an accent — one line, one dot: taken from the interior, named after the hours of the day, ready for the menu, Instagram and seasonal campaigns. A proposal of the concept.",
     base: [
-      { name: "Espresso", src: "Logo, bag, storefront" },
-      { name: "Paper", src: "Cups, paper bag" },
-      { name: "Kraft", src: "Bean card, menu" },
+      { name: "Black", src: "Logo, black bag, storefront" },
+      { name: "White", src: "White cup, background" },
+      { name: "Grey", src: "Grey paper bag, secondary text" },
     ],
   },
   roast: {
@@ -707,6 +709,7 @@ const ru: Dict = {
   beans: {
     eyebrow: "Процесс",
     title: "Путь одной чашки",
+    skip: "Пропустить фильм",
     steps: [
       { title: "Зерно", text: "Зелёное зерно пока ничего не обещает: ни аромата, ни вкуса. Происхождение каждой партии указано на пачке.", tags: ["Отборное зелёное зерно", "Происхождение на пачке"] },
       { title: "Обжарка", text: "Жар меняет цвет и вкус зерна: в светлой обжарке — фрукты и цветы, в средней — баланс, в тёмной — шоколад и плотное тело.", tags: ["Besca BSC-05", "Партия 5 кг"] },
@@ -726,12 +729,12 @@ const ru: Dict = {
       { sub: "Гранат", src: "Акцент для лимитированных выпусков" },
     ],
     seasonal: "Сезонный",
-    title: "Палитра взята из самой кофейни",
-    text: "Основа — чёрно-белый логотип. Дополнительные цвета взяты из интерьера и названы по времени суток; эти названия используются в меню, в Instagram и в сезонных кампаниях.",
+    title: "Чёрно-белое, одна линия цвета",
+    text: "MOKA — чёрно-белая. Цвета дня — только акцент: одна линия, одна точка. Они взяты из интерьера, названы по времени суток и могут жить в меню, в Instagram и в сезонных кампаниях. Это предложение концепта.",
     base: [
-      { name: "Эспрессо", src: "Логотип, пачка, вывеска" },
-      { name: "Бумага", src: "Стаканы, бумажный пакет" },
-      { name: "Крафт", src: "Карточка зерна, меню" },
+      { name: "Чёрный", src: "Логотип, чёрная пачка, вывеска" },
+      { name: "Белый", src: "Белый стакан, фон" },
+      { name: "Серый", src: "Серый бумажный пакет, второстепенный текст" },
     ],
   },
   roast: {
