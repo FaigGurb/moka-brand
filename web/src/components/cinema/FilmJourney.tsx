@@ -460,6 +460,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       {stops.map((s, k) => (
         <Fragment key={k}>
           <section id={k === 0 ? id : undefined} aria-labelledby={k === 0 ? `${id}-title` : undefined} data-film-stop={k} className="relative z-10 text-paper">
+            {/* the section heading comes first in the document (h2 before the chapter h3s), laid over the top of the rest */}
+            {k === 0 && (
+              <div className="mx-auto w-full max-w-[1320px] px-5 pt-24 md:px-12 md:pt-28 motion-safe:absolute motion-safe:inset-x-0 motion-safe:top-0">
+                <p className="eyebrow text-seher">{eyebrow}</p>
+                <div className="mt-2 max-w-[16ch] font-[family-name:var(--font-display)] text-[clamp(28px,4.2vw,56px)] leading-[1.02] font-medium tracking-[-0.015em]">
+                  {heading}
+                </div>
+              </div>
+            )}
             {/* the chapter title, pinned to the foot of the screen for the whole section; the film sets its visibility */}
             {s.caption && (
               <div className="pointer-events-none motion-safe:sticky motion-safe:top-0 motion-safe:-mb-[100svh] motion-safe:flex motion-safe:h-[100svh] motion-safe:flex-col motion-safe:justify-end md:motion-safe:justify-center">
@@ -489,14 +498,6 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
               className="relative mx-auto flex w-full max-w-[1320px] flex-col px-5 md:px-12 motion-reduce:!h-auto motion-reduce:py-14"
               style={{ height: `${rest[k] * 100}svh` }}
             >
-              {k === 0 && (
-                <div className="pt-24 md:pt-28">
-                  <p className="eyebrow text-seher">{eyebrow}</p>
-                  <div className="mt-2 max-w-[16ch] font-[family-name:var(--font-display)] text-[clamp(28px,4.2vw,56px)] leading-[1.02] font-medium tracking-[-0.015em]">
-                    {heading}
-                  </div>
-                </div>
-              )}
               {/* reduced motion: the still in flow */}
               <StillFallback still={s.shot.still} focus={s.shot.focus} />
             </div>

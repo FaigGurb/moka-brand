@@ -37,7 +37,8 @@ export function CoverFrame({ still, focus, children }: { still: Still; focus?: s
     return () => ro.disconnect();
   }, [still, focus]);
   return (
-    <div ref={ref} className="absolute" style={box ?? { left: 0, top: 0, width: "100%", height: "100%" }}>
+    // hidden until measured: a full-size first paint that then shrinks counts as a layout shift
+    <div ref={ref} className="absolute" style={box ?? { inset: 0, visibility: "hidden" }}>
       {children}
     </div>
   );
