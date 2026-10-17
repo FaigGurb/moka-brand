@@ -79,7 +79,10 @@ export function Concept() {
         <div className="c-letters relative mt-10 grid grid-cols-4 gap-x-3 gap-y-10 md:gap-x-6 lg:mt-16">
           {STEPS.map((s) => (
             <figure key={s.id} className="c-letter flex flex-col gap-2 md:gap-4">
-              <Letter id={s.id} className="h-[clamp(60px,17vw,170px)] w-auto max-w-full self-start text-paper" />
+              {/* one box height for all four marks, so the captions share a baseline */}
+              <span className="flex h-[clamp(60px,17vw,170px)] items-end">
+                <Letter id={s.id} className="h-full w-auto max-w-full text-paper" />
+              </span>
               <figcaption className="font-[family-name:var(--font-display)] text-[13px] leading-tight sm:text-lg md:text-2xl">
                 <span className="hidden sm:inline">{s.id} · </span>{s.tool}
               </figcaption>

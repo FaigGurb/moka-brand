@@ -52,7 +52,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
     // Every section and film chapter is watched: one that has no nav link (Bar, the film's grind/pour
     // chapters, …) clears the highlight instead of leaving the previous link lit.
     const nav = new Set<string>(NAV_IDS);
-    const els = Array.from(document.querySelectorAll("#top, main section[id], [data-film-stop]"));
+    const els = Array.from(document.querySelectorAll("#top, main section, [data-film-stop], footer"));
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => {
@@ -124,12 +124,6 @@ export function Nav({ sub = "" }: { sub?: string }) {
           className="hidden border border-paper/40 px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium whitespace-nowrap text-paper transition-colors hover:border-paper aria-[current]:border-glow aria-[current]:text-glow lg:inline-block"
         >
           {t.menu.nav}
-        </a>
-        <a
-          href={L.ar}
-          className="hidden bg-paper px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium whitespace-nowrap text-espresso transition-colors hover:bg-glow xl:inline-block"
-        >
-          {t.nav.ar}
         </a>
         <SoundToggle labelOn={t.nav.soundOn} labelOff={t.nav.soundOff} className="-mr-2 sm:-mr-0" />
         <button

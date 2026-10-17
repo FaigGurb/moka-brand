@@ -7,7 +7,9 @@ import { jumpTo } from "@/lib/lenis";
 export function BackToTop({ label }: { label: string }) {
   const [on, setOn] = useState(false);
   useEffect(() => {
-    const check = () => setOn(window.scrollY > window.innerHeight * 3);
+    // hidden again at the foot of the page, where the footer has its own links (and the final "back to top")
+    const check = () =>
+      setOn(window.scrollY > window.innerHeight * 3 && window.scrollY + window.innerHeight < document.documentElement.scrollHeight - 600);
     check();
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);

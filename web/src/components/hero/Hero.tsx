@@ -88,6 +88,8 @@ export function Hero() {
       <Dust />
       {/* grade: the copy side stays deep black; phones get a floor under the text */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.6)_38%,transparent_70%)]" />
+      {/* wide screens: the pitch and buttons sit on the right, so that side gets its own shade */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(270deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.55)_38%,transparent_62%)] md:block" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] bg-[linear-gradient(to_top,#000_0%,rgba(0,0,0,0.75)_45%,transparent)] md:h-[35%]" />
       <div aria-hidden="true" className="hero-dim pointer-events-none absolute inset-0 bg-black opacity-0" />
 

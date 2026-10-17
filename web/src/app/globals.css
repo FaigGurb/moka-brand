@@ -181,11 +181,11 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 /* the band's sections let the page colour through */
 [data-tone] > section { background-color: transparent; }
 /* each band paints its own ground (text colours flip at the band edge, so the ground must flip with
-   them); the band after one of the other tone fades in over its first 100px, inside the section's
+   them); the band after one of the other tone fades in over its first 56px, inside the section's
    own top padding, so no text ever sits on an in-between grey */
 [data-tone="ink"] { background: #000; }
-[data-tone="paper"] { background: linear-gradient(#000 0, #f1f0ed 100px); }
-[data-tone="paper"] + [data-tone="ink"] { background: linear-gradient(#f1f0ed 0, #000 100px); }
+[data-tone="paper"] { background: linear-gradient(#000 0, #f1f0ed 56px); }
+[data-tone="paper"] + [data-tone="ink"] { background: linear-gradient(#f1f0ed 0, #000 56px); }
 /* ink: MOKA's black is neutral; the brown espresso of the system stays for the brand book and print */
 .tone-ink {
   --color-espresso: #000;

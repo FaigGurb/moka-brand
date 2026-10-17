@@ -330,7 +330,16 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
       if (index) {
         const frac = f - Math.floor(f);
         const capMax = capOp.length ? Math.max(...capOp) : 0;
-        const on = window.scrollY > filmTop && window.scrollY < filmEnd && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
+        // any content section (roast, brewing, packaging) across the middle of the screen hides it too
+        let overContent = false;
+        for (const a of afterEls.values()) {
+          const r = a.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.75 && r.bottom > window.innerHeight * 0.25) {
+            overContent = true;
+            break;
+          }
+        }
+        const on = !overContent && window.scrollY > filmTop && window.scrollY < filmEnd && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
         if (on !== indexOn) {
           indexOn = on;
           index.dataset.on = String(on);
