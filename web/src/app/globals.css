@@ -138,11 +138,14 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .film-cap { --o: 0; }
 .film-cap-fade { opacity: var(--o); transform: translate3d(0, calc((1 - var(--o)) * 18px), 0); }
 .film-word {
-  --w: clamp(0, calc(var(--o) * 1.6 - var(--i) * 0.18), 1);
+  --w: clamp(0, calc(var(--o) * 1.7 - var(--i) * 0.22), 1);
   opacity: var(--w);
-  transform: translate3d(0, calc((1 - var(--w)) * 0.45em), calc((1 - var(--w)) * -140px)) rotateX(calc((1 - var(--w)) * 38deg));
+  transform: translate3d(0, calc((1 - var(--w)) * 0.7em), calc((1 - var(--w)) * -220px)) rotateX(calc((1 - var(--w)) * 55deg));
   transform-origin: 50% 100%;
 }
+/* section titles (fx/HeadingReveal): each word rises out of its own mask; the mask leaves room for ə, y, g */
+.hr-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.hr-word { display: inline-block; transform-origin: 0 100%; will-change: transform; }
 @media (prefers-reduced-motion: reduce) { .film-cap { --o: 1; } }
 /* giant scene word, drifting with the film (FilmJourney). A dim warm colour blended with "lighten":
    it shows on the dark backdrop and vanishes wherever the subject is brighter, so it reads as set
