@@ -22,13 +22,16 @@ export function Bar() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
         gsap.fromTo(
           ".b-frame",
           { clipPath: "inset(14% 12% 14% 12%)" },
           {
             clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
-            scrollTrigger: { trigger: ".b-frame", start: "top 90%", end: "top 30%", scrub: 1 },
+            scrollTrigger: { trigger: ".b-frame", start: "top 90%", end: "top 30%", scrub: fine ? 1 : false, toggleActions: "play none none none" },
+            // touch: one timed reveal (an animated clip-path repaints the whole picture every scroll frame on iOS)
+            ...(fine ? {} : { duration: 1.2, ease: "power3.out" }),
           },
         );
         // the right column of stills drifts against the left as the section passes (whole figures, so
