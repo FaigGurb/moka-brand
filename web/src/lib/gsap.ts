@@ -10,4 +10,12 @@ if (typeof window !== "undefined") {
   ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
+/**
+ * Scrub for scroll-driven scenes: on touch screens the scene follows the finger exactly (smoothing
+ * there makes it swim behind a CSS-sticky scene and shake when the finger turns); with a wheel a
+ * short catch-up keeps it soft.
+ */
+export const scrubFor = (smooth: number): number | true =>
+  typeof window !== "undefined" && matchMedia("(hover: none), (pointer: coarse)").matches ? true : smooth;
+
 export { gsap, ScrollTrigger, useGSAP };

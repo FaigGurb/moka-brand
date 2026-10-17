@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Letter } from "../Logo";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP, scrubFor } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
 
 const IDS = ["M", "O", "K", "A"] as const;
@@ -22,16 +22,13 @@ export function Concept() {
         const marks = letters.map((l) => l.querySelector("svg"));
         const caps = letters.map((l) => l.querySelector("figcaption"));
         const panels = gsap.utils.toArray<HTMLElement>(".c-panel");
-        // each letter opens along the signature line as the line reaches it, then closes again
-        const tops = letters.map((l) => l.querySelector("svg polygon:nth-of-type(1)"));
-        const bottoms = letters.map((l) => l.querySelector("svg polygon:nth-of-type(2)"));
         gsap.set(marks, { opacity: 0.16 });
         gsap.set(caps, { opacity: 0.7 });
         gsap.set(panels, { autoAlpha: 0, y: 30 });
         const tl = gsap.timeline({
           defaults: { ease: "power2.inOut" },
           // no GSAP pin: the scene is CSS-sticky (smooth under touch momentum on phones); the timeline follows the section
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: 0.5 },
+          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: scrubFor(0.5) },
         });
         tl.to(".c-line", { scaleX: 1, duration: 4, ease: "none" }, 0);
         STEPS.forEach((_, i) => {
@@ -39,9 +36,7 @@ export function Concept() {
           tl.to(letters[i], { y: -10, duration: 0.4 }, at)
             .to([marks[i], caps[i]], { opacity: 1, duration: 0.4 }, at)
             .to(panels[i], { autoAlpha: 1, y: 0, duration: 0.4 }, at)
-            .to(tops[i], { y: -7, duration: 0.3, ease: "power3.out" }, at)
-            .to(bottoms[i], { y: 7, duration: 0.3, ease: "power3.out" }, at)
-            .to([tops[i], bottoms[i]], { y: 0, duration: 0.35, ease: "power2.inOut" }, at + 0.45);
+
           if (i < STEPS.length - 1) {
             tl.to(letters[i], { y: 0, duration: 0.4 }, at + 0.8)
               .to(marks[i], { opacity: 0.45, duration: 0.4 }, at + 0.8)

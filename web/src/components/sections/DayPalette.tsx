@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP, scrubFor } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
 
 // "Bakıda bir gün": the secondary palette, named after the hours of a day in the café.
@@ -37,7 +37,7 @@ export function DayPalette() {
             trigger: ".d-track",
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.6,
+            scrub: scrubFor(0.6),
           },
         });
         slides.forEach((s, i) => {
