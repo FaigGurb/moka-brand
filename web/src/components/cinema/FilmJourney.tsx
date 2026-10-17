@@ -142,9 +142,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         if (k === 0) keys.push([y(stopEls[0]) - vh, 0]);
         const ry = y(r);
         keys.push([ry, k]);
-        segs.push([from, ry]);
-        from = ry;
         const a = afterEls.get(k);
+        // a passing shot with no title (the crack, the Chemex) is not a place to stop: the gesture that
+        // leaves the previous chapter plays through it and on to the content that follows, which rises
+        // to just under the nav
+        if (a && !stops[k].caption && k < n - 1) {
+          const fade = (a.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0;
+          segs.push([from, Math.max(ry, y(a) + fade - 72)]);
+        } else segs.push([from, ry]);
+        from = ry;
         if (a && k < n - 1) {
           from = y(a) + a.offsetHeight - vh;
           keys.push([from, k]);
