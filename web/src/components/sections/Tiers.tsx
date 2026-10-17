@@ -13,8 +13,8 @@ export function Tiers() {
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      // Horizontal gallery driven by vertical scroll on every screen size; native swipe only for reduced motion.
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
+      // Horizontal gallery driven by vertical scroll with a mouse or trackpad; touch screens and reduced motion swipe it natively.
+      mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
         const sec = root.current!;
         const track = sec.querySelector<HTMLElement>(".t-track")!;
         const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
@@ -53,15 +53,15 @@ export function Tiers() {
 
   return (
     <section id="paket" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
-      <div className="t-pin relative overflow-hidden motion-safe:sticky motion-safe:top-0 motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
+      <div className="t-pin relative overflow-hidden scene:sticky scene:top-0 scene:flex scene:h-[100svh] scene:items-center">
         {/* MOKA's official slogan as a giant outline behind the gallery (never on the packs themselves) */}
         <p
           aria-hidden="true"
-          className="t-word pointer-events-none absolute will-change-transform top-[58%] left-[18vw] -translate-y-1/2 font-[family-name:var(--font-display)] text-[clamp(120px,22vw,380px)] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-transparent [-webkit-text-stroke:1.5px_rgb(255_255_255/0.24)] motion-reduce:hidden"
+          className="t-word pointer-events-none absolute will-change-transform top-[58%] left-[18vw] -translate-y-1/2 font-[family-name:var(--font-display)] text-[clamp(120px,22vw,380px)] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-transparent [-webkit-text-stroke:1.5px_rgb(255_255_255/0.24)] noscene:hidden"
         >
           In coffee we trust.
         </p>
-        <div tabIndex={0} aria-label={t.tiers.title} className="t-track relative no-scrollbar will-change-transform focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
+        <div tabIndex={0} aria-label={t.tiers.title} className="t-track relative no-scrollbar will-change-transform focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 noscene:snap-x noscene:snap-mandatory noscene:scroll-px-5 noscene:overflow-x-auto noscene:py-24 scene:pr-[10vw] lg:scene:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-seher">{t.tiers.eyebrow}</p>
             <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.tiers.title}</h2>
@@ -77,7 +77,7 @@ export function Tiers() {
               <span className="h-[3px] w-6 bg-glow" aria-hidden="true" />
               {line ? t.tiers.hide : t.tiers.show}
             </button>
-            <p className="text-sm font-bold tracking-[0.06em] text-muted-dark motion-reduce:hidden">{t.tiers.hint}</p>
+            <p className="text-sm font-bold tracking-[0.06em] text-muted-dark noscene:hidden">{t.tiers.hint}</p>
             <p className="max-w-[40ch] text-xs leading-relaxed text-muted-dark">{t.tiers.source}</p>
           </div>
           {t.tiers.items.map((it, i) => {

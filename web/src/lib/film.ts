@@ -44,9 +44,14 @@ export function frameUrl(clip: Clip, width: number, i: number) {
 type Drawable = ImageBitmap | HTMLImageElement;
 
 const canBitmap = typeof createImageBitmap === "function";
+/**
+ * WebKit (Safari, and every browser on iPhone) decodes createImageBitmap(blob) slowly; an <img>'s
+ * decode() runs off the main thread there and is much faster. GestureEvent exists only in WebKit.
+ */
+const webkit = typeof window !== "undefined" && "GestureEvent" in window;
 
 async function decode(blob: Blob): Promise<Drawable> {
-  if (canBitmap) return createImageBitmap(blob);
+  if (canBitmap && !webkit) return createImageBitmap(blob);
   const img = new Image();
   img.src = URL.createObjectURL(blob);
   await img.decode();
@@ -153,9 +158,10 @@ export class FrameStore {
     };
     // a 1920 frame decodes to ~8 MB: big sets keep the smaller window too
     if (this.light || this.width >= 1600) {
-      add(0, 8, 1);
-      add(12, 40, 4);
-      add(48, 80, 8);
+      // a step on a phone plays ~90 frames in ~2.5 s: keep a longer dense run ahead
+      add(0, 16, 1);
+      add(20, 48, 4);
+      add(56, 88, 8);
     } else {
       add(0, 12, 1);
       add(16, 48, 4);
@@ -172,7 +178,7 @@ export class FrameStore {
       if (this.ready.has(i) || this.decoding.has(i)) continue;
       const blob = this.blobs[i];
       if (!blob) continue;
-      if (this.decoding.size >= (this.light ? 2 : 4)) break;
+      if (this.decoding.size >= (this.light ? 3 : 4)) break;
       this.decoding.add(i);
       decode(blob)
         .then((d) => {
