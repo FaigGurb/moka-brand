@@ -59,6 +59,8 @@ const STEP_PER_SCREEN = 0.7;
 const STEP_MIN = 1.8;
 const STEP_MAX = 2.8;
 const PUSH_MAX = 0.04;
+/** longest the film waits on a frame that is still decoding before it jumps to the nearest ready one (ms) */
+const STALL_MAX = 450;
 /** the breathing camera at rest: one slow push in and out every BREATH seconds, with a slight drift */
 const BREATH = 9;
 const BREATH_ZOOM = 0.035;
@@ -169,6 +171,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let prevF = 0;
     let push = 0;
     let rest = 0;
+    let shownIdx = -1;
+    let stallAt = 0;
     let wide = false;
     const capOp: number[] = [];
     const bigSt: string[] = [];
@@ -243,15 +247,32 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       (window as Window & { __mokaFilm?: number }).__mokaFilm = f;
 
       // the frame under the scroll, blended with its neighbour by the fraction in between
-      const x = (f / (n - 1)) * (film.frames - 1);
-      const i0 = low ? Math.round(x) : Math.floor(x);
+      let x = (f / (n - 1)) * (film.frames - 1);
+      let i0 = low ? Math.round(x) : Math.floor(x);
       // phones step through the (dense) frames; larger screens blend in quarter steps
-      const a = low ? 0 : Math.round((x - i0) * 4) / 4;
+      let a = low ? 0 : Math.round((x - i0) * 4) / 4;
       const want = Math.round(x);
       if (want !== lastWant) {
         store.want(want, want >= lastWant ? 1 : -1);
         lastWant = want;
       }
+      // a frame that isn't decoded yet (a slow phone): rather than jump to whatever is ready and then
+      // race to catch up, the film waits on the last frame it can show in order and plays on as the
+      // frames come in, briefly (STALL_MAX), then gives up and jumps
+      if (shownIdx >= 0 && shownIdx !== i0 && !store.get(i0)) {
+        const d = i0 > shownIdx ? 1 : -1;
+        let k = shownIdx;
+        while (k !== i0 && store.get(k + d)) k += d;
+        if (k !== i0) {
+          if (!stallAt) stallAt = now;
+          if (now - stallAt < STALL_MAX) {
+            pos = (k / (film.frames - 1)) * (n - 1);
+            x = k;
+            i0 = k;
+            a = 0;
+          }
+        } else stallAt = 0;
+      } else stallAt = 0;
       const s = Math.min(n - 2, Math.floor(f));
       const t = f - s;
       const fx = focus[s][0] + (focus[s + 1][0] - focus[s][0]) * t;
@@ -264,6 +285,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       const next = a > 0 ? store.get(i0 + 1) : undefined;
       const key = `${i0}|${next ? a : 0}|${c.width}|${c.height}|${fx.toFixed(3)}|${fy.toFixed(3)}`;
       if (base && key !== drawn) {
+        shownIdx = exact ? i0 : (near0?.index ?? shownIdx);
         drawCover(g, base, c.width, c.height, fx, fy);
         if (next) {
           g.globalAlpha = a;

@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* scroll-driven scenes that move wide layers (the packaging strip) run only with a mouse or trackpad:
+   iOS Safari paints a wide transformed strip in torn pieces under touch scrolling, so touch screens
+   swipe it natively instead */
+@custom-variant scene (@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine));
+@custom-variant noscene {
+  @media (prefers-reduced-motion: reduce) { @slot; }
+  @media (hover: none) { @slot; }
+  @media (pointer: coarse) { @slot; }
+}
+
 /* MOKA tokens — mirror the design system (tokens.json). */
 @theme {
   --color-espresso: #1b1714;
