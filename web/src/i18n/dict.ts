@@ -195,6 +195,7 @@ const az = {
     text: "Bütün tətbiqlər eyni qayda ilə qurulub: hərflər, xətt və günün rəngləri. Stəkan MOKA-nın rəsmi stəkanıdır: fırladın və ölçüsünü dəyişin. Yanda isə hazırladığımız lövhələr bir profildə toplanıb.",
     cup: {
       title: "Götür stəkanı",
+      open3d: "3D-də fırlat",
       size: "Ölçü",
       sizes: ["S · 250 ml", "M · 350 ml", "L · 450 ml"],
       hint: "Rəsmi dizayn: ağ stəkan, qara qapaq, qara K. K-nı kəsən boşluq elə imza xəttidir.",
@@ -524,6 +525,7 @@ const en: Dict = {
     text: "Every application follows the same rules: the letters, the line and the colours of the day. The cup is MOKA’s official cup: spin it and change its size. Next to it, the boards we designed are collected in one profile.",
     cup: {
       title: "Takeaway cup",
+      open3d: "Spin it in 3D",
       size: "Size",
       sizes: ["S · 250 ml", "M · 350 ml", "L · 450 ml"],
       hint: "The official design: white cup, black lid, black K. The gap cutting the K is the signature line itself.",
@@ -851,6 +853,7 @@ const ru: Dict = {
     text: "Все носители построены по одним правилам: буквы, линия и цвета дня. Стакан — официальный стакан MOKA: поверните его и смените размер. Рядом — наши макеты, собранные в одном профиле.",
     cup: {
       title: "Стакан с собой",
+      open3d: "Покрутить в 3D",
       size: "Размер",
       sizes: ["S · 250 мл", "M · 350 мл", "L · 450 мл"],
       hint: "Официальный дизайн: белый стакан, чёрная крышка, чёрный K. Просвет, разрезающий K, и есть фирменная линия.",

@@ -21,7 +21,7 @@ Concept brand site for MOKA Coffee Roastery (Baku). Test project, not the offici
 - Smooth scroll: Lenis in `SmoothScroll.tsx`, driven by `gsap.ticker`; pins use `scrub: 1`. Anchor offset −72px for the nav.
 - Desktop nav shows 8 links from `xl`; below that the menu button is used.
 - Brand boards in `public/brand/` are renders of the design canvas (Azerbaijani text); captions are translated in `dict.ts` (`apps.insta.posts`).
-- Performance: every Canvas gets `frameloop` from visibility; `perfTier()` (lib/perf.ts) picks the lite path on touch/weak devices (DPR ≤1.5, MeshStandard instead of Physical, fewer instances). Grain and nav blur are desktop-only. Don't add always-on full-screen layers on mobile.
+- Performance: three.js scenes mount only when wanted (Apps cup: near the section with a mouse, on a tap — "3D-də fırlat" — on touch screens; the vector `PackCup` stands in), never at page load; every Canvas gets `frameloop` from visibility; `perfTier()` (lib/perf.ts) picks the lite path on touch/weak devices (DPR ≤1.5, MeshStandard instead of Physical, fewer instances). Grain and nav blur are desktop-only. Don't add always-on full-screen layers on mobile.
 - Fonts are self-hosted (`@fontsource-variable/*` in layout.tsx; static pages use `/fonts/fonts.css`). Don't reintroduce Google Fonts links.
 - Publishing: page metadata via `pageMeta()` in `lib/meta.ts` (canonical, hreflang, OG, robots). `NEXT_PUBLIC_CONCEPT` keeps `noindex` until MOKA approves. Secondary pages use `components/pages/PageShell` and `Nav sub="menu/"`. Checklist: `docs/QA.md`.
 - Effects live in `components/fx/` (Preloader once per session, Cursor for fine pointers, ScrollLine, Marquee) plus `.grain` in globals.css; all off for reduced motion.

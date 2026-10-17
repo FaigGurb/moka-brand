@@ -35,6 +35,9 @@ function CupConfigurator() {
   const touch = useTouch();
   const [size, setSize] = useState<CupSize>("M");
   const [active, setActive] = useState(false);
+  // the 3D scene loads only when wanted: with a mouse once the cup comes near, on touch screens on a tap
+  // (three.js loading and compiling mid-scroll cost phones ~1.7 s of blocked main thread)
+  const [load3d, setLoad3d] = useState(false);
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,8 +45,20 @@ function CupConfigurator() {
     if (!el) return;
     const io = new IntersectionObserver((es) => es.forEach((e) => setActive(e.isIntersecting)), { rootMargin: "100px" });
     io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting || touch) return;
+        setLoad3d(true);
+        near.disconnect();
+      },
+      { rootMargin: "600px" },
+    );
+    near.observe(el);
+    return () => {
+      io.disconnect();
+      near.disconnect();
+    };
+  }, [touch]);
 
   return (
     <div className="flex flex-col bg-paper-2 p-5 text-espresso md:p-8">
@@ -52,12 +67,21 @@ function CupConfigurator() {
         <span className="text-[11px] font-semibold text-muted sm:text-[12px]">↔ {c.drag}</span>
       </div>
       <div ref={box} data-cursor="↔" className="relative mx-auto my-4 aspect-square w-full max-w-[460px]">
-        {webgl === true ? (
+        {webgl === true && load3d ? (
           <CupScene size={size} reducedMotion={reduced} touch={touch} active={active} />
         ) : (
-          webgl === false && (
+          <>
             <PackCup title={c.fallback} className="h-full w-full" />
-          )
+            {webgl === true && (
+              <button
+                type="button"
+                onClick={() => setLoad3d(true)}
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 border border-espresso/30 bg-paper px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium text-espresso transition-colors hover:border-espresso"
+              >
+                {c.open3d}
+              </button>
+            )}
+          </>
         )}
       </div>
 
