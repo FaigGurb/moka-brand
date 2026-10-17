@@ -10,9 +10,9 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** "Canlılıq" mərhələsi: Konsepsiya pin qısaldı + hərflər xətt boyunca açılır; kafedə MOKA-nın 3 real fotosu; hero-da "Bir dən at" oyuncağı; paket qalereyası arxasında rəsmi şüar konturu; finalda şüar halqası (scroll ilə fırlanır); film yüklənməsi boş anda başlayır. Lokal commit; deploy icazə ilə.
-- **Verification:** check + build; throttled (3–4 Mbps) tam film turu: lag>3 0–3%, 10 Mbps 0%; A/B: köhnə yükləyici 3 Mbps mobil 3%, yeni 0–1%; step/swipe/nav keçdi, CLS 0.003; axe (bütün səhifələr) ciddi xəta yox; responsive overflow 0; linkcheck 0; Lighthouse mobil 42 / desktop 77 (frames artıq səhifə yüklənəndə başlayır, TBT 350 ms). Real telefon yoxlanmayıb.
-- **Next step:** İstifadəçi baxsın → DEPLOY. Sonra (araşdırmadan qalanlar): istəyə bağlı bar səsi, dəmləmə bələdçisində özü çəkilən yol, bar fotolarının başlıq ətrafında parallaksı.
+- **Status:** Səs (istəyə bağlı, menyuda düymə; film addımında tökülmə, fincanda brend səs loqosu, düşən dənlərdə taqqıltı) və Barda fotolarında yüngül parallaks əlavə olundu. Lokal commit; deploy icazə ilə.
+- **Verification:** check + build; səs düyməsi desktop/mobil görünür, AudioContext klikdən sonra running, xəta yoxdur (səsin özü dinlənilməyib); step/swipe/nav keçdi, CLS 0.003; axe ciddi xəta yox; responsive overflow 0. Real telefon yoxlanmayıb.
+- **Next step:** İstifadəçi telefonda baxsın → DEPLOY; real səsi qulaqla yoxlamaq.
 
 ## Recent decisions (newest first, max 5)
 - 2026-10-17: Enky üslubu hibrid şəkildə, pulsuz: tünd MOKA filmi qalır, üstünə nəhəng söz, fəsil indeksi, fakt etiketləri.

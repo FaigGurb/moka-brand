@@ -5,6 +5,8 @@
  * screen and never takes pointer events. Nothing happens for reduced motion.
  */
 
+import { sound } from "@/lib/sound";
+
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const CELL = 160;
 const GRAVITY = 2600; // px/s²
@@ -57,6 +59,7 @@ function frame(now: number) {
     // the floor: bounce, lose energy, roll to a stop
     if (b.y + b.s * 0.32 > floor) {
       b.y = floor - b.s * 0.32;
+      if (b.vy > 700) sound.tok(0.8 + Math.random() * 0.5);
       b.vy = Math.abs(b.vy) > 160 ? -b.vy * 0.38 : 0;
       b.vx *= 0.82;
       b.vr = b.vx / (b.s * 0.4);

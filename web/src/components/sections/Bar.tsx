@@ -31,6 +31,13 @@ export function Bar() {
             scrollTrigger: { trigger: ".b-frame", start: "top 90%", end: "top 30%", scrub: 1 },
           },
         );
+        // the right column of stills drifts against the left as the section passes (whole figures, so
+        // captions travel with their photo and the rows never meet)
+        gsap.fromTo(
+          ".b-shot",
+          { y: 28 },
+          { y: -28, ease: "none", scrollTrigger: { trigger: ".b-shots", start: "top bottom", end: "bottom top", scrub: 1 } },
+        );
       });
       return () => mm.revert();
     },
@@ -63,9 +70,9 @@ export function Bar() {
             </h2>
             <p className="max-w-[46ch] text-[17px] leading-relaxed text-muted-dark md:text-[19px]">{b.text}</p>
           </div>
-          <ul className="grid grid-cols-2 gap-3 md:gap-4">
-            {b.shots.map((s) => (
-              <li key={s.src}>
+          <ul className="b-shots grid grid-cols-2 gap-3 md:gap-4">
+            {b.shots.map((s, i) => (
+              <li key={s.src} className={i % 2 ? "b-shot" : undefined}>
                 <figure className="flex flex-col gap-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img

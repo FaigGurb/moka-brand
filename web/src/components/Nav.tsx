@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
+import { SoundToggle } from "./SoundToggle";
 import { HOME, NAV_IDS, links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
 import { LOCALES } from "@/i18n/dict";
@@ -27,6 +28,7 @@ function LangSwitch({ className = "", sub = "" }: { className?: string; sub?: st
 }
 
 /** `sub` is set on secondary pages (e.g. "menu/"): section links then point back to the home page. */
+
 export function Nav({ sub = "" }: { sub?: string }) {
   const { locale, t } = useI18n();
   const L = links(locale);
@@ -108,9 +110,10 @@ export function Nav({ sub = "" }: { sub?: string }) {
         >
           {t.nav.ar}
         </a>
+        <SoundToggle labelOn={t.nav.soundOn} labelOff={t.nav.soundOff} className="ml-auto -mr-2 sm:ml-0 sm:-mr-0" />
         <button
           type="button"
-          className="ml-auto flex h-11 w-11 items-center justify-center text-paper sm:ml-0 xl:hidden"
+          className="flex h-11 w-11 items-center justify-center text-paper xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? t.nav.close : t.nav.open}
