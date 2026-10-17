@@ -366,7 +366,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     // gentle in and out with an almost even middle, so the clip plays at its own (slow-motion) pace
     const easeInOut = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
     const easeOut = (t: number) => Math.sin((t * Math.PI) / 2);
-    const here = () => getLenis()?.scroll ?? window.scrollY;
+    // the real scroll position: Lenis's own value can trail a native touch scroll by a frame, and a
+    // swipe judged against it is lost
+    const here = () => window.scrollY;
     /** true when the gesture was taken by the film */
     const step = (dir: 1 | -1) => {
       const moving = goal !== null;
