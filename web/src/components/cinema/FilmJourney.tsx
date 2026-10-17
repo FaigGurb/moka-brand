@@ -217,7 +217,17 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       // pointer adds a slight drift (damped slower still)
       const sf = Math.min(n - 2, Math.floor(f));
       const sv = side[sf] + (side[sf + 1] - side[sf]) * smooth(f - sf);
-      if (cam) {
+      // while a content section covers the whole screen the film is out of sight: leave its layers alone
+      // (no transform writes behind the roast, brewing and packaging sections; phones feel it)
+      let covered = false;
+      for (const a of afterEls.values()) {
+        const r = a.getBoundingClientRect();
+        if (r.top <= 0 && r.bottom >= window.innerHeight) {
+          covered = true;
+          break;
+        }
+      }
+      if (cam && !covered) {
         const k = 1 - Math.pow(1 - CAM, dt * 60);
         cx += (mx - cx) * k;
         cy += (my - cy) * k;

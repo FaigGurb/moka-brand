@@ -213,8 +213,9 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 }
 /* the drift is a compositor-only transform, cheap enough for phones too; reduced motion stops it */
 .day-glow::before, .day-wash::before { will-change: transform; }
+/* phones: the glow stays still (no always-on animated layer behind scrolling content) */
 @media (hover: none), (pointer: coarse) {
-  .day-glow::before, .day-wash::before { animation-duration: 22s; }
+  .day-glow::before, .day-wash::before { animation: none; will-change: auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .day-glow::before, .day-wash::before { animation: none; will-change: auto; }
