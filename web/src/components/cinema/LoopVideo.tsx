@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { loopSrc, type Loop } from "@/lib/cinema";
+import { perfTier } from "@/lib/perf";
 
 /**
  * A silent seamless loop laid over its still (the clip starts from that still). It loads only when
@@ -50,13 +51,22 @@ export function LoopVideo({
       playingRef.current?.(true);
     };
     v.addEventListener("playing", playing);
-    // load a screen ahead, play only in view
+    // load a screen ahead, play only in view; never before the page has loaded and gone idle, so the
+    // video doesn't compete with the first paint (the still covers until then)
+    let idle = 0;
+    let wait = 0;
+    const start = () => {
+      const go = () => setSrc((s) => s ?? loopSrc(loop, perfTier() === "low"));
+      const ric = window.requestIdleCallback;
+      if (ric) idle = ric(go, { timeout: 1500 });
+      else wait = window.setTimeout(go, 300);
+    };
     const near = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) {
-          setSrc((s) => s ?? loopSrc(loop));
-          near.disconnect();
-        }
+        if (!e.isIntersecting) return;
+        near.disconnect();
+        if (document.readyState === "complete") start();
+        else window.addEventListener("load", start, { once: true });
       },
       { rootMargin: "100% 0px" },
     );
@@ -72,6 +82,9 @@ export function LoopVideo({
     document.addEventListener("visibilitychange", sync);
     return () => {
       near.disconnect();
+      window.removeEventListener("load", start);
+      if (idle) window.cancelIdleCallback(idle);
+      window.clearTimeout(wait);
       io.disconnect();
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", sync);

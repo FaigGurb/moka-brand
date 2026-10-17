@@ -35,7 +35,9 @@ export const LOOPS = {
 } satisfies Record<string, Loop>;
 
 /** The smallest file (path without extension) that still covers this screen (cropped like object-fit: cover) sharply enough. */
-export function loopSrc(l: Loop) {
+export function loopSrc(l: Loop, lite = false) {
+  // weak/touch devices take the smallest file: the loop sits under grade and captions anyway
+  if (lite) return `${BASE}/cinema/video/${l.name}-${Math.min(...l.widths)}`;
   const cover = Math.max(window.innerWidth, window.innerHeight * (16 / 9));
   const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * 0.6;
   const w = [...l.widths].sort((a, b) => a - b).find((x) => x >= need) ?? l.widths[l.widths.length - 1];
