@@ -57,7 +57,7 @@ export function Tiers() {
         {/* MOKA's official slogan as a giant outline behind the gallery (never on the packs themselves) */}
         <p
           aria-hidden="true"
-          className="t-word pointer-events-none absolute will-change-transform top-[58%] left-[18vw] -translate-y-1/2 font-[family-name:var(--font-display)] text-[clamp(120px,22vw,380px)] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-transparent [-webkit-text-stroke:1.5px_rgb(255_255_255/0.24)] noscene:hidden"
+          className="t-word pointer-events-none absolute will-change-transform top-[52%] left-[46vw] -translate-y-1/2 font-[family-name:var(--font-display)] text-[clamp(120px,22vw,380px)] leading-none font-semibold tracking-[-0.04em] whitespace-nowrap text-transparent [-webkit-text-stroke:1.5px_rgb(255_255_255/0.18)] noscene:hidden"
         >
           In coffee we trust.
         </p>

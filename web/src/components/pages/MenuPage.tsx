@@ -37,7 +37,7 @@ function Item({ name, desc, letter, price, sizes, sizeLabel }: { name: string; d
           <span className="mb-1 flex-1 border-b border-dotted border-espresso/30" aria-hidden="true" />
           <span className="font-bold tabular-nums">{price}</span>
         </div>
-        <p className="mt-1 text-[15px] leading-relaxed text-muted">{desc}</p>
+        {desc && <p className="mt-1 text-[15px] leading-relaxed text-muted">{desc}</p>}
         {sizes && (
           <p className="mt-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.1em] text-muted uppercase">
             <span className="sr-only">{sizeLabel}:</span>

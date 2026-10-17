@@ -54,7 +54,7 @@ const az = {
       "In coffee we trust.",
       "Good to the last drop!"
     ],
-    slogansNote: "Sistemin şüarı “Xəttə qədər.” ikinci şüarın Azərbaycan dilindəki davamıdır: son damlaya, xəttə qədər.",
+    slogansNote: "Konsept şüarı “Xəttə qədər.” (MOKA tərəfindən təsdiqlənməyib, təklifdir) ikinci şüarın Azərbaycan dilindəki davamıdır: son damlaya, xəttə qədər.",
     voiceT: "Instagram-dakı səs",
     voice: ["Ən yaxşı qəhvə artıq şəhərdə.", "Elektra ruhu, Moka dadı.", "Əhvalını qaldırmaq bizim işimizdir!", "Kofemizlə dünyanı fərqli hiss edəcəksən."],
     voiceNote: "MOKA-nın öz postlarından. Sistem bu tonu saxlayır: isti, qısa, birbaşa. Instagram-da lockup-un iki variantı görünür, köhnə “COFFEE ROASTERY” və yeni “ROASTERY & EATERY”; sistem yalnız yenisini işlədir, profil şəkli də ona keçməlidir.",
@@ -336,7 +336,7 @@ const en: BrandDict = {
       "In coffee we trust.",
       "Good to the last drop!"
     ],
-    slogansNote: "The system’s line “Xəttə qədər.” (To the line.) continues the second slogan in Azerbaijani: to the last drop, to the line.",
+    slogansNote: "The concept line “Xəttə qədər.” (To the line.; a proposal, not approved by MOKA) continues the second slogan in Azerbaijani: to the last drop, to the line.",
     voiceT: "The voice on Instagram",
     voice: ["The best coffee is already in town.", "Elektra spirit, Moka taste.", "Moka Coffee — lifting your mood is our job!", "With our coffee, the world feels different."],
     voiceNote: "From MOKA’s own posts. The system keeps this tone: warm, short, direct. Instagram shows two lockups, the older “COFFEE ROASTERY” and the new “ROASTERY & EATERY”; the system uses only the new one, and the profile picture should move to it too.",
@@ -616,7 +616,7 @@ const ru: BrandDict = {
       "In coffee we trust.",
       "Good to the last drop!"
     ],
-    slogansNote: "Слоган системы «Xəttə qədər.» («До линии.») продолжает второй слоган по-азербайджански: до последней капли, до линии.",
+    slogansNote: "Слоган концепта «Xəttə qədər.» («До линии.»; предложение, MOKA его не утверждала) продолжает второй слоган по-азербайджански: до последней капли, до линии.",
     voiceT: "Голос в Instagram",
     voice: ["Лучший кофе уже в городе.", "Дух Elektra, вкус Moka.", "Moka Coffee — поднимать настроение — это наше дело!", "С нашим кофе мир ощущается иначе."],
     voiceNote: "Из собственных постов MOKA. Система сохраняет этот тон: тёплый, короткий, прямой. В Instagram встречаются два локапа, старый «COFFEE ROASTERY» и новый «ROASTERY & EATERY»; система использует только новый, аватар профиля тоже стоит перевести на него.",

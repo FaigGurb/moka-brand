@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { SoundToggle } from "./SoundToggle";
+import { Cafes } from "./Cafes";
+import { getLenis } from "@/lib/lenis";
 import { HOME, NAV_IDS, links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
 import { LOCALES } from "@/i18n/dict";
@@ -58,6 +60,10 @@ export function Nav({ sub = "" }: { sub?: string }) {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    // Lenis drives the page scroll, so it has to stop too, or a swipe in the open menu scrolls the page behind it
+    if (open) getLenis()?.stop();
+    else getLenis()?.start();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -98,6 +104,12 @@ export function Nav({ sub = "" }: { sub?: string }) {
         </ul>
         <LangSwitch className="ml-auto hidden sm:flex xl:ml-0" sub={sub} />
         <a
+          href={home + "#kafeler"}
+          className="hidden py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper lg:inline-block"
+        >
+          {t.contact.title}
+        </a>
+        <a
           href={L.menu}
           aria-current={sub === "menu/" ? "page" : undefined}
           className="hidden border border-paper/40 px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium whitespace-nowrap text-paper transition-colors hover:border-paper aria-[current]:border-glow aria-[current]:text-glow lg:inline-block"
@@ -125,8 +137,14 @@ export function Nav({ sub = "" }: { sub?: string }) {
           </span>
         </button>
       </nav>
-      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-black px-5 pb-10 xl:hidden">
-        <ul className="flex flex-col border-t border-paper/15">
+      <div id="mobile-menu" data-lenis-prevent hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-black px-5 pb-10 xl:hidden">
+        <p className="pt-2 pb-3 text-[15px] text-muted-dark">{t.contact.title}</p>
+        <Cafes />
+        <a href={L.menu} className="mt-3 block border border-glow px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-glow">
+          {t.menu.nav}
+        </a>
+        <LangSwitch className="mt-4 -ml-2 sm:hidden" sub={sub} />
+        <ul className="mt-6 flex flex-col border-t border-paper/15">
           {NAV_IDS.map((id, i) => (
             <li key={id} className="border-b border-paper/15">
               <a href={home + id} onClick={() => setOpen(false)} className="flex items-baseline py-4 font-[family-name:var(--font-display)] text-2xl text-paper sm:text-3xl">
@@ -135,11 +153,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
             </li>
           ))}
         </ul>
-        <LangSwitch className="mt-6 -ml-2 sm:hidden" sub={sub} />
         <div className="mt-6 flex flex-col gap-3">
-          <a href={L.menu} className="border border-glow px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-glow">
-            {t.menu.nav}
-          </a>
           <a href={L.brand} className="border border-paper/40 px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-paper">
             {t.footer.brand}
           </a>

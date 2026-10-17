@@ -21,9 +21,11 @@ test("en and ru have the same shape as az", () => {
 test("no empty strings except deliberate blanks", () => {
   // the Azerbaijani day-palette subtitles are intentionally empty (the names are already Azerbaijani)
   const allowed = /^\.day\.slides\[\d\]\.sub$|^\.beans/;
+  // food descriptions stay blank until MOKA sends its real menu (no invented dishes)
+  const blank = /^\.menu\.items\.food\[\d\]\.desc$/;
   for (const l of LOCALES) {
     const walk = (v: unknown, p: string) => {
-      if (typeof v === "string") assert.ok(v.trim() !== "" || (l === "az" && allowed.test(p)), `${l}${p} is empty`);
+      if (typeof v === "string") assert.ok(v.trim() !== "" || blank.test(p) || (l === "az" && allowed.test(p)), `${l}${p} is empty`);
       else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) walk(x, Array.isArray(v) ? `${p}[${k}]` : `${p}.${k}`);
     };
     walk(DICTS[l], "");
