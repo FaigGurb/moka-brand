@@ -5,6 +5,7 @@ import { stillSrc, type Still } from "@/lib/cinema";
 import { FrameStore, drawCover, pickCoverWidth, type Clip } from "@/lib/film";
 import { perfTier } from "@/lib/perf";
 import { getLenis } from "@/lib/lenis";
+import { sound } from "@/lib/sound";
 import { Dust } from "./Dust";
 import { CoverFrame, focusOf, type Shot } from "./Shot";
 
@@ -296,6 +297,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       if (markEl) {
         const o = Math.round(smooth(clamp01((f - (n - 1) + 0.06) / 0.06)) * 100) / 100;
         if (o !== markOp) {
+          // the K lands on the cup: the brand's sound logo (with sound on)
+          if (o >= 0.95 && markOp < 0.95) sound.logo();
           markOp = o;
           markEl.style.opacity = String(o);
         }
@@ -355,6 +358,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       const duration = Math.min(STEP_MAX, Math.max(STEP_MIN, STEP_BASE + (Math.abs(to - here()) / vh) * STEP_PER_SCREEN));
       // a new gesture mid-move carries on at speed instead of starting again from rest
       lenis.scrollTo(to, { duration, easing: moving ? easeOut : easeInOut, force: true, onComplete: () => (goal = null) });
+      // with sound on, each stop is a soft pour
+      if (!moving) sound.pour(duration);
       // if something else takes the scroll over (a nav link), forget the goal anyway
       window.clearTimeout(goalTimer);
       goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
