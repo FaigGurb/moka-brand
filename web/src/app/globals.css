@@ -136,6 +136,17 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   transform-origin: 50% 100%;
 }
 @media (prefers-reduced-motion: reduce) { .film-cap { --o: 1; } }
+/* giant scene word, drifting with the film (FilmJourney). A dim warm colour blended with "lighten":
+   it shows on the dark backdrop and vanishes wherever the subject is brighter, so it reads as set
+   behind the bean, the grounds or the cup */
+.film-big { --o: 0; --d: 0; opacity: var(--o); mix-blend-mode: lighten; }
+.film-big span {
+  font-family: var(--font-display); font-weight: 600; text-transform: uppercase; white-space: nowrap;
+  font-size: clamp(120px, 19vw, 360px); line-height: 0.8; letter-spacing: -0.045em; color: #48341f;
+  transform: translate3d(calc(var(--d) * -22vw), 0, 0) scale(calc(1 + var(--o) * 0.04));
+}
+.film-index { opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0s 0.5s; }
+.film-index[data-on="1"] { opacity: 1; visibility: visible; transition: opacity 0.5s; }
 @keyframes scroll-cue { 0% { transform: translateY(-100%); } 70%, 100% { transform: translateY(300%); } }
 @keyframes grain {
   0% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); }

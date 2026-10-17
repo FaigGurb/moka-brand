@@ -21,7 +21,7 @@ export function BeanStory({ lead, roast, brew, packs }: { lead: ReactNode; roast
   const { t } = useI18n();
   const b = t.beans;
   const [bean, roasting, grinding, brewing] = b.steps;
-  const cap = (i: number, s: { title: string; text: string }) => ({ kicker: String(i).padStart(2, "0"), title: s.title, text: s.text });
+  const cap = (i: number, s: { title: string; text: string; tags?: string[] }) => ({ kicker: String(i).padStart(2, "0"), title: s.title, text: s.text, tags: s.tags });
   const stops: FilmStop[] = [
     { shot: { still: STILLS.beanGreen, focus: "48% 50%" }, caption: cap(1, bean) },
     { shot: { still: STILLS.beanDark, focus: "48% 50%" }, caption: cap(2, roasting) },
