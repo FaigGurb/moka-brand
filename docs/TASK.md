@@ -10,8 +10,8 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** Səs (istəyə bağlı, menyuda düymə; film addımında tökülmə, fincanda brend səs loqosu, düşən dənlərdə taqqıltı) və Barda fotolarında yüngül parallaks əlavə olundu. Lokal commit; deploy icazə ilə.
-- **Verification:** check + build; səs düyməsi desktop/mobil görünür, AudioContext klikdən sonra running, xəta yoxdur (səsin özü dinlənilməyib); step/swipe/nav keçdi, CLS 0.003; axe ciddi xəta yox; responsive overflow 0. Real telefon yoxlanmayıb.
+- **Status:** Mobil donma: Konsepsiya, Rəng, Paketlər GSAP pin əvəzinə CSS sticky (touch ətalətində rəvan). Filmdə dayanacaqda kamera "nəfəs alır" (statik kadr donmuş görünmür). Başlıqlar söz-söz maskadan qalxır, film başlıq sözləri daha qabarıq. Lokal commit; deploy icazə ilə.
+- **Verification:** check + build; mobil CDP touch: sticky səhnələr top 0-da sabit, 50ms+ kadr 1/1142; Konsepsiya xətti 5 swipe-da dolur; kamera scale istirahətdə 1.08→1.117→1.09; step/nav keçdi, swipe2 təkrarda keçdi, CLS 0.003; axe ciddi xəta yox; responsive overflow 0. Real telefon yoxlanmayıb.
 - **Next step:** İstifadəçi telefonda baxsın → DEPLOY; real səsi qulaqla yoxlamaq.
 
 ## Recent decisions (newest first, max 5)

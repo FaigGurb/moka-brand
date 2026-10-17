@@ -59,6 +59,10 @@ const STEP_PER_SCREEN = 0.7;
 const STEP_MIN = 1.8;
 const STEP_MAX = 2.8;
 const PUSH_MAX = 0.04;
+/** the breathing camera at rest: one slow push in and out every BREATH seconds, with a slight drift */
+const BREATH = 9;
+const BREATH_ZOOM = 0.035;
+const BREATH_PAN = 0.9;
 /** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
 const ZIG = 3.5;
 const ZOOM = 1.08;
@@ -164,6 +168,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let pos = 0;
     let prevF = 0;
     let push = 0;
+    let rest = 0;
     let wide = false;
     const capOp: number[] = [];
     const bigSt: string[] = [];
@@ -202,6 +207,12 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       const speed = dt > 0 ? Math.abs(f - prevF) / dt : 0;
       prevF = f;
       push += (Math.min(PUSH_MAX, speed * PUSH) - push) * (1 - Math.pow(1 - 0.12, dt * 60));
+      // a held frame never looks frozen: at rest the camera breathes (a slow push and drift, Ken Burns),
+      // easing in once the film settles and out as soon as it moves again
+      rest += ((speed < 0.02 ? 1 : 0) - rest) * (1 - Math.pow(1 - (speed < 0.02 ? 0.02 : 0.12), dt * 60));
+      const breathT = now / 1000;
+      const breath = rest * (0.5 - 0.5 * Math.cos((breathT / BREATH) * Math.PI * 2));
+      const drift = rest * Math.sin((breathT / (BREATH * 1.6)) * Math.PI * 2);
       // zigzag: on wide screens the picture slides away from the side its title is on; the
       // pointer adds a slight drift (damped slower still)
       const sf = Math.min(n - 2, Math.floor(f));
@@ -211,8 +222,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         cx += (mx - cx) * k;
         cy += (my - cy) * k;
         const zig = wide ? -sv * ZIG : 0;
-        const zoom = (wide ? ZOOM : 1) * (1 + push);
-        const tr = `translate3d(${zig.toFixed(2)}%,0,0) translate3d(${(cx * -14).toFixed(1)}px,${(cy * -9).toFixed(1)}px,0) scale(${zoom.toFixed(4)})`;
+        const zoom = (wide ? ZOOM : 1) * (1 + push + breath * BREATH_ZOOM);
+        const tr = `translate3d(${(zig + (wide ? drift * BREATH_PAN : 0)).toFixed(3)}%,0,0) translate3d(${(cx * -14).toFixed(1)}px,${(cy * -9).toFixed(1)}px,0) scale(${zoom.toFixed(4)})`;
         if (tr !== camTr) {
           camTr = tr;
           cam.style.transform = tr;

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { PACKS } from "../packs/Packs";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useI18n } from "@/i18n/context";
 
 export function Tiers() {
@@ -15,29 +15,32 @@ export function Tiers() {
       const mm = gsap.matchMedia();
       // Horizontal gallery driven by vertical scroll on every screen size; native swipe only for reduced motion.
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const track = root.current!.querySelector<HTMLElement>(".t-track")!;
-        const distance = () => track.scrollWidth - window.innerWidth;
+        const sec = root.current!;
+        const track = sec.querySelector<HTMLElement>(".t-track")!;
+        const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+        // no GSAP pin: the gallery is CSS-sticky (smooth under touch momentum on phones) and the section
+        // is as tall as one screen plus the sideways distance, so vertical scroll maps 1:1 to the slide
+        const fit = () => {
+          sec.style.height = `${window.innerHeight + distance()}px`;
+        };
+        fit();
+        ScrollTrigger.addEventListener("refreshInit", fit);
         const tween = gsap.to(track, {
           x: () => -distance(),
           ease: "none",
-          scrollTrigger: {
-            trigger: ".t-pin",
-            start: "top top",
-            end: () => `+=${distance()}`,
-            pin: true,
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
+          scrollTrigger: { trigger: sec, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true },
         });
         // the slogan behind the packs drifts slower than they do: depth without touching the packs
         const word = gsap.to(".t-word", {
           x: () => -distance() * 0.35,
           ease: "none",
-          scrollTrigger: { trigger: ".t-pin", start: "top top", end: () => `+=${distance()}`, scrub: 1, invalidateOnRefresh: true },
+          scrollTrigger: { trigger: sec, start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true },
         });
         return () => {
           tween.kill();
           word.kill();
+          ScrollTrigger.removeEventListener("refreshInit", fit);
+          sec.style.height = "";
         };
       });
       return () => mm.revert();
@@ -47,7 +50,7 @@ export function Tiers() {
 
   return (
     <section id="paket" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
-      <div className="t-pin relative overflow-hidden motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
+      <div className="t-pin relative overflow-hidden motion-safe:sticky motion-safe:top-0 motion-safe:flex motion-safe:h-[100svh] motion-safe:items-center">
         {/* MOKA's official slogan as a giant outline behind the gallery (never on the packs themselves) */}
         <p
           aria-hidden="true"

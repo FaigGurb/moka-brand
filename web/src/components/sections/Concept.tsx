@@ -30,7 +30,8 @@ export function Concept() {
         gsap.set(panels, { autoAlpha: 0, y: 30 });
         const tl = gsap.timeline({
           defaults: { ease: "power2.inOut" },
-          scrollTrigger: { trigger: ".c-pin", start: "top top", end: "+=160%", pin: true, scrub: 0.6, anticipatePin: 1 },
+          // no GSAP pin: the scene is CSS-sticky (smooth under touch momentum on phones); the timeline follows the section
+          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: 0.5 },
         });
         tl.to(".c-line", { scaleX: 1, duration: 4, ease: "none" }, 0);
         STEPS.forEach((_, i) => {
@@ -60,8 +61,8 @@ export function Concept() {
   );
 
   return (
-    <section id="konsepsiya" ref={root} className="day-glow overflow-x-clip bg-black text-paper">
-      <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:min-h-[100svh] motion-safe:py-16">
+    <section id="konsepsiya" ref={root} className="day-glow overflow-x-clip bg-black text-paper motion-safe:h-[260svh]">
+      <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:sticky motion-safe:top-0 motion-safe:h-[100svh] motion-safe:py-16">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-seher">{t.concept.eyebrow}</p>
           <h2 className="max-w-[16ch] text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">
