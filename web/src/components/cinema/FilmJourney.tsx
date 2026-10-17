@@ -8,7 +8,7 @@ import { getLenis } from "@/lib/lenis";
 import { Dust } from "./Dust";
 import { CoverFrame, focusOf, type Shot } from "./Shot";
 
-export type Caption = { kicker: string; title: string; text: string };
+export type Caption = { kicker: string; title: string; text: string; /** short facts shown as pills under the text */ tags?: string[]; /** label for the chapter index */ label?: string };
 
 /** One stop of the film: the shot it passes through, its chapter caption, and the page content that follows it. */
 export type FilmStop = {
@@ -106,6 +106,9 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const caps = Array.from(el.querySelectorAll<HTMLElement>("[data-film-cap]"));
     const markEl = el.querySelector<HTMLElement>("[data-film-mark]");
     const shades = Array.from(el.querySelectorAll<HTMLElement>("[data-film-shade]"));
+    const bigs = Array.from(el.querySelectorAll<HTMLElement>("[data-film-big]"));
+    const index = el.querySelector<HTMLElement>("[data-film-index]");
+    const dots = Array.from(el.querySelectorAll<HTMLElement>("[data-film-dot]"));
     const focus = stops.map((s) => focusOf(s.shot));
 
     // keyframes (scrollY → film position), linear between them: the film sits on the first stop
@@ -155,6 +158,10 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     let push = 0;
     let wide = false;
     const capOp: number[] = [];
+    const bigSt: string[] = [];
+    let indexOn = -1;
+    let active = -1;
+    let filmTop = 0;
     let markOp = -1;
     const shadeOp = [-1, -1];
     const size = () => {
@@ -168,6 +175,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       g.imageSmoothingQuality = "high";
       drawn = "";
       measure();
+      filmTop = stopEls[0].getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.5;
     };
 
     let last = performance.now();
@@ -245,6 +253,37 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
           e.style.setProperty("--o", String(o));
         }
       });
+      // the giant scene words: the chapter's word set into the picture, drifting past as the film moves
+      bigs.forEach((e, k) => {
+        const d = f - Number(e.dataset.filmBig);
+        const o = 1 - smooth(clamp01((Math.abs(d) - 0.06) / 0.44));
+        const st = `${o.toFixed(2)}|${d.toFixed(3)}`;
+        if (st !== bigSt[k]) {
+          bigSt[k] = st;
+          e.style.setProperty("--o", o.toFixed(2));
+          e.style.setProperty("--d", d.toFixed(3));
+        }
+      });
+      // the chapter index: shown while the film is the picture (not over the opening or a content section)
+      if (index) {
+        const frac = f - Math.floor(f);
+        const capMax = capOp.length ? Math.max(...capOp) : 0;
+        const on = window.scrollY > filmTop && (capMax > 0.05 || (frac > 0.02 && frac < 0.98)) ? 1 : 0;
+        if (on !== indexOn) {
+          indexOn = on;
+          index.dataset.on = String(on);
+        }
+        // the chapter whose stop is nearest
+        let best = 0;
+        dots.forEach((d, k) => {
+          if (Math.abs(f - Number(d.dataset.filmDot)) < Math.abs(f - Number(dots[best].dataset.filmDot))) best = k;
+        });
+        if (best !== active) {
+          if (dots[active]) dots[active].removeAttribute("aria-current");
+          dots[best]?.setAttribute("aria-current", "step");
+          active = best;
+        }
+      }
       if (markEl) {
         const o = Math.round(smooth(clamp01((f - (n - 1) + 0.06) / 0.06)) * 100) / 100;
         if (o !== markOp) {
@@ -352,6 +391,20 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       const up = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
       if ((down || up) && step(down ? 1 : -1)) e.preventDefault();
     };
+    const onIndex = (e: MouseEvent) => {
+      const b = (e.target as HTMLElement).closest<HTMLElement>("[data-film-dot]");
+      const lenis = getLenis();
+      if (!b) return;
+      const r = restEls[Number(b.dataset.filmDot)];
+      const to = r.getBoundingClientRect().top + window.scrollY;
+      if (!lenis) return window.scrollTo({ top: to });
+      const duration = Math.min(STEP_MAX + 0.6, Math.max(STEP_MIN, STEP_BASE + (Math.abs(to - here()) / window.innerHeight) * 0.25));
+      goal = to;
+      lenis.scrollTo(to, { duration, easing: easeInOut, force: true, onComplete: () => (goal = null) });
+      window.clearTimeout(goalTimer);
+      goalTimer = window.setTimeout(() => (goal = null), duration * 1000 + 400);
+    };
+    index?.addEventListener("click", onIndex);
     window.addEventListener("wheel", onWheel, { passive: false, capture: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -389,6 +442,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
+      index?.removeEventListener("click", onIndex);
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
@@ -445,6 +499,13 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
             </div>
           )}
         </div>
+        {/* giant scene words, set into the picture (wide, capable screens; the frame loop drives --o/--d) */}
+        {/* never on the last stop: the cup carries MOKA's K, and nothing may show through the logo */}
+        {chapters.filter(({ k }) => k < n - 1).map(({ k, c }) => (
+          <div key={k} data-film-big={k} className={`film-big pointer-events-none absolute inset-0 hidden items-end justify-center pb-[3vh] ${lite ? "" : "md:flex"}`}>
+            <span>{c.title}</span>
+          </div>
+        ))}
         {!lite && <Dust />}
         {/* grade: vignette, a floor for the captions, a soft top for the nav */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_60%_45%,transparent_35%,rgba(0,0,0,0.6)_100%)]" />
@@ -454,6 +515,21 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
         <div data-film-shade className="pointer-events-none absolute inset-y-0 left-0 hidden w-[60%] bg-[linear-gradient(to_right,rgba(0,0,0,0.78),rgba(0,0,0,0.35)_55%,transparent)] opacity-0 md:block" />
         <div data-film-shade className="pointer-events-none absolute inset-y-0 right-0 hidden w-[60%] bg-[linear-gradient(to_left,rgba(0,0,0,0.78),rgba(0,0,0,0.35)_55%,transparent)] opacity-0 md:block" />
       </div>
+
+      {/* chapter index (wide screens): where you are in the film, and a way to jump */}
+      <nav data-film-index data-on="0" aria-label={eyebrow} className="film-index fixed top-1/2 right-5 z-30 hidden -translate-y-1/2 md:block motion-reduce:!hidden">
+        <ol className="flex flex-col items-end gap-3">
+          {chapters.map(({ k, c }) => (
+            <li key={k}>
+              <button type="button" data-film-dot={k} className="film-dot group flex items-center gap-3 py-1 text-right font-[family-name:var(--font-display)] text-[11px] tracking-[0.25em] text-paper/45 uppercase transition-colors hover:text-paper aria-[current=step]:text-paper">
+                <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-500 group-hover:max-w-40 group-hover:opacity-100 group-focus-visible:max-w-40 group-focus-visible:opacity-100">{c.label ?? c.title}</span>
+                <span>{c.kicker}</span>
+                <span aria-hidden="true" className="h-px w-5 bg-current transition-all duration-500 group-aria-[current=step]:w-10 group-aria-[current=step]:bg-glow" />
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
 
       <div className="relative z-10">{lead}</div>
 
@@ -488,6 +564,15 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
                     ))}
                   </h3>
                   <p className="film-cap-fade mt-4 max-w-[44ch] text-[15px] leading-relaxed text-paper/75 sm:text-[17px]">{s.caption.text}</p>
+                  {s.caption.tags && (
+                    <ul className={`film-cap-fade mt-5 flex flex-wrap gap-2 ${side[k] > 0 ? "md:justify-end" : ""}`}>
+                      {s.caption.tags.map((t) => (
+                        <li key={t} className="rounded-full border border-paper/25 bg-black/25 px-3.5 py-1.5 font-[family-name:var(--font-display)] text-[11px] tracking-[0.2em] text-paper/85 uppercase backdrop-blur-[2px]">
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             )}
