@@ -64,7 +64,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
-        scrolled || open ? "bg-espresso/95 [@media(hover:hover)]:bg-espresso/90 [@media(hover:hover)]:backdrop-blur-md" : "bg-transparent"
+        scrolled || open ? "bg-black/95 [@media(hover:hover)]:bg-black/85 [@media(hover:hover)]:backdrop-blur-md" : "bg-transparent"
       }`}
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
@@ -72,7 +72,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <a href={sub ? HOME[locale] : "#top"} className="text-paper" aria-label={t.logoHome}>
           <Logo className="h-[18px] w-auto" />
         </a>
-        <span className="hidden border border-paper/40 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-paper/80 uppercase 2xl:inline">
+        <span className="hidden border border-paper/30 px-2.5 py-1 text-[13px] whitespace-nowrap text-paper/75 2xl:inline">
           {t.nav.badge}
         </span>
         <ul className="ml-auto hidden items-center gap-5 xl:flex">
@@ -98,13 +98,13 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <a
           href={L.menu}
           aria-current={sub === "menu/" ? "page" : undefined}
-          className="hidden border border-paper/40 px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-paper uppercase transition-colors hover:border-paper aria-[current]:border-glow aria-[current]:text-glow lg:inline-block"
+          className="hidden border border-paper/40 px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium whitespace-nowrap text-paper transition-colors hover:border-paper aria-[current]:border-glow aria-[current]:text-glow lg:inline-block"
         >
           {t.menu.nav}
         </a>
         <a
           href={L.ar}
-          className="hidden bg-paper px-4 py-2.5 text-[12px] font-bold tracking-[0.14em] whitespace-nowrap text-espresso uppercase transition-colors hover:bg-glow xl:inline-block"
+          className="hidden bg-paper px-4 py-2.5 font-[family-name:var(--font-display)] text-[15px] font-medium whitespace-nowrap text-espresso transition-colors hover:bg-glow xl:inline-block"
         >
           {t.nav.ar}
         </a>
@@ -122,7 +122,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
           </span>
         </button>
       </nav>
-      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-espresso px-5 pb-10 xl:hidden">
+      <div id="mobile-menu" hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-black px-5 pb-10 xl:hidden">
         <ul className="flex flex-col border-t border-paper/15">
           {NAV_IDS.map((id, i) => (
             <li key={id} className="border-b border-paper/15">
@@ -134,16 +134,16 @@ export function Nav({ sub = "" }: { sub?: string }) {
         </ul>
         <LangSwitch className="mt-6 -ml-2 sm:hidden" sub={sub} />
         <div className="mt-6 flex flex-col gap-3">
-          <a href={L.menu} className="border border-glow px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-glow uppercase">
+          <a href={L.menu} className="border border-glow px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-glow">
             {t.menu.nav}
           </a>
-          <a href={L.brand} className="border border-paper/40 px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-paper uppercase">
+          <a href={L.brand} className="border border-paper/40 px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-paper">
             {t.footer.brand}
           </a>
-          <a href={L.ar} className="bg-paper px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-espresso uppercase">
+          <a href={L.ar} className="bg-paper px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-espresso">
             {t.nav.mobileAr}
           </a>
-          <a href={L.game} className="border border-paper/40 px-5 py-4 text-center text-sm font-bold tracking-[0.14em] text-paper uppercase">
+          <a href={L.game} className="border border-paper/40 px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-paper">
             {t.nav.mobileGame}
           </a>
         </div>

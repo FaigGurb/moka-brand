@@ -47,7 +47,7 @@ html {
 
 body {
   /* the home page's bands set --page-bg (fx/ToneShift.tsx) */
-  background: var(--page-bg, var(--color-espresso));
+  background: var(--page-bg, #000);
   color: var(--color-paper);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -78,6 +78,11 @@ h1, h2, h3 {
   letter-spacing: 0;
   color: var(--color-muted-dark);
 }
+/* on a coloured slide (day palette) it takes the slide's own text colour */
+.eyebrow.eyebrow-on-colour { color: inherit; }
+/* on light cards and pages (brand book, ritual card) the darker grey */
+.bg-paper .eyebrow, .bg-white .eyebrow, .bg-paper-2 .eyebrow { color: var(--color-muted); }
+.bg-paper .bg-espresso .eyebrow, .bg-paper .bg-black .eyebrow { color: var(--color-muted-dark); }
 
 /* Line-reveal helper: each word sits in a mask so it can rise into view. */
 .reveal-line {

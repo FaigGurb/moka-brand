@@ -57,10 +57,10 @@ const STEP_BASE = 1.5;
 const STEP_PER_SCREEN = 0.7;
 const STEP_MIN = 1.8;
 const STEP_MAX = 2.8;
-const PUSH_MAX = 0.07;
+const PUSH_MAX = 0.04;
 /** zigzag: how far (in % of the screen) the picture slides away from its title, and the zoom that hides the edges */
-const ZIG = 6;
-const ZOOM = 1.15;
+const ZIG = 3.5;
+const ZOOM = 1.08;
 const smooth = (x: number) => x * x * (3 - 2 * x);
 const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 
@@ -98,7 +98,14 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     const g = c.getContext("2d", { alpha: false });
     if (!g) return;
     const low = perfTier() === "low";
-    const width = pickCoverWidth(film, low ? 0.42 : 0.55);
+    // capable screens take frames close to their own size (1920 on large ones); phones the light set
+    let width = low ? pickCoverWidth(film, 0.42) : pickCoverWidth(film, 0.75, 2400);
+    // on a slow line (where the browser tells) one set smaller, so the frames keep up with the scroll
+    const net = (navigator as Navigator & { connection?: { downlink?: number; saveData?: boolean } }).connection;
+    if (net && (net.saveData || (net.downlink ?? 10) < 3)) {
+      const sets = [...film.widths].sort((a, b) => a - b);
+      width = sets[Math.max(0, sets.indexOf(width) - 1)];
+    }
     const store = new FrameStore(film, width, low);
     const stopEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-stop]"));
     const restEls = Array.from(el.querySelectorAll<HTMLElement>("[data-film-rest]"));
@@ -480,7 +487,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       }
     });
     io.observe(el);
-    // the frames load once the visitor starts to scroll (or after a moment), not with the hero
+    // the frames load once the visitor starts to scroll…
     let started = false;
     const start = () => {
       if (started) return;
@@ -489,7 +496,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       void store.load();
     };
     window.addEventListener("scroll", start, { passive: true });
-    const idle = window.setTimeout(start, 2000);
+    // …or as soon as the page has loaded: on a real connection the first stretch must be in before the first gesture
+    const onLoaded = () => window.setTimeout(start, 300);
+    if (document.readyState === "complete") onLoaded();
+    else window.addEventListener("load", onLoaded, { once: true });
+    const idle = window.setTimeout(start, 2500);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
@@ -504,6 +515,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       window.removeEventListener("keydown", onKey);
       window.clearTimeout(goalTimer);
       window.clearTimeout(idle);
+      window.removeEventListener("load", onLoaded);
       window.removeEventListener("scroll", start);
       ro.disconnect();
       io.disconnect();

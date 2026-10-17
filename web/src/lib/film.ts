@@ -30,9 +30,9 @@ export function pickWidth(clip: Clip) {
  * Like pickWidth, for a film shown full-bleed with object-fit: cover: a tall phone crops a wide frame
  * hard, so the width it needs comes from the screen height too.
  */
-export function pickCoverWidth(clip: Clip, factor = 0.55) {
+export function pickCoverWidth(clip: Clip, factor = 0.55, cap = 1600) {
   const cover = Math.max(window.innerWidth, window.innerHeight * clip.aspect);
-  const need = Math.min(cover, 1600) * Math.min(window.devicePixelRatio || 1, 1.5) * factor;
+  const need = Math.min(cover, cap) * Math.min(window.devicePixelRatio || 1, 1.5) * factor;
   const sorted = [...clip.widths].sort((a, b) => a - b);
   return sorted.find((w) => w >= need) ?? sorted[sorted.length - 1];
 }
@@ -79,22 +79,44 @@ export class FrameStore {
     this.blobs = new Array(clip.frames).fill(null);
   }
 
-  /** Fetches every frame: every 8th first, then 4th, 2nd, then the rest (6 requests at a time). */
-  async load() {
+  private requested: boolean[] = [];
+
+  /**
+   * The next frame to fetch, by what the visitor will see next: first a skeleton of every 16th frame
+   * (nearest first), so any scroll lands near something; then the stretch the film is about to play
+   * (two stops ahead in the scroll direction, a little behind) from every 8th frame down to every
+   * frame; then the rest of the film the same way, always nearest to where the film is first. On a slow line the frames come in
+   * where they are needed instead of evenly across the whole film.
+   */
+  private nextToFetch(): number {
     const n = this.clip.frames;
-    const order: number[] = [];
-    const seen = new Set<number>();
-    for (const step of [8, 4, 2, 1])
-      for (let i = 0; i < n; i += step)
-        if (!seen.has(i)) {
-          seen.add(i);
-          order.push(i);
-        }
-    if (!seen.has(n - 1)) order.splice(1, 0, n - 1);
-    let k = 0;
+    const at = Math.min(n - 1, Math.max(0, this.at));
+    const dir = this.dir;
+    const free = (i: number) => i >= 0 && i < n && !this.requested[i];
+    const nearest = (ok: (i: number) => boolean, reach = n, back = n) => {
+      for (let r = 0; r < reach; r++) {
+        const a = at + r * dir;
+        if (free(a) && ok(a)) return a;
+        const b = at - r * dir;
+        if (r <= back && free(b) && ok(b)) return b;
+      }
+      return -1;
+    };
+    let i = nearest((k) => k % 16 === 0 || k === n - 1);
+    // the next two stops, coarse to fine: a gesture outruns a dense sequential fetch on a slow line
+    for (const step of [8, 4, 2, 1]) if (i < 0) i = nearest((k) => k % step === 0, 180, 24);
+    for (const step of [4, 2, 1]) if (i < 0) i = nearest((k) => k % step === 0);
+    return i;
+  }
+
+  /** Fetches every frame, in the order nextToFetch picks, a few requests at a time. */
+  async load() {
+    this.requested = new Array(this.clip.frames).fill(false);
     const worker = async () => {
-      while (k < order.length && !this.disposed) {
-        const i = order[k++];
+      while (!this.disposed) {
+        const i = this.nextToFetch();
+        if (i < 0) return;
+        this.requested[i] = true;
         try {
           const res = await fetch(frameUrl(this.clip, this.width, i), { signal: this.aborter.signal });
           if (!res.ok) continue;
@@ -129,7 +151,8 @@ export class FrameStore {
         if (r <= to / 3 && b >= 0 && b < n) keep.add(b - (b % step));
       }
     };
-    if (this.light) {
+    // a 1920 frame decodes to ~8 MB: big sets keep the smaller window too
+    if (this.light || this.width >= 1600) {
       add(0, 8, 1);
       add(12, 40, 4);
       add(48, 80, 8);

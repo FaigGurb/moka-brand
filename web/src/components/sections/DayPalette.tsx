@@ -53,8 +53,8 @@ export function DayPalette() {
         {DAY.map((d) => (
           <div key={d.name} className="d-slide absolute inset-0 flex flex-col justify-between px-5 pt-24 pb-16 md:px-10 md:py-24" style={{ background: d.hex, color: d.ink }}>
             <div className="mx-auto flex w-full max-w-[1320px] items-start justify-between gap-8">
-              <p className="eyebrow">{t.day.eyebrow}</p>
-              <p className="eyebrow tabular-nums">{d.time}</p>
+              <p className="eyebrow eyebrow-on-colour">{t.day.eyebrow}</p>
+              <p className="eyebrow eyebrow-on-colour tabular-nums">{d.time}</p>
             </div>
             <div className="mx-auto w-full max-w-[1320px]">
               <h2 className="d-name text-[clamp(72px,19vw,260px)] leading-[0.85] font-medium tracking-[-0.03em]">{d.name}</h2>
