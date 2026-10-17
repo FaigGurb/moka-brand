@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { ClubCard } from "../ClubCard";
 import { CremaBackground } from "../fx/CremaBackground";
+import { Letter } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
@@ -115,12 +116,46 @@ export function Experience() {
   );
 }
 
+/** MOKA's two official slogans (brand book), set on a ring that turns as the page scrolls past. */
+const RING = "In coffee we trust. \u00a0 Good to the last drop! \u00a0 ";
+
 export function FinalCta() {
   const { locale, t } = useI18n();
   const LINKS = links(locale);
+  const root = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const tw = gsap.fromTo(
+          ".f-ring",
+          { rotate: -40 },
+          { rotate: 140, ease: "none", scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.8 } },
+        );
+        return () => tw.kill();
+      });
+      return () => mm.revert();
+    },
+    { scope: root },
+  );
   return (
-    <section className="relative isolate overflow-hidden bg-espresso text-paper">
+    <section ref={root} className="relative isolate overflow-hidden bg-espresso text-paper">
       <CremaBackground className="-z-10" amp={0.75} />
+      {/* the slogan ring around the K, turned by the scroll */}
+      <div aria-hidden="true" className="pointer-events-none absolute top-1/2 right-[-4vw] -z-10 hidden h-[min(46vw,620px)] w-[min(46vw,620px)] -translate-y-1/2 opacity-90 md:block">
+        <svg viewBox="0 0 400 400" className="f-ring h-full w-full">
+          <defs>
+            <path id="f-ring-path" d="M200,200 m-170,0 a170,170 0 1,1 340,0 a170,170 0 1,1 -340,0" />
+          </defs>
+          <text className="fill-paper/55 font-[family-name:var(--font-display)] text-[21px] font-medium tracking-[0.02em]">
+            <textPath href="#f-ring-path" textLength="1060" lengthAdjust="spacing">
+              {RING}
+              {RING}
+            </textPath>
+          </text>
+        </svg>
+        <Letter id="K" className="absolute top-1/2 left-1/2 h-[30%] w-auto -translate-x-1/2 -translate-y-1/2 text-paper/90" />
+      </div>
       <div className="mx-auto flex max-w-[1320px] flex-col gap-10 px-5 py-24 md:px-10 md:py-32">
         <h2 className="max-w-[14ch] text-[clamp(40px,7vw,104px)] leading-[0.95] font-medium tracking-[-0.02em]">
           {t.final.title}
