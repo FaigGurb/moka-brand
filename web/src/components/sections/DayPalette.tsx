@@ -72,7 +72,7 @@ export function DayPalette() {
         <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-16">
           <div className="flex flex-col gap-5">
             <p className="eyebrow text-gunorta motion-safe:hidden">{t.day.eyebrow}</p>
-            <h2 className="text-[clamp(32px,4vw,52px)] leading-[1.05] font-medium">{t.day.title}</h2>
+            <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium">{t.day.title}</h2>
             <p className="max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
               {t.day.text}
             </p>

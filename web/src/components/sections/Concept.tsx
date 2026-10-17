@@ -58,7 +58,7 @@ export function Concept() {
       <div className="c-pin mx-auto flex max-w-[1320px] flex-col justify-center px-5 py-24 md:px-10 motion-safe:min-h-[100svh] motion-safe:py-16">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-seher">{t.concept.eyebrow}</p>
-          <h2 className="max-w-[16ch] text-[clamp(32px,5.4vw,72px)] leading-[1.02] font-medium tracking-[-0.015em]">
+          <h2 className="max-w-[16ch] text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">
             {t.concept.title}
           </h2>
         </div>

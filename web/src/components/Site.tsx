@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/hero/Hero";
 import { Concept } from "@/components/sections/Concept";
+import { Bar } from "@/components/sections/Bar";
 import { BeanStory } from "@/components/sections/BeanStory";
 import { BrewGuide } from "@/components/sections/BrewGuide";
 import { Apps } from "@/components/sections/Apps";
@@ -38,6 +39,9 @@ export function Site({ locale }: { locale: Locale }) {
         {/* the coffee film runs under the hero, its chapters and the roast, brewing and packaging sections */}
         <ToneBand tone="ink">
           <BeanStory lead={<Hero />} roast={<Roast />} brew={<BrewGuide />} packs={<Tiers />} />
+        </ToneBand>
+        <ToneBand tone="ink">
+          <Bar />
         </ToneBand>
         <ToneBand tone="paper">
           <Concept />

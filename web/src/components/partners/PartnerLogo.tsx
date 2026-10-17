@@ -40,7 +40,7 @@ export function PartnerLogo({ id, name, pending }: { id: PartnerId; name: string
   return (
     <span className="flex flex-col items-center gap-2 text-center">
       <span className="font-[family-name:var(--font-display)] text-[clamp(30px,2.6vw,40px)] leading-none font-medium tracking-[0.04em] text-paper">{name}</span>
-      <span className="text-[11px] font-bold tracking-[0.18em] text-muted-dark uppercase">{pending}</span>
+      <span className="text-[11px] font-semibold text-muted-dark">{pending}</span>
     </span>
   );
 }

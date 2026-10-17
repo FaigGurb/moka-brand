@@ -32,6 +32,8 @@ export type Loop = { name: string; widths: number[] };
 
 export const LOOPS = {
   hero: { name: "hero", widths: [720, 1280] },
+  /** real footage from MOKA's own Instagram reel (bar ritual: grind, tamp, espresso, latte art), portrait 9:16 */
+  bar: { name: "bar", widths: [540, 720] },
 } satisfies Record<string, Loop>;
 
 /** The smallest file (path without extension) that still covers this screen (cropped like object-fit: cover) sharply enough. */

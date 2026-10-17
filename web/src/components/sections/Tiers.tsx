@@ -42,7 +42,7 @@ export function Tiers() {
         <div tabIndex={0} aria-label={t.tiers.title} className="t-track no-scrollbar focus-visible:outline-3 focus-visible:outline-gunorta flex gap-6 px-5 md:gap-8 md:px-10 motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:scroll-px-5 motion-reduce:overflow-x-auto motion-reduce:py-24 motion-safe:pr-[10vw] lg:motion-safe:pl-[max(40px,calc((100vw_-_1320px)/2_+_40px))]">
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-seher">{t.tiers.eyebrow}</p>
-            <h2 className="text-[clamp(36px,4.6vw,64px)] leading-[1.02] font-medium tracking-[-0.01em]">{t.tiers.title}</h2>
+            <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.tiers.title}</h2>
             <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted-dark">
               {t.tiers.text}
             </p>
@@ -50,7 +50,7 @@ export function Tiers() {
               type="button"
               aria-pressed={line}
               onClick={() => setLine((v) => !v)}
-              className="inline-flex items-center gap-3 self-start border border-paper/60 px-5 py-3 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow aria-pressed:border-glow aria-pressed:bg-glow aria-pressed:text-espresso"
+              className="inline-flex items-center gap-3 self-start border border-paper/60 px-5 py-3 text-[13px] font-semibold transition-colors hover:border-glow hover:text-glow aria-pressed:border-glow aria-pressed:bg-glow aria-pressed:text-espresso"
             >
               <span className="h-[3px] w-6 bg-glow" aria-hidden="true" />
               {line ? t.tiers.hide : t.tiers.show}

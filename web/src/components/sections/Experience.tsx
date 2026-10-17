@@ -36,7 +36,7 @@ export function Experience() {
       <div className="mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
         <div className="flex flex-col gap-5">
           <p className="eyebrow text-seher">{t.exp.eyebrow}</p>
-          <h2 className="max-w-[18ch] text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">
+          <h2 className="max-w-[18ch] text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">
             {t.exp.title}
           </h2>
         </div>
@@ -68,7 +68,7 @@ export function Experience() {
                   </li>
                 ))}
               </ul>
-              <a href={LINKS.ar} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-bold tracking-[0.14em] uppercase">
+              <a href={LINKS.ar} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-semibold">
                 {t.exp.arCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </a>
             </div>
@@ -103,7 +103,7 @@ export function Experience() {
                   </li>
                 ))}
               </ul>
-              <a href={LINKS.game} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-bold tracking-[0.14em] uppercase">
+              <a href={LINKS.game} className="mt-auto inline-flex items-center gap-3 self-start text-[13px] font-semibold">
                 {t.exp.gameCta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </a>
             </div>

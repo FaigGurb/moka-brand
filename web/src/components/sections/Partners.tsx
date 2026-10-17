@@ -100,13 +100,13 @@ export function Partners() {
         <div className="p-head grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
           <div className="flex flex-col gap-5">
             <p className="p-reveal eyebrow text-seher">{p.eyebrow}</p>
-            <h2 className="p-reveal text-[clamp(34px,4.6vw,60px)] leading-[1.03] font-medium tracking-[-0.01em]">{p.title}</h2>
+            <h2 className="p-reveal text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{p.title}</h2>
           </div>
           <div className="p-reveal flex flex-col items-start gap-5">
             <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">{p.text}</p>
             <a
               href={L.partners}
-              className="inline-flex items-center gap-2 border-b border-glow/60 pb-1 text-[13px] font-bold tracking-[0.14em] text-glow uppercase transition-colors hover:border-glow hover:text-paper"
+              className="inline-flex items-center gap-2 border-b border-glow/60 pb-1 text-[13px] font-semibold text-glow transition-colors hover:border-glow hover:text-paper"
             >
               {p.page} <span aria-hidden="true">→</span>
             </a>
@@ -139,7 +139,7 @@ export function Partners() {
                     <span className="sr-only"> — {p.more}</span>
                   </a>
                   <div className="flex flex-col gap-2">
-                    <span className="text-[12px] font-bold tracking-[0.2em] text-muted-dark uppercase transition-colors duration-500 group-[.is-on]:text-seher">
+                    <span className="text-[12px] font-semibold text-muted-dark transition-colors duration-500 group-[.is-on]:text-seher">
                       {String(i + 1).padStart(2, "0")} · {it.step}
                     </span>
                     <p className="text-[15px] leading-snug text-paper/85">{it.role}</p>
@@ -170,7 +170,7 @@ export function Partners() {
           <p className="max-w-[52ch] font-[family-name:var(--font-display)] text-[clamp(20px,2vw,26px)] leading-snug">{p.b2b}</p>
           <a
             href={`tel:${CONTACT.tel}`}
-            className="inline-flex shrink-0 items-center gap-3 self-start whitespace-nowrap bg-paper px-6 py-4 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow md:self-auto"
+            className="inline-flex shrink-0 items-center gap-3 self-start whitespace-nowrap bg-paper px-6 py-4 text-[13px] font-semibold text-espresso transition-colors hover:bg-glow md:self-auto"
           >
             {p.call} · <span className="tabular-nums">{CONTACT.phone}</span>
           </a>

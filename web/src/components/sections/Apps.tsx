@@ -49,7 +49,7 @@ function CupConfigurator() {
     <div className="flex flex-col bg-paper-2 p-5 text-espresso md:p-8">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
         <h3 className="text-2xl font-medium md:text-3xl">{c.title}</h3>
-        <span className="text-[11px] font-bold tracking-[0.14em] text-muted uppercase sm:text-[12px]">↔ {c.drag}</span>
+        <span className="text-[11px] font-semibold text-muted sm:text-[12px]">↔ {c.drag}</span>
       </div>
       <div ref={box} data-cursor="↔" className="relative mx-auto my-4 aspect-square w-full max-w-[460px]">
         {webgl === true ? (
@@ -136,7 +136,7 @@ function Profile() {
           href="https://www.instagram.com/mokacoffeebaku/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden shrink-0 bg-espresso px-4 py-2.5 text-[12px] font-bold tracking-[0.12em] text-paper uppercase transition-colors hover:bg-axsam sm:inline-block"
+          className="hidden shrink-0 bg-espresso px-4 py-2.5 text-[12px] font-semibold text-paper transition-colors hover:bg-axsam sm:inline-block"
         >
           {ig.follow}
         </a>
@@ -231,7 +231,7 @@ function Profile() {
               <button type="button" onClick={() => step(1)} className="h-11 min-w-11 border border-paper/30 px-3 text-sm font-bold" aria-label={ig.next}>
                 →
               </button>
-              <button type="button" onClick={() => show(null)} className="h-11 bg-paper px-4 text-[12px] font-bold tracking-[0.12em] text-espresso uppercase">
+              <button type="button" onClick={() => show(null)} className="h-11 bg-paper px-4 text-[12px] font-semibold text-espresso">
                 {ig.close}
               </button>
             </figcaption>
@@ -270,13 +270,13 @@ export function Apps() {
         <div className="a-rise grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
           <div>
             <p className="eyebrow text-seher">{t.apps.eyebrow}</p>
-            <h2 className="mt-4 text-[clamp(32px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">{t.apps.title}</h2>
+            <h2 className="mt-4 text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.apps.title}</h2>
           </div>
           <div className="flex flex-col items-start gap-5">
             <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">{t.apps.text}</p>
             <a
               href={links(locale).brand}
-              className="inline-flex items-center gap-3 border-b-2 border-paper pb-1 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow"
+              className="inline-flex items-center gap-3 border-b-2 border-paper pb-1 text-[13px] font-semibold transition-colors hover:border-glow hover:text-glow"
             >
               {t.apps.insta.book} <span aria-hidden="true">→</span>
             </a>

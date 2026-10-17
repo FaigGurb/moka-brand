@@ -10,9 +10,9 @@ update it at the end; git is the only channel between them. Keep it short — re
   - A. Mühərrik (asset-dən asılı deyil): `components/film/ScrollFilm.tsx` — sticky səhnə, canvas, scroll → kadr; bütün kadrlar əvvəlcə kodlanmış (WebP blob) yüklənir (açar kadrlar birinci), cari pəncərə ±N `createImageBitmap` ilə fon rejimində dekod olunur, qalanı bağlanır (yaddaş); mobil üçün ayrıca kiçik kadr dəsti; reduced-motion → poster. Çıxarma skripti `docs/tools/film/extract.sh` (ffmpeg → webp 1280/720).
   - B. Kliplər (Weave): 1 dən yaxın plan (qara fon, düşən dənlər), 2 qovurma (yaşıl→tünd, tüstü), 3 üyütmə (Mazzer, axan toz), 4 Chemex/V60 tökmə + bloom, 5 MOKA ağ fincanı (rəsmi qablaşdırma dəyişməz), qızılı xətt. 5–6 s, sabit kamera, loop-suz, qara studiya.
   - C. Dizayn: hero + səyahət fəsilləri ScrollFilm ilə; köhnə real-time Journey çıxarılır; qalan bölmələr tünd luxury tipoqrafiya ilə yenilənir.
-- **Status:** Redizayn mərhələ 1 (istifadəçi icazə verdi): qəhvəyi tonlar MOKA-nın rəsmi qara-ağ şkalasına keçdi, bölmələr qara ↔ fincan ağı növbələşir, fon scroll ilə axıcı keçir; fəsil indeksinin sızması və film fonunun növbəti bölməyə sallanması düzəldi. Commit olunub, deploy olunmayıb.
-- **Verification:** check + build; bölmə-bölmə desktop ekran görüntüləri; indeks konsepsiya/kafe-də gizli; step/nav keçdi, CLS 0.001. Real telefon yoxlanmayıb.
-- **Next step:** Mərhələ 2: şablon əlamətlərini təmizləmək (hər başlıq üstündə BÖYÜK HƏRFLİ etiketlər, '·' zəncirləri, '→' oxları, eyni qutulu kartlar), başlıqları böyütmək, mobil yoxlama.
+- **Status:** Redizayn mərhələ 2 + istinadlar (cafe scroll story, Tabasco, Cumulus, Pendragon; MOKA Instagram): yeni "Barda" bölməsi MOKA-nın öz reel kadrları ilə, hero-da "Filmi izlə" avtomatik tur, şablon izləri təmizləndi (böyük hərfli etiketlər, '·' zəncirləri), başlıqlar böyüdü. Lokal commit; push/deploy icazəsiz edilmir.
+- **Verification:** check (16/16) + build; Playwright: step/nav/swipe (bir dəfə vaxt səbəbli fərq, təkrarda keçdi), CLS 0.002, tur 0→6 və dayandırma, az/en/ru Bar video oynayır, xəta yoxdur; responsive.py overflow 0; axe ana səhifələr təmiz (ru/menu köhnə link-in-text-block qalır); linkcheck 0 sınıq. Real telefon yoxlanmayıb.
+- **Next step:** İstifadəçi baxsın → icazə ilə push/DEPLOY. Sonra: Store-un konsept divar şəklini real fasad kadrı ilə əvəz etmək (MOKA-dan icazəli fotolar), kiçik linklərin ölçüsü.
 
 ## Recent decisions (newest first, max 5)
 - 2026-10-17: Enky üslubu hibrid şəkildə, pulsuz: tünd MOKA filmi qalır, üstünə nəhəng söz, fəsil indeksi, fakt etiketləri.

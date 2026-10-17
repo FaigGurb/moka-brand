@@ -101,7 +101,7 @@ export function Store() {
         <div className="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
           <div className="flex flex-col gap-5">
             <p className="eyebrow text-gunorta">{t.store.eyebrow}</p>
-            <h2 className="text-[clamp(36px,5vw,68px)] leading-[1.02] font-medium tracking-[-0.015em]">{t.store.title}</h2>
+            <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.store.title}</h2>
           </div>
           <p className="max-w-[50ch] text-[17px] leading-relaxed text-muted-dark">
             {t.store.text}
@@ -113,7 +113,7 @@ export function Store() {
             <div className="s-frame overflow-hidden">
               <Wall alt={t.store.wallAlt} />
             </div>
-            <figcaption className="text-xs font-bold tracking-[0.16em] text-muted-dark uppercase">{t.store.caption}</figcaption>
+            <figcaption className="text-xs font-semibold text-muted-dark">{t.store.caption}</figcaption>
           </figure>
 
           <div className="s-ritual flex flex-col gap-5 bg-paper p-8 text-espresso">
