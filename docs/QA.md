@@ -18,9 +18,10 @@ Bu siyahı iki hissədir: **avtomatik yoxlanılanlar** (hər dəyişiklikdən so
 
 **Ümumi**
 - [ ] Giriş animasiyası bir dəfə görünür, səhifə yenilənəndə təkrarlanmır.
-- [ ] Scroll ilişmir: Konsepsiya, Dəndən fincana, Bakıda bir gün, Paket ailəsi (pin olunan bölmələr).
-- [ ] Ünvan zolağı gizlənəndə/görünəndə pin olunan bölmələr sıçramır.
-- [ ] 3D hero, dən hekayəsi və stəkan yüklənir; telefon qızmır, batareya sürətlə düşmür.
+- [ ] Scroll ilişmir və titrəmir: film (Dəndən fincana), Konsepsiya, Bakıda bir gün, Paket ailəsi. Telefonda bunlar sadələşdirilmiş variantdadır (Paketlər yana swipe, Konsepsiya bir dəfəlik animasiya, rəng panelləri); kompüterdə scroll səhnələridir.
+- [ ] Filmdə bir scroll = bir mərhələ; Qovurma və Dəmləmə bələdçisinə bir scroll ilə keçilir.
+- [ ] Ünvan zolağı gizlənəndə/görünəndə sticky bölmələr sıçramır.
+- [ ] Tətbiqlər bölməsində "3D-də fırlat" stəkanı açır (telefonda düymə ilə, kompüterdə özü); telefon qızmır, batareya sürətlə düşmür.
 - [ ] Dil dəyişdirici: AZ / EN / RU; Rus başlıqları Montserrat ilə düzgün görünür; Azərbaycan hərfləri (ə, ğ, ı, ö, ş, ü, ç) hər yerdə düzgündür.
 - [ ] Menyu düyməsi, alt menyu, bütün keçidlər; 404 səhifəsi (`/moka-brand/olmayan-sehife/`).
 - [ ] Ekran qaraldılmış / "hərəkəti azalt" rejimi: animasiyalar sönür, məzmun oxunur.
