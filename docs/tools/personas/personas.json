@@ -1,0 +1,69 @@
+{
+  "site": "https://faiggurb.github.io/moka-brand/",
+  "note": "Synthetic users for the MOKA concept site. Each persona browses the live site with Playwright (look.mjs) and writes a JSON report (schema below). AI personas are a heuristic, not real people: they find missing information, unclear copy, navigation dead ends and design issues; they cannot feel real-device smoothness.",
+  "report_schema": {
+    "persona": "id",
+    "overall": "1-10 (would they come back / recommend)",
+    "scores": { "clarity": "1-10", "ease": "1-10", "trust": "1-10", "delight": "1-10", "speed_feel": "1-10" },
+    "tasks": [{ "task": "text", "done": "yes|partly|no", "steps": "how they got there or where they got stuck", "evidence": "screenshot path" }],
+    "findings": [{ "severity": "critical|major|minor|nice", "where": "page/section", "what": "problem in plain words", "evidence": "screenshot path", "suggestion": "fix idea" }],
+    "quotes": ["2-4 short first-person reactions in the persona's own language"],
+    "summary_az": "3-5 sentences in Azerbaijani"
+  },
+  "personas": [
+    {
+      "id": "leyla",
+      "name": "Leyla, 24",
+      "lang": "az",
+      "device": "phone",
+      "who": "Bakılı tələbə, qəhvə həvəskarı, Instagram-da MOKA-nı izləyir. Səbirsizdir, 10 saniyədə maraqlanmasa çıxır. Estetikanı sevir.",
+      "goals": ["Bu gecə dostlarla oturmaq üçün yer axtarır", "Gözəl görünürmü, paylaşmağa dəyərmi"],
+      "tasks": ["Ən yaxın kafenin ünvanını və 24 saat açıq olub-olmadığını tap", "Menyuda soyuq içki tap", "Bir oyun oyna və ya AR-ı sına", "Instagram-a keçid tap"]
+    },
+    {
+      "id": "sergey",
+      "name": "Сергей, 38",
+      "lang": "ru",
+      "device": "phone",
+      "who": "Офисный работник у парка Низами, говорит по-русски, спешит, ищет кофе на вынос утром. Не любит долгие анимации.",
+      "goals": ["Быстро узнать часы работы и адрес", "Понять, есть ли кофе с собой"],
+      "tasks": ["Переключить язык на русский", "Найти часы работы Parkview", "Найти позвонить/карта", "Понять, что такое MOKA Club"]
+    },
+    {
+      "id": "anna",
+      "name": "Anna, 31",
+      "lang": "en",
+      "device": "desktop",
+      "who": "Tourist from Germany visiting Baku for 3 days, specialty-coffee nerd, uses a laptop in the hotel. Knows nothing about MOKA.",
+      "goals": ["Decide if MOKA is worth a visit", "Learn what coffee they roast"],
+      "tasks": ["Switch to English", "Find out what MOKA roasts and how (roaster, roast levels)", "Find both cafés on a map", "Find the menu with prices or know they are samples"]
+    },
+    {
+      "id": "rasim",
+      "name": "Rasim, 63",
+      "lang": "az",
+      "device": "phone",
+      "who": "Təqaüdçü, telefonla az işləyir, böyük yazı və sadə düymə istəyir, animasiyalar onu çaşdırır. Nəvəsi linki göndərib.",
+      "goals": ["Kafenin harada olduğunu və telefonunu tapmaq"],
+      "tasks": ["Ünvanı və telefon nömrəsini tap", "Zəng et düyməsini tap", "Səhifədə itmədən yuxarı qayıt"]
+    },
+    {
+      "id": "moka-owner",
+      "name": "MOKA brend meneceri",
+      "lang": "az",
+      "device": "desktop",
+      "who": "MOKA Coffee Baku-nun brend meneceri. Rəsmi brend kitabını (qara-ağ, Yume/Avenir, şüarlar 'In coffee we trust.' / 'Good to the last drop!') yaxşı bilir. Brendin düzgün, faktların doğru təqdim olunmasına, qablaşdırmanın dəyişdirilməməsinə, tərəfdaş loqolarına diqqət edir. Konsept saytı qiymətləndirir: buna pul verərdimi?",
+      "goals": ["Brendə uyğunluq", "Faktların doğruluğu (ünvanlar, saatlar, tərəfdaşlar)", "Satış və kafeyə gəliş üçün faydası"],
+      "tasks": ["Loqo, rəng və şriftin brend kitabına uyğunluğunu yoxla", "Faktları yoxla: 2 kafe, saatlar, telefonlar, tərəfdaşlar", "Qablaşdırma dəyişdirilibmi", "Brend kitabı səhifəsini aç (/brand/)"]
+    },
+    {
+      "id": "critic",
+      "name": "Awwwards jury designer",
+      "lang": "en",
+      "device": "desktop",
+      "who": "Senior web designer who judges Awwwards. Strict about typography, motion quality, originality, consistency and performance. Compares with the best coffee/brand sites of 2026.",
+      "goals": ["Would this win Site of the Day? What blocks it?"],
+      "tasks": ["Evaluate the hero and first 10 seconds", "Evaluate the scroll film and transitions", "Evaluate typography, layout rhythm, colour", "Find inconsistencies and template-looking parts"]
+    }
+  ]
+}

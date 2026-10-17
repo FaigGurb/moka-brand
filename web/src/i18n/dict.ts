@@ -137,7 +137,7 @@ const az = {
       { name: "Dən paketi", sub: "Qara paket, açıq boz K simvolu, qarışığın adı iri başlıqda.", idea: "K-dakı boşluq Chemex-də qəhvənin səviyyəsidir. Paketə heç nə əlavə olunmur." },
       { name: "Götür stəkanı", sub: "Ağ stəkan, qara qapaq, qara K. Kafedəki real stəkan.", idea: "Stəkandakı K simvolu AR-ın, oyunların və brend kitabının mərkəzidir." },
       { name: "Cold brew", sub: "Ağ etiket, iri “COLD BREW” başlığı, 350 ml.", idea: "Etiketdə tam loqo: dörd hərf, dörd dəmləmə, bir xətt." },
-      { name: "Kağız çanta", sub: "“In coffee we trust” — MOKA-nın rəsmi şüarı.", idea: "Brendin digər şüarı “Good to the last drop!” bizim “Xəttə qədər.” ilə eyni fikirdir." },
+      { name: "Kağız çanta", sub: "“In coffee we trust” — MOKA-nın rəsmi şüarı.", idea: "Brendin digər şüarı “Good to the last drop!” bizim konsept təklifimiz “Xəttə qədər.” ilə eyni fikirdir." },
     ],
   },
   partners: {
@@ -251,8 +251,8 @@ const az = {
     todayText: "Saytın rəngi günün saatına uyğun dəyişir.",
     tabs: ["Espresso bar", "Dəmləmə", "Soyuq", "Dənlər", "Yemək"],
     sizes: "Ölçü",
-    price: "[₼]",
-    note: "Nümunə menyu: siyahı, təsvirlər və qiymətlər yer tutucudur ([₼]). Real menyu MOKA ilə dəqiqləşdiriləcək.",
+    price: "qiymət kafedə",
+    note: "Nümunə menyu: siyahı və təsvirlər nümunədir, qiymətləri kafedə soruşun. Real menyu MOKA ilə dəqiqləşdiriləcək.",
     items: {
       espresso: [
         { name: "Espresso", desc: "Qısa və sıx. Bütün barın bazası." },
@@ -273,9 +273,9 @@ const az = {
         { name: "Espresso tonik", desc: "Tonik üzərində espresso." },
       ],
       food: [
-        { name: "Kruasan", desc: "[təsvir]" },
-        { name: "Çizkeyk", desc: "[təsvir]" },
-        { name: "Səhər yeməyi", desc: "[təsvir]" },
+        { name: "Kruasan", desc: "" },
+        { name: "Çizkeyk", desc: "" },
+        { name: "Səhər yeməyi", desc: "" },
       ],
     },
     beansText: "Dənlər MOKA-da qovrulur. Paketin yanındakı dən kartında xəttin hündürlüyü qovurmanı göstərir. Mənşə və dad notları nümunədir.",
@@ -581,8 +581,8 @@ const en: Dict = {
     todayText: "The site colour follows the time of day.",
     tabs: ["Espresso bar", "Brew bar", "Cold", "Beans", "Food"],
     sizes: "Size",
-    price: "[₼]",
-    note: "Sample menu: items, descriptions and prices are placeholders ([₼]). The real menu would be confirmed with MOKA.",
+    price: "price at the café",
+    note: "Sample menu: items and descriptions are examples; ask for prices at the café. The real menu would be confirmed with MOKA.",
     items: {
       espresso: [
         { name: "Espresso", desc: "Short and dense. The base of the whole bar." },
@@ -603,9 +603,9 @@ const en: Dict = {
         { name: "Espresso tonic", desc: "Espresso over tonic." },
       ],
       food: [
-        { name: "Croissant", desc: "[description]" },
-        { name: "Cheesecake", desc: "[description]" },
-        { name: "Breakfast", desc: "[description]" },
+        { name: "Croissant", desc: "" },
+        { name: "Cheesecake", desc: "" },
+        { name: "Breakfast", desc: "" },
       ],
     },
     beansText: "The beans are roasted at MOKA. On the bean card that comes with each bag, the height of the line shows the roast. Origins and tasting notes are samples.",
@@ -909,8 +909,8 @@ const ru: Dict = {
     todayText: "Цвет сайта меняется по времени дня.",
     tabs: ["Эспрессо-бар", "Альтернатива", "Холодные", "Зерно", "Еда"],
     sizes: "Размер",
-    price: "[₼]",
-    note: "Пример меню: позиции, описания и цены — заглушки ([₼]). Настоящее меню уточняется с MOKA.",
+    price: "цена в кофейне",
+    note: "Пример меню: позиции и описания — примеры, цены уточняйте в кофейне. Настоящее меню уточняется с MOKA.",
     items: {
       espresso: [
         { name: "Espresso", desc: "Короткий и плотный. Основа всего бара." },
@@ -931,9 +931,9 @@ const ru: Dict = {
         { name: "Эспрессо-тоник", desc: "Эспрессо поверх тоника." },
       ],
       food: [
-        { name: "Круассан", desc: "[описание]" },
-        { name: "Чизкейк", desc: "[описание]" },
-        { name: "Завтрак", desc: "[описание]" },
+        { name: "Круассан", desc: "" },
+        { name: "Чизкейк", desc: "" },
+        { name: "Завтрак", desc: "" },
       ],
     },
     beansText: "Зерно обжаривают в MOKA. На карточке, которая прилагается к пачке, высота линии показывает обжарку. Происхождение и ноты — примеры.",

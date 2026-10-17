@@ -456,8 +456,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     };
     const onPointerDown = () => tour && stopTour();
     let lastWheel = 0;
+    // the phone menu locks the page (Nav sets overflow on <html>): gestures then belong to the menu
+    const locked = () => document.documentElement.style.overflow === "hidden";
     const onWheel = (e: WheelEvent) => {
       if (tour) stopTour();
+      if (locked()) return;
       if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX) || Math.abs(e.deltaY) < 1) return;
       const now = performance.now();
       const fresh = now - lastWheel > 200;
@@ -476,6 +479,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
       touchDir = 0;
     };
     const onTouchMove = (e: TouchEvent) => {
+      if (locked()) return;
       const dy = touchY - e.touches[0].clientY;
       if (Math.abs(dy) < 8 && goal === null) return;
       const dir = dy > 0 ? 1 : -1;
@@ -492,6 +496,7 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark }: P
     };
     const onKey = (e: KeyboardEvent) => {
       if (tour) stopTour();
+      if (locked()) return;
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON" || e.altKey || e.metaKey || e.ctrlKey) return;
       const down = ["ArrowDown", "PageDown"].includes(e.key) || (e.key === " " && !e.shiftKey);

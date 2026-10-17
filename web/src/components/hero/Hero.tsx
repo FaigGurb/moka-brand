@@ -119,6 +119,15 @@ export function Hero() {
                 {t.hero.ar}
               </MagneticButton>
             </div>
+            {/* where and when, for guests who came for a coffee rather than the story */}
+            <a href="#kafeler" className="hero-fade group flex flex-col gap-0.5 self-start text-[15px] text-paper/75 transition-colors hover:text-paper">
+              <span className="text-paper underline decoration-paper/30 underline-offset-4 group-hover:decoration-paper">{t.contact.title} ↓</span>
+              {t.contact.places.map((p) => (
+                <span key={p.name}>
+                  {p.name} · {p.hours}
+                </span>
+              ))}
+            </a>
             {/* a small toy: real beans fall, bounce and settle at the foot of the screen */}
             <p className="hero-fade flex items-center gap-2 text-[15px] text-paper/60 motion-reduce:hidden">
               <button type="button" onClick={() => dropBeans(1)} className="underline decoration-paper/30 underline-offset-4 transition-colors hover:text-paper">
