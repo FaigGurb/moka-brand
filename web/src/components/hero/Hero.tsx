@@ -1,5 +1,6 @@
 "use client";
 
+import { jumpTo } from "@/lib/lenis";
 import { useRef, useState } from "react";
 import { Lockup } from "../Logo";
 import { MagneticButton } from "../ui/MagneticButton";
@@ -80,13 +81,15 @@ export function Hero() {
             decoding="async"
             className="h-full w-full object-cover object-[78%_50%] md:object-[60%_50%]"
           />
-          <LoopVideo loop={LOOPS.hero} onPlaying={setLive} className="object-[78%_50%] md:object-[60%_50%]" />
+          <LoopVideo loop={LOOPS.hero} onPlaying={setLive} sharpOnly className="object-[78%_50%] md:object-[60%_50%]" />
         </div>
       </div>
       {!live && <BeanRain />}
       <Dust />
       {/* grade: the copy side stays deep black; phones get a floor under the text */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.6)_38%,transparent_70%)]" />
+      {/* wide screens: the pitch and buttons sit on the right, so that side gets its own shade */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(270deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.55)_38%,transparent_62%)] md:block" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[60%] bg-[linear-gradient(to_top,#000_0%,rgba(0,0,0,0.75)_45%,transparent)] md:h-[35%]" />
       <div aria-hidden="true" className="hero-dim pointer-events-none absolute inset-0 bg-black opacity-0" />
 
@@ -102,7 +105,7 @@ export function Hero() {
             ))}
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
-            <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/70 sm:text-[17px]">{t.hero.text}</p>
+            <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/80 [text-shadow:0_1px_14px_rgb(0_0_0/0.9)] sm:text-[17px]">{t.hero.text}</p>
             <div className="hero-fade flex flex-wrap gap-3">
               <MagneticButton
                 href="#proses"
@@ -120,7 +123,7 @@ export function Hero() {
               </MagneticButton>
             </div>
             {/* where and when, for guests who came for a coffee rather than the story */}
-            <a href="#kafeler" className="hero-fade group flex flex-col gap-0.5 self-start text-[15px] text-paper/75 transition-colors hover:text-paper">
+            <a href="#kafeler" onClick={(e) => jumpTo("#kafeler") && e.preventDefault()} className="hero-fade group order-first flex flex-col gap-0.5 self-start text-[15px] text-paper/75 transition-colors hover:text-paper md:order-none">
               <span className="text-paper underline decoration-paper/30 underline-offset-4 group-hover:decoration-paper">{t.contact.title} ↓</span>
               {t.contact.places.map((p) => (
                 <span key={p.name}>
@@ -142,10 +145,10 @@ export function Hero() {
       </div>
       {/* scroll cue: a drop runs down a thin golden line, into the film below */}
       <span aria-hidden="true" className="hero-fade pointer-events-none absolute bottom-6 left-1/2 hidden h-14 w-px -translate-x-1/2 overflow-hidden bg-paper/15 md:block">
-        <span className="absolute inset-x-0 top-0 h-5 bg-[linear-gradient(to_bottom,transparent,rgba(255,226,166,0.95))] motion-safe:animate-[scroll-cue_2.2s_cubic-bezier(0.6,0,0.3,1)_infinite]" />
+        <span className="absolute inset-x-0 top-0 h-5 bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.95))] motion-safe:animate-[scroll-cue_2.2s_cubic-bezier(0.6,0,0.3,1)_infinite]" />
       </span>
       {/* the signature line under the hero */}
-      <span aria-hidden="true" className="relative block h-px w-full bg-[linear-gradient(90deg,transparent,rgba(255,226,166,0.7),transparent)]" />
+      <span aria-hidden="true" className="relative block h-px w-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.7),transparent)]" />
     </section>
   );
 }

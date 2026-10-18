@@ -48,6 +48,7 @@ const az = {
   beans: {
     eyebrow: "Proses",
     title: "Bir fincanın yolu",
+    skip: "Filmi ötür",
     steps: [
       { title: "Dən", text: "Yaşıl dən hələ heç nə vəd etmir: nə ətri var, nə dadı. Hər partiyanın mənşəyi paketdə yazılır.", tags: ["Seçilmiş yaşıl dən", "Mənşə paketdə"] },
       { title: "Qovurma", text: "İstilik dənin rəngini və dadını dəyişir: açıq qovrulmada meyvə və çiçək, ortada balans, tünddə şokolad və güclü gövdə.", tags: ["Besca BSC-05", "5 kq partiya"] },
@@ -68,12 +69,12 @@ const az = {
       { sub: "", src: "Limitli buraxılışların vurğusu" },
     ],
     seasonal: "Mövsümi",
-    title: "Palitra kafenin özündən gəlir",
-    text: "Qara-ağ loqo əsasdır. Köməkçi rənglər interyerdən götürülüb və günün saatlarına görə adlanır: menyuda, Instagram-da və mövsümi kampaniyalarda bu adlar işlədilir.",
+    title: "Qara-ağ, bir xətt rəng",
+    text: "MOKA qara-ağdır. Gün rəngləri yalnız vurğudur — bir xətt, bir nöqtə: interyerdən götürülüb, günün saatlarına görə adlanır və menyuda, Instagram-da, mövsümi kampaniyalarda işlədilə bilər. Konseptin təklifidir.",
     base: [
-      { name: "Espresso", src: "Loqo, paket, fasad" },
-      { name: "Kağız", src: "Stəkan, kağız çanta" },
-      { name: "Kraft", src: "Dən kartı, menyu" },
+      { name: "Qara", src: "Loqo, qara paket, fasad" },
+      { name: "Ağ", src: "Ağ stəkan, fon" },
+      { name: "Boz", src: "Boz kağız çanta, köməkçi mətn" },
     ],
   },
   roast: {
@@ -146,7 +147,7 @@ const az = {
     text: "MOKA Azərbaycanda beş İtaliya brendinin rəsmi distribyutorudur və hamısı MOKA-nın öz barında da işləyir. Xətt bir fincanın yolunu izləyir: qəhvə, üyütmə, espresso, sirop, vitrin.",
     site: "Rəsmi sayt",
     items: [
-      { step: "Qəhvə", role: "Dən və üyüdülmüş qəhvə", fact: "Milan, İtaliya", bar: "Barımızda: Pitti Caffè espresso" },
+      { step: "Qəhvə", role: "Dən və üyüdülmüş qəhvə", fact: "Corsico (Milan), İtaliya", bar: "Barımızda: Pitti Caffè espresso" },
       { step: "Üyütmə", role: "Peşəkar qəhvə dəyirmanları", fact: "Scorzè, Venesiya", bar: "Barımızda: Robur S · ZM Plus" },
       { step: "Espresso", role: "Espresso maşınları", fact: "1947-dən · Trevizo", bar: "Barımızda: Elektra Indie" },
       { step: "Sirop", role: "Siroplar, püre və kokteyl miksləri", fact: "Orsadrinks brendi · 1992-dən", bar: "Barımızda: ODK siropları" },
@@ -182,7 +183,7 @@ const az = {
     ritualEyebrow: "Xətt ritualı",
     cupAlt: "Keramika fincan kəsiyi: qəhvə içindəki incə xəttə qədər doldurulub",
     ritualTitle: "Hər fincan düz xəttə qədər",
-    ritualText: "Zal fincanlarının içində incə bir xətt var, barista qəhvəni ona qədər doldurur. Kiçik detal, amma hər müştəri onu görür və xatırlayır. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
+    ritualText: "Konsept təklifi: zal fincanlarının içində incə bir xətt olsun, barista qəhvəni ona qədər doldursun. Kiçik detal, amma hər müştəri onu görər və xatırlayar. “Xətti tut” oyunu bu ritualın rəqəmsal versiyasıdır.",
     real: { title: "Bu gün kafedə", credit: "Kadrlar: MOKA-nın Instagram səhifəsi", shots: [
       { src: "sign", title: "Lövhə", alt: "Divarda metal MOKA hərfi və ROASTERY & EATERY yazısı" },
       { src: "led", title: "LED xətlər artıq var", alt: "Barista barda işləyir, tavanda isti LED xətlər" },
@@ -379,6 +380,7 @@ const en: Dict = {
   beans: {
     eyebrow: "Process",
     title: "The journey of a cup",
+    skip: "Skip the film",
     steps: [
       { title: "Bean", text: "A green bean promises nothing yet: no aroma, no flavour. The origin of every batch is printed on the bag.", tags: ["Selected green beans", "Origin on the bag"] },
       { title: "Roast", text: "Heat changes the bean's colour and taste: fruit and flowers in a light roast, balance in a medium one, chocolate and a strong body in a dark one.", tags: ["Besca BSC-05", "5 kg batch"] },
@@ -398,12 +400,12 @@ const en: Dict = {
       { sub: "Pomegranate", src: "The accent for limited releases" },
     ],
     seasonal: "Seasonal",
-    title: "The palette comes from the café itself",
-    text: "The black-and-white logo leads. The supporting colours are taken from the interior and named after the hours of the day; the names are used on the menu, on Instagram and in seasonal campaigns.",
+    title: "Black and white, one line of colour",
+    text: "MOKA is black and white. The day colours are only an accent — one line, one dot: taken from the interior, named after the hours of the day, ready for the menu, Instagram and seasonal campaigns. A proposal of the concept.",
     base: [
-      { name: "Espresso", src: "Logo, bag, storefront" },
-      { name: "Paper", src: "Cups, paper bag" },
-      { name: "Kraft", src: "Bean card, menu" },
+      { name: "Black", src: "Logo, black bag, storefront" },
+      { name: "White", src: "White cup, background" },
+      { name: "Grey", src: "Grey paper bag, secondary text" },
     ],
   },
   roast: {
@@ -476,7 +478,7 @@ const en: Dict = {
     text: "MOKA is the official distributor of five Italian brands in Azerbaijan, and all of them work in MOKA’s own bar too. The line follows the path of a cup: coffee, grinding, espresso, syrup, showcase.",
     site: "Official site",
     items: [
-      { step: "Coffee", role: "Beans and ground coffee", fact: "Milan, Italy", bar: "In our bar: Pitti Caffè espresso" },
+      { step: "Coffee", role: "Beans and ground coffee", fact: "Corsico (Milan), Italy", bar: "In our bar: Pitti Caffè espresso" },
       { step: "Grinding", role: "Professional coffee grinders", fact: "Scorzè, Venice", bar: "In our bar: Robur S · ZM Plus" },
       { step: "Espresso", role: "Espresso machines", fact: "Since 1947 · Treviso", bar: "In our bar: Elektra Indie" },
       { step: "Syrup", role: "Syrups, purées and cocktail mixes", fact: "An Orsadrinks brand · since 1992", bar: "In our bar: ODK syrups" },
@@ -512,7 +514,7 @@ const en: Dict = {
     ritualEyebrow: "The line ritual",
     cupAlt: "Cross-section of a ceramic cup: coffee filled up to a fine line inside",
     ritualTitle: "Every cup exactly to the line",
-    ritualText: "Dine-in cups have a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest sees it and remembers it. The “Hit the line” game is the digital version of this ritual.",
+    ritualText: "A concept proposal: dine-in cups with a fine line inside, and the barista fills the coffee right up to it. A small detail, but every guest would see it and remember it. The “Hit the line” game is the digital version of this ritual.",
     real: { title: "In the café today", credit: "Footage: MOKA's Instagram", shots: [
       { src: "sign", title: "The sign", alt: "A metal MOKA letter and ROASTERY & EATERY on the wall" },
       { src: "led", title: "The LED lines are already there", alt: "A barista at the bar under warm LED lines on the ceiling" },
@@ -707,6 +709,7 @@ const ru: Dict = {
   beans: {
     eyebrow: "Процесс",
     title: "Путь одной чашки",
+    skip: "Пропустить фильм",
     steps: [
       { title: "Зерно", text: "Зелёное зерно пока ничего не обещает: ни аромата, ни вкуса. Происхождение каждой партии указано на пачке.", tags: ["Отборное зелёное зерно", "Происхождение на пачке"] },
       { title: "Обжарка", text: "Жар меняет цвет и вкус зерна: в светлой обжарке — фрукты и цветы, в средней — баланс, в тёмной — шоколад и плотное тело.", tags: ["Besca BSC-05", "Партия 5 кг"] },
@@ -726,12 +729,12 @@ const ru: Dict = {
       { sub: "Гранат", src: "Акцент для лимитированных выпусков" },
     ],
     seasonal: "Сезонный",
-    title: "Палитра взята из самой кофейни",
-    text: "Основа — чёрно-белый логотип. Дополнительные цвета взяты из интерьера и названы по времени суток; эти названия используются в меню, в Instagram и в сезонных кампаниях.",
+    title: "Чёрно-белое, одна линия цвета",
+    text: "MOKA — чёрно-белая. Цвета дня — только акцент: одна линия, одна точка. Они взяты из интерьера, названы по времени суток и могут жить в меню, в Instagram и в сезонных кампаниях. Это предложение концепта.",
     base: [
-      { name: "Эспрессо", src: "Логотип, пачка, вывеска" },
-      { name: "Бумага", src: "Стаканы, бумажный пакет" },
-      { name: "Крафт", src: "Карточка зерна, меню" },
+      { name: "Чёрный", src: "Логотип, чёрная пачка, вывеска" },
+      { name: "Белый", src: "Белый стакан, фон" },
+      { name: "Серый", src: "Серый бумажный пакет, второстепенный текст" },
     ],
   },
   roast: {
@@ -804,7 +807,7 @@ const ru: Dict = {
     text: "MOKA — официальный дистрибьютор пяти итальянских брендов в Азербайджане, и все они работают в собственном баре MOKA. Линия повторяет путь чашки: кофе, помол, эспрессо, сироп, витрина.",
     site: "Официальный сайт",
     items: [
-      { step: "Кофе", role: "Зерно и молотый кофе", fact: "Милан, Италия", bar: "В нашем баре: эспрессо Pitti Caffè" },
+      { step: "Кофе", role: "Зерно и молотый кофе", fact: "Корсико (Милан), Италия", bar: "В нашем баре: эспрессо Pitti Caffè" },
       { step: "Помол", role: "Профессиональные кофемолки", fact: "Скорце, Венеция", bar: "В нашем баре: Robur S · ZM Plus" },
       { step: "Эспрессо", role: "Эспрессо-машины", fact: "С 1947 года · Тревизо", bar: "В нашем баре: Elektra Indie" },
       { step: "Сироп", role: "Сиропы, пюре и коктейльные миксы", fact: "Бренд Orsadrinks · с 1992 года", bar: "В нашем баре: сиропы ODK" },
@@ -840,7 +843,7 @@ const ru: Dict = {
     ritualEyebrow: "Ритуал линии",
     cupAlt: "Разрез керамической чашки: кофе налит до тонкой линии внутри",
     ritualTitle: "Каждая чашка — ровно до линии",
-    ritualText: "Внутри чашек для зала нанесена тонкая линия, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её замечает и запоминает. Игра «Поймай линию» — цифровая версия этого ритуала.",
+    ritualText: "Предложение концепта: тонкая линия внутри чашек для зала, и бариста наливает кофе ровно до неё. Мелочь, но каждый гость её заметит и запомнит. Игра «Поймай линию» — цифровая версия этого ритуала.",
     real: { title: "Сегодня в кофейне", credit: "Кадры: Instagram MOKA", shots: [
       { src: "sign", title: "Вывеска", alt: "Металлическая буква MOKA и надпись ROASTERY & EATERY на стене" },
       { src: "led", title: "LED-линии уже есть", alt: "Бариста за баром под тёплыми LED-линиями на потолке" },

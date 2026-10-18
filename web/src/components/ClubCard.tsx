@@ -45,14 +45,14 @@ export function ClubCard() {
         <p className="eyebrow text-glow">{c.eyebrow}</p>
         <h3 className="text-[clamp(26px,3.4vw,40px)] leading-[1.05] font-medium">{c.title}</h3>
         <p className="max-w-[54ch] text-[15px] leading-relaxed text-muted-dark">{c.text}</p>
-        <span className="inline-flex items-center gap-3 text-[13px] font-bold tracking-[0.14em] uppercase">
+        <span className="inline-flex items-center gap-3 text-[13px] font-bold tracking-normal">
           {c.cta} <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
         </span>
       </div>
       <div>
         <p className="flex items-baseline gap-3">
           <span className="font-[family-name:var(--font-display)] text-6xl text-glow tabular-nums">{pts}</span>
-          <span className="text-[13px] font-bold tracking-[0.14em] text-muted-dark uppercase">{c.points}</span>
+          <span className="text-[13px] font-bold tracking-normal text-muted-dark">{c.points}</span>
         </p>
         {next !== undefined && (
           <p className="mt-1 text-[14px] text-muted-dark">

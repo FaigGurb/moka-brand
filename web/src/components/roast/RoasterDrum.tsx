@@ -57,7 +57,7 @@ export function RoasterDrum({ label, className = "" }: { label: string; classNam
         </g>
       </g>
       {/* the signature line runs through the drum at bean level */}
-      <path d="M62 75.5 H158" stroke="var(--color-axsam)" strokeWidth="2.5" className="rd-line" />
+      <path d="M62 75.5 H158" stroke="var(--color-glow)" strokeWidth="2.5" className="rd-line" />
     </svg>
   );
 }

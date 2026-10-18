@@ -20,9 +20,9 @@ const SECTIONS = [
 // Bags in the beans section: the coloured part reaches the roast line (light = high, dark = low).
 const BAGS = [
   // order follows the bag family: core (medium), single origin (light), limited (dark)
-  { level: 2, color: "#8A5A3B", line: 0.46, ink: "#F5F1EA" },
-  { level: 1, color: "#C08A55", line: 0.62, ink: "#1B1714" },
-  { level: 3, color: "#5E3B26", line: 0.32, ink: "#F5F1EA" },
+  { level: 2, color: "#8A5A3B", line: 0.46, ink: "#F6F6F4" },
+  { level: 1, color: "#C08A55", line: 0.62, ink: "#000000" },
+  { level: 3, color: "#5E3B26", line: 0.32, ink: "#F6F6F4" },
 ];
 
 function Item({ name, desc, letter, price, sizes, sizeLabel }: { name: string; desc: string; letter?: LetterId; price: string; sizes?: boolean; sizeLabel: string }) {
@@ -39,7 +39,7 @@ function Item({ name, desc, letter, price, sizes, sizeLabel }: { name: string; d
         </div>
         {desc && <p className="mt-1 text-[15px] leading-relaxed text-muted">{desc}</p>}
         {sizes && (
-          <p className="mt-2 flex items-center gap-1.5 text-[12px] font-bold tracking-[0.1em] text-muted uppercase">
+          <p className="mt-2 flex items-center gap-1.5 text-[12px] font-bold tracking-normal text-muted">
             <span className="sr-only">{sizeLabel}:</span>
             {["S", "M", "L"].map((s) => (
               <span key={s} className="border border-espresso/20 px-2 py-0.5">
@@ -70,7 +70,15 @@ export function MenuPage() {
       const el = document.getElementById(`m-${s.id}`);
       if (el) io.observe(el);
     });
-    return () => io.disconnect();
+    // the last section is short: at the foot of the page it never reaches the observed band
+    const atEnd = () => {
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 160) setActive(SECTIONS[SECTIONS.length - 1].id);
+    };
+    window.addEventListener("scroll", atEnd, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", atEnd);
+    };
   }, []);
 
   useGSAP(
@@ -161,17 +169,17 @@ export function MenuPage() {
                   <ul className="mt-8 grid gap-5 sm:grid-cols-3">
                     {BAGS.map((b) => (
                       <li key={b.level} className="m-bag">
-                        <div className="relative aspect-[3/4] overflow-hidden rounded-[10px] bg-white shadow-[0_24px_60px_-30px_rgba(27,23,20,0.45)]">
+                        <div className="relative aspect-[3/4] overflow-hidden rounded-[10px] bg-white shadow-[0_24px_60px_-30px_rgba(0,0,0,0.45)]">
                           <span className="absolute top-4 right-4 block h-3.5 w-3.5 rounded-full bg-paper-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]" aria-hidden="true" />
                           <div className="absolute inset-x-0 top-0 p-5">
                             <Logo className="h-5 w-auto" />
                             <p className="mt-1 text-[9px] font-bold tracking-[0.3em] text-muted uppercase">Roastery & Eatery</p>
-                            <p className="mt-6 text-[11px] font-bold tracking-[0.18em] text-axsam-ink uppercase">{t.roast.house.card}</p>
+                            <p className="mt-6 text-[11px] font-bold tracking-normal text-muted">{t.roast.house.card}</p>
                             <p className="mt-1 font-[family-name:var(--font-display)] text-2xl">{levels[b.level].origin}</p>
                             <p className="text-[13px] text-muted">{levels[b.level].notes}</p>
                           </div>
                           <div className="absolute inset-x-0 bottom-0 flex flex-col justify-between p-5" style={{ height: `${b.line * 100}%`, background: b.color, color: b.ink }}>
-                            <span className="text-[11px] font-bold tracking-[0.18em] uppercase">{levels[b.level].label}</span>
+                            <span className="text-[11px] font-bold tracking-normal">{levels[b.level].label}</span>
                             <span className="flex items-end justify-between text-[13px] font-bold">
                               <span>{m.weight}</span>
                               <span>{m.price}</span>
@@ -233,7 +241,7 @@ export function MenuPage() {
                 href={CONTACT.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow"
+                className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-normal text-espresso transition-colors hover:bg-glow"
               >
                 {m.place.instagram}
               </a>
@@ -253,15 +261,15 @@ export function MenuPage() {
                 [248, 72],
               ].map(([x, y]) => (
                 <g key={x}>
-                  <circle cx={x} cy={y} r="40" fill="rgba(255,226,166,0.12)" />
+                  <circle cx={x} cy={y} r="40" fill="rgba(255,255,255,0.12)" />
                   <g transform={`translate(${x - 19} ${y - 24}) scale(0.24)`}>
-                    <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" transform="translate(-340 0)" fill="none" stroke="#FFE2A6" strokeWidth="9" />
-                    <polygon points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-340 0)" fill="#FFE2A6" />
+                    <path d="M384,20 C364,20 352,36 352,54 C352,74 368,86 386,86 L393,94" transform="translate(-340 0)" fill="none" stroke="#FFFFFF" strokeWidth="9" />
+                    <polygon points="381,7 508,7 467,77 508,149 385,149 407,77" transform="translate(-340 0)" fill="#FFFFFF" />
                   </g>
                 </g>
               ))}
             </svg>
-            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-[0.14em] text-muted-dark uppercase">MOKA × 2 · {t.contact.places.map((p) => p.name).join(" · ")}</figcaption>
+            <figcaption className="absolute bottom-3 left-3 text-[11px] font-bold tracking-normal text-muted-dark">MOKA × 2 · {t.contact.places.map((p) => p.name).join(" · ")}</figcaption>
           </figure>
         </div>
       </section>

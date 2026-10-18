@@ -32,7 +32,9 @@ export function Footer() {
           {day && (
             <p className="flex items-center gap-2 text-sm">
               <span className="block h-3 w-3 rounded-full" style={{ background: day.hex }} aria-hidden="true" />
-              {t.footer.dayNow} <b className="text-paper">{day.name}</b>
+              <span>
+                {t.footer.dayNow} <b className="text-paper">{day.name}</b>
+              </span>
             </p>
           )}
         </div>

@@ -26,7 +26,7 @@ export function ScrollLine() {
   }, []);
   return (
     <div className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[2px]" aria-hidden="true">
-      <div ref={bar} className="h-full origin-left scale-x-0 bg-glow shadow-[0_0_10px_rgba(255,226,166,0.8)]" />
+      <div ref={bar} className="h-full origin-left scale-x-0 bg-glow shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
     </div>
   );
 }

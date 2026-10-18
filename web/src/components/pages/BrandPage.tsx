@@ -17,9 +17,9 @@ const IDS = ["base", "platform", "logo", "color", "type", "grid", "photo", "voic
 const MONO = ["#FFFFFF", "#EDEDED", "#DCDCDC", "#CBCBCB", "#BABABA", "#A9A9A9", "#989898", "#878787", "#6E6E6E", "#575757", "#414141", "#2C2C2C", "#181818", "#000000"];
 
 const BASE_COLORS = [
-  { key: "espresso", hex: "#1B1714" },
-  { key: "paper", hex: "#F5F1EA" },
-  { key: "kraft", hex: "#C9A882" },
+  { key: "espresso", hex: "#000000" },
+  { key: "paper", hex: "#FFFFFF" },
+  { key: "kraft", hex: "#878787" },
 ] as const;
 const DAY_COLORS = [
   { key: "seher", hex: "#C89B6D" },
@@ -27,7 +27,7 @@ const DAY_COLORS = [
   { key: "axsam", hex: "#A8643A" },
   { key: "sheher", hex: "#8E8A84" },
   { key: "nar", hex: "#8E2F22" },
-  { key: "glow", hex: "#FFE2A6" },
+  { key: "glow", hex: "#FFFFFF" },
 ] as const;
 const ROAST = ["#8C9A5B", "#C08A55", "#8A5A3B", "#5E3B26", "#2B1D15"];
 
@@ -39,7 +39,7 @@ function Section({ id, title, note, dark, children }: { id: string; title: strin
         <h2 id={`b-${id}-t`} className="text-[clamp(30px,4.4vw,56px)] leading-none font-medium tracking-[-0.015em]">
           {title}
         </h2>
-        {note && <span className="border border-axsam px-2 py-0.5 text-[11px] font-bold tracking-[0.14em] text-axsam-ink uppercase">{note}</span>}
+        {note && <span className="border border-black/40 px-2 py-0.5 text-[11px] font-bold tracking-normal text-muted">{note}</span>}
       </div>
       {children}
     </section>
@@ -80,7 +80,7 @@ function ColoredMark() {
 function Swatch({ hex, name, usage }: { hex: string; name: string; usage: string }) {
   const [r, g, b] = hexRgb(hex);
   const [c, m, y, k] = cmyk(hex);
-  const ink = contrast(hex, "#1B1714") > contrast(hex, "#F5F1EA") ? "#1B1714" : "#F5F1EA";
+  const ink = contrast(hex, "#000000") > contrast(hex, "#FFFFFF") ? "#000000" : "#FFFFFF";
   return (
     <li className="b-item flex flex-col overflow-hidden border border-espresso/10 bg-white">
       <div className="flex aspect-[4/3] items-end p-4" style={{ background: hex, color: ink }}>
@@ -148,7 +148,7 @@ function SoundPlayer({ label, stop }: { label: string; stop: string }) {
         </defs>
         <rect x="0" y={112 - 70 * fill} width="100" height={70 * fill} fill="#5E3B26" clipPath="url(#snd-cup)" />
         <path d="M10 10 H90 L78 112 H22 Z" fill="none" stroke="currentColor" strokeWidth="3" />
-        <rect x="2" y="40" width="96" height="3" fill={lit ? "#FFE2A6" : "currentColor"} style={{ filter: lit ? "drop-shadow(0 0 6px #FFE2A6)" : undefined, transition: "fill .2s" }} />
+        <rect x="2" y="40" width="96" height="3" fill={lit ? "#FFFFFF" : "currentColor"} style={{ filter: lit ? "drop-shadow(0 0 6px #FFFFFF)" : undefined, transition: "fill .2s" }} />
       </svg>
       <button
         type="button"
@@ -160,7 +160,7 @@ function SoundPlayer({ label, stop }: { label: string; stop: string }) {
             void a.play();
           } else a.pause();
         }}
-        className="bg-paper px-6 py-4 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow"
+        className="bg-paper px-6 py-4 text-[13px] font-bold tracking-normal text-espresso transition-colors hover:bg-glow"
       >
         {playing ? `■ ${stop}` : `▶ ${label}`}
       </button>
@@ -234,14 +234,14 @@ export function BrandPage() {
         <div className="mx-auto flex max-w-[1320px] flex-col gap-6 px-5 md:px-10">
           <p className="eyebrow text-seher">{b.hero.eyebrow}</p>
           <h1 className="max-w-[14ch] text-[clamp(44px,8vw,112px)] leading-[0.95] font-medium tracking-[-0.02em]">{b.hero.title}</h1>
-          <div className="h-[3px] w-full max-w-[640px] bg-glow shadow-[0_0_16px_rgba(255,226,166,0.7)]" aria-hidden="true" />
+          <div className="h-[3px] w-full max-w-[640px] bg-glow shadow-[0_0_16px_rgba(255,255,255,0.7)]" aria-hidden="true" />
           <p className="max-w-[60ch] text-[17px] leading-relaxed text-muted-dark">{b.hero.text}</p>
           <p className="max-w-[60ch] text-[13px] text-muted-dark">{b.hero.note}</p>
           <div className="no-print flex flex-wrap gap-3">
-            <a href={`${KIT}/moka-brand-book-${locale}.pdf`} download className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow">
+            <a href={`${KIT}/moka-brand-book-${locale}.pdf`} download className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-normal text-espresso transition-colors hover:bg-glow">
               ↓ {b.hero.pdf}
             </a>
-            <a href="#b-downloads" className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-paper">
+            <a href="#b-downloads" className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-normal transition-colors hover:border-paper">
               {b.hero.kit}
             </a>
           </div>
@@ -293,12 +293,12 @@ export function BrandPage() {
                   <Lockup className="w-full max-w-[420px] text-[#111]" />
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.base.lockupT}</p>
+                  <p className="eyebrow text-muted">{b.base.lockupT}</p>
                   <p className="mt-3 text-[16px] leading-relaxed text-muted">{b.base.lockup}</p>
                 </div>
               </div>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.base.monoT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.base.monoT}</p>
               <div className="b-item mt-5 grid grid-cols-7 gap-2 sm:grid-cols-14">
                 {MONO.map((hex) => (
                   <span key={hex} className="flex flex-col gap-1.5">
@@ -311,7 +311,7 @@ export function BrandPage() {
               <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.mono}</p>
               <p className="mt-1 text-[12px] text-muted">{b.base.monoNote}</p>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.base.fontsT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.base.fontsT}</p>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <div className="b-item flex flex-col gap-3 bg-[#111] p-6 text-white">
                   <span className="font-[family-name:var(--font-display)] text-[clamp(40px,5vw,64px)] leading-none font-black uppercase">Abcde</span>
@@ -326,7 +326,7 @@ export function BrandPage() {
               </div>
               <p className="mt-4 max-w-[68ch] text-[14px] leading-relaxed text-muted">{b.base.fontsNote}</p>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.base.slogansT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.base.slogansT}</p>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 {b.base.slogans.map((sl) => (
                   <p key={sl} className="b-item bg-[#111] px-6 py-8 font-[family-name:var(--font-display)] text-[clamp(28px,3.4vw,44px)] leading-[1.02] font-black text-white uppercase">
@@ -336,7 +336,7 @@ export function BrandPage() {
               </div>
               <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.slogansNote}</p>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.base.voiceT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.base.voiceT}</p>
               <ul className="mt-5 grid gap-x-8 gap-y-3 md:grid-cols-2">
                 {b.base.voice.map((v) => (
                   <li key={v} className="b-item border-l-[3px] border-[#111] pl-4 font-[family-name:var(--font-display)] text-[clamp(19px,2vw,24px)] leading-snug font-medium">
@@ -346,7 +346,7 @@ export function BrandPage() {
               </ul>
               <p className="mt-4 max-w-[68ch] text-[15px] leading-relaxed text-muted">{b.base.voiceNote}</p>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.base.packT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.base.packT}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
                 {PACKS.map((Pack, i) => (
                   <li key={i} className="b-item bg-white p-3">
@@ -362,17 +362,17 @@ export function BrandPage() {
             <Section id="platform" title={b.platform.title} note={b.platform.note}>
               <div className="grid gap-10 md:grid-cols-2">
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.platform.purposeT}</p>
+                  <p className="eyebrow text-muted">{b.platform.purposeT}</p>
                   <p className="mt-3 font-[family-name:var(--font-display)] text-[clamp(24px,2.6vw,34px)] leading-tight">{b.platform.purpose}</p>
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.platform.positionT}</p>
+                  <p className="eyebrow text-muted">{b.platform.positionT}</p>
                   <p className="mt-3 text-[18px] leading-relaxed">{b.platform.position}</p>
-                  <p className="eyebrow mt-8 text-axsam-ink">{b.platform.ideaT}</p>
+                  <p className="eyebrow mt-8 text-muted">{b.platform.ideaT}</p>
                   <p className="mt-3 font-[family-name:var(--font-display)] text-3xl">{b.platform.idea}</p>
                 </div>
               </div>
-              <p className="eyebrow mt-14 text-axsam-ink">{b.platform.valuesT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.platform.valuesT}</p>
               <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {b.platform.values.map((v, i) => (
                   <li key={v.name} className="b-item flex flex-col gap-3 bg-white p-5">
@@ -386,7 +386,7 @@ export function BrandPage() {
                   </li>
                 ))}
               </ul>
-              <p className="eyebrow mt-14 text-axsam-ink">{b.platform.audienceT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.platform.audienceT}</p>
               <p className="mt-2 text-[13px] text-muted">{b.platform.audienceNote}</p>
               <ul className="mt-5 grid gap-4 md:grid-cols-3">
                 {b.platform.audience.map((a) => (
@@ -401,7 +401,7 @@ export function BrandPage() {
             {/* 2 logo */}
             <Section id="logo" title={b.logo.title}>
               <p className="max-w-[62ch] text-[17px] leading-relaxed text-muted">{b.logo.text}</p>
-              <p className="eyebrow mt-10 text-axsam-ink">{b.logo.constructionT}</p>
+              <p className="eyebrow mt-10 text-muted">{b.logo.constructionT}</p>
               <figure className="b-item relative mt-5 bg-white p-6 md:p-12">
                 <div className="relative">
                   <Logo className="w-full text-espresso" />
@@ -422,13 +422,13 @@ export function BrandPage() {
                 </figcaption>
               </figure>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.logo.versionsT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.logo.versionsT}</p>
               <ul className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {[
-                  { bg: "#F5F1EA", fg: "#1B1714", el: <Logo className="w-[78%]" /> },
-                  { bg: "#1B1714", fg: "#F5F1EA", el: <Logo className="w-[78%]" /> },
-                  { bg: "var(--day, #C89B6D)", fg: "#1B1714", el: <Logo className="w-[78%]" /> },
-                  { bg: "#1B1714", fg: "#F5F1EA", el: <Letter id="K" className="h-[46%] w-auto" /> },
+                  { bg: "#FFFFFF", fg: "#000000", el: <Logo className="w-[78%]" /> },
+                  { bg: "#000000", fg: "#FFFFFF", el: <Logo className="w-[78%]" /> },
+                  { bg: "#878787", fg: "#000000", el: <Logo className="w-[78%]" /> },
+                  { bg: "#000000", fg: "#FFFFFF", el: <Letter id="K" className="h-[46%] w-auto" /> },
                 ].map((v, i) => (
                   <li key={i} className="b-item">
                     <div className="flex aspect-[4/3] items-center justify-center border border-espresso/10 transition-colors duration-700" style={{ background: v.bg, color: v.fg }}>
@@ -441,18 +441,18 @@ export function BrandPage() {
 
               <div className="mt-14 grid gap-10 md:grid-cols-2">
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.logo.clearT}</p>
+                  <p className="eyebrow text-muted">{b.logo.clearT}</p>
                   <div className="mt-5 bg-white p-6">
                     <div className="relative mx-auto w-[80%] p-[6.4%] outline-2 outline-offset-0 outline-axsam outline-dashed">
                       <Logo className="w-full" />
                       <span className="absolute top-0 left-1/2 h-[6.4%] w-px -translate-x-1/2 bg-axsam" aria-hidden="true" />
-                      <span className="absolute top-[1%] left-[calc(50%+6px)] text-[11px] font-bold text-axsam-ink">½ H</span>
+                      <span className="absolute top-[1%] left-[calc(50%+6px)] text-[11px] font-bold text-muted">½ H</span>
                     </div>
                   </div>
                   <p className="mt-4 text-[15px] leading-relaxed text-muted">{b.logo.clear}</p>
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.logo.minT}</p>
+                  <p className="eyebrow text-muted">{b.logo.minT}</p>
                   <p className="mt-5 text-[15px] leading-relaxed text-muted">{b.logo.min}</p>
                   <dl className="mt-4 grid gap-2">
                     {b.logo.minRows.map(([k, v]) => (
@@ -469,7 +469,7 @@ export function BrandPage() {
                 </div>
               </div>
 
-              <p className="eyebrow mt-14 text-axsam-ink">{b.logo.dontT}</p>
+              <p className="eyebrow mt-14 text-muted">{b.logo.dontT}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
                 {b.logo.donts.map((d, i) => (
                   <li key={d} className="b-item">
@@ -482,7 +482,7 @@ export function BrandPage() {
                       {i === 1 && <Logo className="w-[70%] -rotate-12" />}
                       {i === 2 && <ColoredMark />}
                       {i === 3 && <SolidMark className="w-[70%]" />}
-                      {i === 4 && <Logo className="w-[70%] text-paper [filter:drop-shadow(4px_4px_0_#1B1714)_drop-shadow(-1px_-1px_0_#1B1714)]" />}
+                      {i === 4 && <Logo className="w-[70%] text-paper [filter:drop-shadow(4px_4px_0_#000)_drop-shadow(-1px_-1px_0_#000)]" />}
                       {i === 5 && (
                         <div className="absolute inset-0 flex items-center justify-center bg-[repeating-linear-gradient(45deg,#C89B6D_0_14px,#8E8A84_14px_28px)]">
                           <Logo className="w-[70%] text-[#A8643A]" />
@@ -501,25 +501,25 @@ export function BrandPage() {
             {/* 3 colour */}
             <Section id="color" title={colors.title}>
               <p className="max-w-[62ch] text-[17px] leading-relaxed text-muted">{colors.text}</p>
-              <p className="eyebrow mt-10 text-axsam-ink">{colors.baseT}</p>
+              <p className="eyebrow mt-10 text-muted">{colors.baseT}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3">
                 {BASE_COLORS.map((c) => (
                   <Swatch key={c.key} hex={c.hex} name={colors.names[c.key]} usage={colors.usage[c.key]} />
                 ))}
               </ul>
-              <p className="eyebrow mt-10 text-axsam-ink">{colors.dayT}</p>
+              <p className="eyebrow mt-10 text-muted">{colors.dayT}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
                 {DAY_COLORS.map((c) => (
                   <Swatch key={c.key} hex={c.hex} name={colors.names[c.key]} usage={colors.usage[c.key]} />
                 ))}
               </ul>
-              <p className="eyebrow mt-10 text-axsam-ink">{colors.roastT}</p>
+              <p className="eyebrow mt-10 text-muted">{colors.roastT}</p>
               <div className="b-item mt-5 flex h-16" role="img" aria-label={colors.roastT}>
                 {ROAST.map((c) => (
                   <span
                     key={c}
                     className="flex flex-1 items-end p-2 text-[10px] font-bold"
-                    style={{ background: c, color: contrast(c, "#1B1714") > contrast(c, "#F5F1EA") ? "#1B1714" : "#F5F1EA" }}
+                    style={{ background: c, color: contrast(c, "#000000") > contrast(c, "#FFFFFF") ? "#000000" : "#FFFFFF" }}
                   >
                     {c}
                   </span>
@@ -527,21 +527,21 @@ export function BrandPage() {
               </div>
               <div className="mt-10 grid gap-10 md:grid-cols-2">
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{colors.ratioT}</p>
+                  <p className="eyebrow text-muted">{colors.ratioT}</p>
                   <div className="mt-5 flex h-10 overflow-hidden" aria-hidden="true">
                     <span className="w-[60%] bg-espresso" />
-                    <span className="w-[30%] bg-kraft" />
-                    <span className="w-[10%] bg-nar" />
+                    <span className="w-[30%] bg-[#878787]" />
+                    <span className="w-[10%] bg-white" />
                   </div>
                   <p className="mt-4 text-[15px] leading-relaxed text-muted">{colors.ratio}</p>
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{colors.contrastT}</p>
+                  <p className="eyebrow text-muted">{colors.contrastT}</p>
                   <p className="mt-3 text-[13px] text-muted">{colors.contrastText}</p>
                   <table className="mt-4 w-full text-left text-[13px] tabular-nums">
                     <tbody>
                       {textOn.map((bg) =>
-                        (["#1B1714", "#F5F1EA"] as const)
+                        (["#000000", "#FFFFFF"] as const)
                           .filter((fg) => fg !== bg.hex)
                           .map((fg) => {
                             const r = contrast(fg, bg.hex);
@@ -558,7 +558,7 @@ export function BrandPage() {
                                   </svg>
                                 </td>
                                 <td className="pr-2">
-                                  {fg === "#1B1714" ? colors.names.espresso : colors.names.paper} {colors.on} {colors.names[bg.key]}
+                                  {fg === "#000000" ? colors.names.espresso : colors.names.paper} {colors.on} {colors.names[bg.key]}
                                 </td>
                                 <td className="pr-2 font-bold">{r.toFixed(1)}:1</td>
                                 <td className="whitespace-nowrap">
@@ -584,15 +584,15 @@ export function BrandPage() {
               <p className="max-w-[62ch] text-[17px] leading-relaxed text-muted">{b.type.text}</p>
               <div className="mt-10 grid gap-4 md:grid-cols-3">
                 <div className="b-item bg-white p-6">
-                  <p className="eyebrow text-axsam-ink">{b.type.displayT} · League Spartan</p>
+                  <p className="eyebrow text-muted">{b.type.displayT} · League Spartan</p>
                   <p className="mt-4 font-[family-name:var(--font-display)] text-6xl leading-none">Aa Əə</p>
                 </div>
                 <div className="b-item bg-white p-6">
-                  <p className="eyebrow text-axsam-ink">{b.type.textT} · Mulish</p>
+                  <p className="eyebrow text-muted">{b.type.textT} · Mulish</p>
                   <p className="mt-4 text-6xl leading-none">Aa Əə</p>
                 </div>
                 <div className="b-item bg-white p-6">
-                  <p className="eyebrow text-axsam-ink">{b.type.cyrT} · Montserrat</p>
+                  <p className="eyebrow text-muted">{b.type.cyrT} · Montserrat</p>
                   <p className="mt-4 font-[family-name:var(--font-display)] text-6xl leading-none" lang="ru">
                     Аа Жж
                   </p>
@@ -601,7 +601,7 @@ export function BrandPage() {
               <p className="b-item mt-6 bg-white p-6 font-[family-name:var(--font-display)] text-[clamp(20px,2.6vw,30px)] leading-snug break-words">
                 Aa Bb Cc Çç Dd Ee Əə Ff Gg Ğğ Hh Xx Iı İi Jj Kk Qq Ll Mm Nn Oo Öö Pp Rr Ss Şş Tt Uu Üü Vv Yy Zz 0123456789 ₼
               </p>
-              <p className="eyebrow mt-10 text-axsam-ink">{b.type.scaleT}</p>
+              <p className="eyebrow mt-10 text-muted">{b.type.scaleT}</p>
               <ol className="mt-5 flex flex-col">
                 {[
                   ["text-[clamp(40px,6vw,96px)] font-[family-name:var(--font-display)] leading-none", "96 / 0.95"],
@@ -648,22 +648,22 @@ export function BrandPage() {
                   <svg viewBox="0 0 400 300" className="w-full bg-[#2a221d]" role="img" aria-label={b.photo.diagram}>
                     <defs>
                       <linearGradient id="ph-light" x1="0" x2="1">
-                        <stop offset="0" stopColor="#FFE2A6" stopOpacity=".45" />
-                        <stop offset="1" stopColor="#FFE2A6" stopOpacity="0" />
+                        <stop offset="0" stopColor="#FFFFFF" stopOpacity=".45" />
+                        <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
                       </linearGradient>
                     </defs>
                     <rect width="400" height="300" fill="url(#ph-light)" />
                     <rect x="0" y="200" width="400" height="100" fill="#8a5a3b" />
-                    <path d="M165 120 h70 l-8 80 h-54 z" fill="#F5F1EA" />
-                    <rect x="167" y="150" width="66" height="22" fill="#1B1714" />
-                    <rect x="167" y="160" width="66" height="2.5" fill="#FFE2A6" />
+                    <path d="M165 120 h70 l-8 80 h-54 z" fill="#FFFFFF" />
+                    <rect x="167" y="150" width="66" height="22" fill="#000000" />
+                    <rect x="167" y="160" width="66" height="2.5" fill="#FFFFFF" />
                     <g stroke="rgba(255,255,255,.35)" strokeWidth="1" strokeDasharray="4 4">
                       <line x1="133" y1="0" x2="133" y2="300" />
                       <line x1="267" y1="0" x2="267" y2="300" />
                       <line x1="0" y1="100" x2="400" y2="100" />
                     </g>
-                    <line x1="0" y1="200" x2="400" y2="200" stroke="#FFE2A6" strokeWidth="3" />
-                    <text x="12" y="192" fill="#FFE2A6" fontSize="12" fontWeight="700" fontFamily="Mulish, sans-serif">
+                    <line x1="0" y1="200" x2="400" y2="200" stroke="#FFFFFF" strokeWidth="3" />
+                    <text x="12" y="192" fill="#FFFFFF" fontSize="12" fontWeight="700" fontFamily="Mulish, sans-serif">
                       {b.photo.diagram}
                     </text>
                   </svg>
@@ -680,18 +680,18 @@ export function BrandPage() {
               </div>
               <div className="mt-12 grid gap-10 md:grid-cols-2">
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.photo.phoneT}</p>
+                  <p className="eyebrow text-muted">{b.photo.phoneT}</p>
                   <ol className="mt-4 flex flex-col gap-2">
                     {b.photo.phone.map((s, i) => (
                       <li key={s} className="flex gap-4 text-[15px]">
-                        <span className="font-[family-name:var(--font-display)] text-axsam-ink">{i + 1}</span>
+                        <span className="font-[family-name:var(--font-display)] text-muted">{i + 1}</span>
                         {s}
                       </li>
                     ))}
                   </ol>
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.photo.dontT}</p>
+                  <p className="eyebrow text-muted">{b.photo.dontT}</p>
                   <ul className="mt-4 flex flex-col gap-2">
                     {b.photo.donts.map((d) => (
                       <li key={d} className="flex items-center gap-3 text-[15px]">
@@ -717,11 +717,11 @@ export function BrandPage() {
                       <p className="mt-1 text-[14px] text-muted">{tr.desc}</p>
                     </div>
                     <p className="border-l-[3px] border-[#2f6b3a] pl-3 text-[15px]">
-                      <span className="block text-[11px] font-bold tracking-[0.14em] text-[#2f6b3a] uppercase">{b.voice.yes}</span>
+                      <span className="block text-[11px] font-bold tracking-normal text-[#2f6b3a]">{b.voice.yes}</span>
                       {tr.yes}
                     </p>
                     <p className="border-l-[3px] border-nar pl-3 text-[15px] text-muted line-through decoration-nar/50">
-                      <span className="block text-[11px] font-bold tracking-[0.14em] text-nar uppercase no-underline">{b.voice.no}</span>
+                      <span className="block text-[11px] font-bold tracking-normal text-nar no-underline">{b.voice.no}</span>
                       {tr.no}
                     </p>
                   </li>
@@ -734,7 +734,7 @@ export function BrandPage() {
                 <ul className="grid gap-3 sm:grid-cols-2">
                   {b.voice.taglines.map((x) => (
                     <li key={x.where} className="text-[15px]">
-                      <span className="mr-2 text-[11px] font-bold tracking-[0.14em] text-seher uppercase">{x.where}</span>
+                      <span className="mr-2 text-[11px] font-bold tracking-normal text-muted">{x.where}</span>
                       {x.line}
                     </li>
                   ))}
@@ -742,7 +742,7 @@ export function BrandPage() {
               </div>
               <div className="mt-12 grid gap-10 md:grid-cols-2">
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.voice.namingT}</p>
+                  <p className="eyebrow text-muted">{b.voice.namingT}</p>
                   <ul className="mt-4 flex flex-col gap-3 text-[15px] leading-relaxed">
                     {b.voice.naming.map((x) => (
                       <li key={x} className="border-b border-espresso/10 pb-3">
@@ -752,7 +752,7 @@ export function BrandPage() {
                   </ul>
                 </div>
                 <div className="b-item">
-                  <p className="eyebrow text-axsam-ink">{b.voice.writingT}</p>
+                  <p className="eyebrow text-muted">{b.voice.writingT}</p>
                   <ul className="mt-4 flex flex-col gap-3 text-[15px] leading-relaxed">
                     {b.voice.writing.map((x) => (
                       <li key={x} className="border-b border-espresso/10 pb-3">
@@ -762,11 +762,11 @@ export function BrandPage() {
                   </ul>
                 </div>
               </div>
-              <p className="eyebrow mt-12 text-axsam-ink">{b.voice.samplesT}</p>
+              <p className="eyebrow mt-12 text-muted">{b.voice.samplesT}</p>
               <ul className="mt-4 grid gap-4 md:grid-cols-3">
                 {b.voice.samples.map((s) => (
                   <li key={s.where} className="b-item bg-white p-5">
-                    <span className="text-[11px] font-bold tracking-[0.14em] text-muted uppercase">{s.where}</span>
+                    <span className="text-[11px] font-bold tracking-normal text-muted">{s.where}</span>
                     <p className="mt-2 text-[15px] leading-relaxed">{s.text}</p>
                   </li>
                 ))}
@@ -875,7 +875,7 @@ export function BrandPage() {
                 ))}
               </ul>
               <p className="mt-6 max-w-[62ch] text-[13px] leading-relaxed text-muted-dark">{b.downloads.printNote}</p>
-              <a href={`${BASE}${locale === "az" ? "" : `/${locale}`}/`} className="no-print mt-12 inline-block text-[13px] font-bold tracking-[0.14em] text-glow uppercase">
+              <a href={`${BASE}${locale === "az" ? "" : `/${locale}`}/`} className="no-print mt-12 inline-block text-[13px] font-bold tracking-normal text-glow">
                 ← {b.back}
               </a>
               <p className="mt-6 text-[12px] text-muted-dark">{site.footer.disclaimer}</p>

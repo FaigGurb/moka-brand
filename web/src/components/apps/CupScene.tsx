@@ -148,10 +148,10 @@ export default function CupScene(props: Props) {
     >
       <ambientLight intensity={0.5} />
       <directionalLight position={[3, 4, 5]} intensity={1.8} color="#fff4e6" />
-      <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#c89b6d" />
+      <directionalLight position={[-4, 2, -3]} intensity={0.6} color="#ffffff" />
       <Environment resolution={64}>
         <Lightformer intensity={2} position={[0, 3, 4]} scale={[6, 1, 1]} color="#fff6ea" />
-        <Lightformer intensity={1} position={[-4, 0, 2]} rotation-y={Math.PI / 2} scale={[3, 3, 1]} color="#ffe2a6" />
+        <Lightformer intensity={1} position={[-4, 0, 2]} rotation-y={Math.PI / 2} scale={[3, 3, 1]} color="#FFFFFF" />
       </Environment>
       <Cup {...props} />
       {/* the shadow is rotationally symmetric: render it for a moment after each size change, then freeze it */}

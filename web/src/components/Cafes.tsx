@@ -10,7 +10,7 @@ import { useI18n } from "@/i18n/context";
 export function Cafes({ className = "" }: { className?: string }) {
   const { t } = useI18n();
   const btn =
-    "inline-flex min-h-[44px] items-center justify-center gap-2 px-4 text-[15px] font-medium font-[family-name:var(--font-display)] transition-colors";
+    "inline-flex min-h-[44px] flex-1 basis-[9rem] items-center justify-center gap-2 whitespace-nowrap px-4 text-[15px] font-medium font-[family-name:var(--font-display)] transition-colors";
   return (
     <div className={`grid gap-3 ${className}`}>
       {LOCATIONS.map((loc, i) => {
@@ -22,7 +22,7 @@ export function Cafes({ className = "" }: { className?: string }) {
               <span className="text-[15px] text-paper/80">{pl.hours}</span>
               <span className="text-[14px] text-muted-dark">{pl.address}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-2">
               <a href={`tel:${loc.tel}`} className={`${btn} bg-paper text-black hover:bg-glow`} aria-label={`${t.contact.call}: MOKA ${pl.name}, ${loc.phone}`}>
                 {t.contact.call}
               </a>

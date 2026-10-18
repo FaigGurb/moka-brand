@@ -41,6 +41,7 @@ export function BeanStory({ lead, roast, brew, packs }: { lead: ReactNode; roast
       stops={stops}
       film={CLIPS.journey}
       mark={{ src: `${BASE}/cinema/cup-k.webp`, region: [0.448, 0.5324, 0.0867, 0.1445] }}
+      skip={b.skip}
     />
   );
 }

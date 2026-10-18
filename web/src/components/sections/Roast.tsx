@@ -8,11 +8,11 @@ import { useI18n } from "@/i18n/context";
 
 // Sample origins and notes for the concept (text in the dictionary); real assortment to be supplied by MOKA.
 const LEVEL_STYLE = [
-  { line: 58, color: "#8C9A5B", ink: "#1B1714", flavor: null },
-  { line: 50, color: "#C08A55", ink: "#1B1714", flavor: "#D9C7E6" },
-  { line: 42, color: "#8A5A3B", ink: "#F5F1EA", flavor: "#E9B8C0" },
-  { line: 34, color: "#5E3B26", ink: "#F5F1EA", flavor: "#A88A78" },
-  { line: 26, color: "#2B1D15", ink: "#F5F1EA", flavor: "#A88A78" },
+  { line: 58, color: "#8C9A5B", ink: "#000000", flavor: null },
+  { line: 50, color: "#C08A55", ink: "#000000", flavor: "#D9C7E6" },
+  { line: 42, color: "#8A5A3B", ink: "#F6F6F4", flavor: "#E9B8C0" },
+  { line: 34, color: "#5E3B26", ink: "#F6F6F4", flavor: "#A88A78" },
+  { line: 26, color: "#2B1D15", ink: "#F6F6F4", flavor: "#A88A78" },
 ];
 
 export function Roast() {
@@ -52,10 +52,10 @@ export function Roast() {
     <section id="qovurma" ref={root} className="day-glow overflow-hidden bg-espresso text-paper">
       <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
         {/* the bean card: given with every bag, so the official bag itself stays unchanged */}
-        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(27,23,20,0.55)]">
+        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(0,0,0,0.55)]">
           <span className="absolute top-[4.5%] right-[8%] block h-4 w-4 rounded-full bg-paper-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]" aria-hidden="true" />
           <div className="flex flex-col gap-2 p-[9%] pt-[11%]">
-            <span className="text-[10px] font-bold tracking-[0.28em] text-axsam-ink">{t.roast.house.card}</span>
+            <span className="text-[10px] font-bold tracking-[0.28em] text-muted">{t.roast.house.card}</span>
             <Logo className="mt-2 w-[56%]" />
             <span className="text-[8px] font-bold tracking-[0.3em]">ROASTERY & EATERY</span>
             <span className="mt-4 font-[family-name:var(--font-display)] text-[28px] leading-none">{L.origin}</span>
@@ -89,7 +89,7 @@ export function Roast() {
           <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">
             {t.roast.text}
           </p>
-          <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-gunorta bg-paper/[0.05] px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">
+          <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-paper bg-paper/[0.05] px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">
             <div className="flex flex-col gap-1.5">
               <b className="font-[family-name:var(--font-display)] text-xl font-medium">{t.roast.house.title}</b>
               <p className="text-[15px] leading-relaxed text-muted-dark">{t.roast.house.text}</p>

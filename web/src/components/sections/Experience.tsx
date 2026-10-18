@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { MagneticButton } from "../ui/MagneticButton";
 import { ClubCard } from "../ClubCard";
 import { CremaBackground } from "../fx/CremaBackground";
-import { Letter } from "../Logo";
+import { Letter, Lockup } from "../Logo";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { links } from "@/lib/site";
 import { useI18n } from "@/i18n/context";
@@ -45,13 +45,11 @@ export function Experience() {
         <div className="x-grid mt-14 grid gap-6 md:grid-cols-2">
           <div className="x-card group flex flex-col overflow-hidden bg-espresso-2 text-paper">
             <a href={LINKS.ar} className="relative block aspect-[2/1] overflow-hidden bg-espresso-3" tabIndex={-1} aria-hidden="true">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={LINKS.arCard}
-                alt=""
-                className="h-full w-full object-cover transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]"
-                loading="lazy"
-              />
+              {/* the official lockup and the K (the printed AR target still carries MOKA's older card art) */}
+              <span className="flex h-full w-full items-center justify-center gap-[8%] bg-black px-[10%] transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.04]">
+                <Lockup className="w-[52%] text-paper" />
+                <Letter id="K" className="h-[46%] w-auto text-paper" />
+              </span>
             </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
               <p className="eyebrow text-gunorta">{t.exp.arEyebrow}</p>
@@ -75,15 +73,15 @@ export function Experience() {
             </div>
           </div>
 
-          <div className="x-card group flex flex-col overflow-hidden bg-seher text-espresso">
-            <a href={LINKS.game} tabIndex={-1} aria-hidden="true" className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#BE8F60]">
+          <div className="x-card group flex flex-col overflow-hidden bg-paper text-black">
+            <a href={LINKS.game} tabIndex={-1} aria-hidden="true" className="relative flex aspect-[2/1] items-end justify-center overflow-hidden bg-[#E6E6E3]">
               <svg viewBox="0 0 400 200" className="h-full w-auto" aria-hidden="true">
-                <polygon points="168,10 232,10 212,52 188,52" fill="#F5F1EA" />
-                <rect x="186" y="46" width="28" height="10" fill="#1B1714" />
-                <rect x="197" y="56" width="6" height="70" fill="#5E3B26" className="origin-top transition-transform duration-700 group-hover:scale-y-110" />
-                <path d="M140,80 L260,80 L246,196 L154,196 Z" fill="none" stroke="#1B1714" strokeWidth="5" />
-                <path d="M146,126 L254,126 L247,193 L153,193 Z" fill="#5E3B26" />
-                <rect x="118" y="122" width="164" height="4" fill="#F5F1EA" />
+                <polygon points="168,10 232,10 212,52 188,52" fill="#F6F6F4" />
+                <rect x="186" y="46" width="28" height="10" fill="#000000" />
+                <rect x="197" y="56" width="6" height="70" fill="#000000" className="origin-top transition-transform duration-700 group-hover:scale-y-110" />
+                <path d="M140,80 L260,80 L246,196 L154,196 Z" fill="none" stroke="#000000" strokeWidth="5" />
+                <path d="M146,126 L254,126 L247,193 L153,193 Z" fill="#000000" />
+                <rect x="118" y="122" width="164" height="4" fill="#878787" />
               </svg>
             </a>
             <div className="flex flex-1 flex-col gap-4 p-8">
@@ -160,8 +158,9 @@ export function FinalCta() {
         <h2 className="max-w-[14ch] text-[clamp(40px,7vw,104px)] leading-[0.95] font-medium tracking-[-0.02em]">
           {t.final.title}
         </h2>
-        <div className="h-[3px] w-full bg-gradient-to-r from-glow via-gunorta to-transparent" aria-hidden="true" />
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="h-[3px] w-full bg-gradient-to-r from-glow via-paper/30 to-transparent md:w-[56%]" aria-hidden="true" />
+        {/* text and buttons stay in the left half: the slogan ring turns in the right one */}
+        <div className="flex flex-col items-start gap-8 md:max-w-[52%]">
           <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">
             {t.final.text}
           </p>

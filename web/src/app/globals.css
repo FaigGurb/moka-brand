@@ -12,13 +12,13 @@
 
 /* MOKA tokens — mirror the design system (tokens.json). */
 @theme {
-  --color-espresso: #1b1714;
-  --color-espresso-2: #26211d;
-  --color-espresso-3: #3a3530;
-  --color-paper: #f5f1ea;
-  --color-paper-2: #e9e4dc;
-  --color-muted: #5e5852;
-  --color-muted-dark: #b8b0a6;
+  --color-espresso: #0b0b0b;
+  --color-espresso-2: #171717;
+  --color-espresso-3: #2e2e2e;
+  --color-paper: #f6f6f4;
+  --color-paper-2: #e6e6e3;
+  --color-muted: #5a5a5a;
+  --color-muted-dark: #b0b0ae;
   --color-seher: #c89b6d;
   --color-gunorta: #d9b56a;
   --color-axsam: #a8643a;
@@ -26,8 +26,8 @@
   --color-sheher: #8e8a84;
   --color-nar: #8e2f22;
   --color-nar-light: #c9573f;
-  --color-kraft: #c9a882;
-  --color-glow: #ffe2a6;
+  --color-kraft: #878787;
+  --color-glow: #ffffff;
   --color-roast-0: #8c9a5b;
   --color-roast-1: #c08a55;
   --color-roast-2: #8a5a3b;
@@ -70,7 +70,7 @@ h1, h2, h3 {
 }
 
 ::selection {
-  background: var(--color-gunorta);
+  background: #d9d9d9;
   color: var(--color-espresso);
 }
 
@@ -180,6 +180,12 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 /* ---------- tone bands (fx/ToneShift.tsx): black ↔ cup white, blended with the scroll ---------- */
 /* the band's sections let the page colour through */
 [data-tone] > section { background-color: transparent; }
+/* each band paints its own ground (text colours flip at the band edge, so the ground must flip with
+   them); the band after one of the other tone fades in over its first 56px, inside the section's
+   own top padding, so no text ever sits on an in-between grey */
+[data-tone="ink"] { background: #000; }
+[data-tone="paper"] { background: linear-gradient(#000 0, #f1f0ed 56px); }
+[data-tone="paper"] + [data-tone="ink"] { background: linear-gradient(#f1f0ed 0, #000 56px); }
 /* ink: MOKA's black is neutral; the brown espresso of the system stays for the brand book and print */
 .tone-ink {
   --color-espresso: #000;
@@ -196,7 +202,7 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   --color-espresso-2: #e6e5e1;
   --color-espresso-3: #d2d0cb;
   --color-muted-dark: #55544f;
-  --color-glow: #9a6a1c;
+  --color-glow: #000;
   color: var(--color-paper);
 }
 
@@ -209,13 +215,13 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 }
 .day-glow::before {
   background:
-    radial-gradient(38% 48% at 28% 30%, rgb(var(--day-rgb) / 0.14), transparent 70%),
-    radial-gradient(34% 44% at 76% 72%, rgb(var(--day-rgb) / 0.1), transparent 70%);
+    radial-gradient(38% 48% at 28% 30%, rgb(255 255 255 / 0.05), transparent 70%),
+    radial-gradient(34% 44% at 76% 72%, rgb(255 255 255 / 0.035), transparent 70%);
 }
 .day-wash::before {
   background:
-    radial-gradient(40% 50% at 80% 20%, rgb(var(--day-rgb) / 0.12), transparent 70%),
-    radial-gradient(36% 46% at 15% 85%, rgb(var(--day-rgb) / 0.08), transparent 70%);
+    radial-gradient(40% 50% at 80% 20%, rgb(255 255 255 / 0.045), transparent 70%),
+    radial-gradient(36% 46% at 15% 85%, rgb(255 255 255 / 0.03), transparent 70%);
 }
 @keyframes day-drift {
   from { transform: translate3d(-4%, -3%, 0) scale(1); }

@@ -47,7 +47,7 @@ export function PartnersPage() {
           <p className="pp-reveal mt-8 max-w-[56ch] text-[18px] leading-relaxed text-muted-dark">{c.hero.text}</p>
 
           <nav aria-label={c.hero.jump} className="pp-reveal mt-14">
-            <span aria-hidden="true" className="pp-line block h-[3px] origin-left bg-glow shadow-[0_0_18px_rgba(255,226,166,0.55)]" />
+            <span aria-hidden="true" className="pp-line block h-[3px] origin-left bg-glow shadow-[0_0_18px_rgba(255,255,255,0.55)]" />
             <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {PARTNERS.map((b, i) => (
                 <li key={b.id}>
@@ -57,7 +57,7 @@ export function PartnersPage() {
                   >
                     <PartnerLogo id={b.id} name={b.name} pending={t.partners.pending} />
                   </a>
-                  <span className="mt-2 block text-[11px] font-bold tracking-[0.18em] text-muted-dark uppercase">
+                  <span className="mt-2 block text-[11px] font-bold tracking-normal text-muted-dark">
                     {String(i + 1).padStart(2, "0")} · {c.brands[i].step}
                   </span>
                 </li>
@@ -84,7 +84,7 @@ export function PartnersPage() {
                 </div>
               </div>
               <div className="pp-reveal flex flex-col gap-6">
-                <p className="flex items-center gap-3 text-[12px] font-bold tracking-[0.2em] text-seher uppercase">
+                <p className="flex items-center gap-3 text-[15px] font-medium font-[family-name:var(--font-display)] text-muted-dark">
                   <span aria-hidden="true" className="block h-[3px] w-8 bg-glow" />
                   {String(i + 1).padStart(2, "0")} · {x.step}
                 </p>
@@ -97,16 +97,16 @@ export function PartnersPage() {
                 <p className="max-w-[60ch] text-[16px] leading-relaxed text-paper/80">{x.about}</p>
                 <dl className="grid gap-4 border-y border-paper/12 py-5 sm:grid-cols-2">
                   <div>
-                    <dt className="text-[11px] font-bold tracking-[0.18em] text-muted-dark uppercase">{c.labels.origin}</dt>
+                    <dt className="text-[11px] font-bold tracking-normal text-muted-dark">{c.labels.origin}</dt>
                     <dd className="mt-1 text-[15px]">{x.origin}</dd>
                   </div>
                   <div>
-                    <dt className="text-[11px] font-bold tracking-[0.18em] text-muted-dark uppercase">{c.labels.range}</dt>
+                    <dt className="text-[11px] font-bold tracking-normal text-muted-dark">{c.labels.range}</dt>
                     <dd className="mt-1 text-[15px]">{x.range}</dd>
                   </div>
                 </dl>
                 <div>
-                  <p className="text-[11px] font-bold tracking-[0.18em] text-glow uppercase">{c.labels.bar}</p>
+                  <p className="text-[11px] font-bold tracking-normal text-glow">{c.labels.bar}</p>
                   <ul className="mt-3 flex flex-col gap-2">
                     {x.bar.map((line) => (
                       <li key={line} className="flex gap-3 text-[15px] leading-snug">
@@ -121,13 +121,13 @@ export function PartnersPage() {
                     href={b.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] uppercase transition-colors hover:border-glow hover:text-glow"
+                    className="border border-paper/40 px-5 py-3.5 text-[13px] font-bold tracking-normal transition-colors hover:border-glow hover:text-glow"
                   >
                     {c.labels.site} · {b.host} <span aria-hidden="true">↗</span>
                   </a>
                   <a
                     href={`tel:${CONTACT.tel}`}
-                    className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-[0.14em] text-espresso uppercase transition-colors hover:bg-glow"
+                    className="bg-paper px-5 py-3.5 text-[13px] font-bold tracking-normal text-espresso transition-colors hover:bg-glow"
                   >
                     {c.labels.ask}
                     <span className="sr-only">: {b.name}, {CONTACT.phone}</span>
@@ -147,7 +147,7 @@ export function PartnersPage() {
             <h2 id="pp-b2b" className="text-[clamp(32px,4.4vw,56px)] leading-[1.02] font-medium">{c.b2b.title}</h2>
             <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted">{c.b2b.text}</p>
             <p className="flex items-start gap-3 text-[14px] leading-relaxed text-muted">
-              <span aria-hidden="true" className="mt-[7px] block h-[3px] w-6 shrink-0 bg-axsam" />
+              <span aria-hidden="true" className="mt-[7px] block h-[3px] w-6 shrink-0 bg-black" />
               {t.partners.trust}
             </p>
           </div>
@@ -172,7 +172,7 @@ export function PartnersPage() {
               href={CONTACT.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="self-start bg-espresso px-6 py-4 text-[13px] font-bold tracking-[0.14em] text-paper uppercase transition-colors hover:bg-axsam-ink"
+              className="self-start bg-espresso px-6 py-4 text-[13px] font-bold tracking-normal text-paper transition-colors hover:bg-espresso-3"
             >
               {c.b2b.instagram} · {CONTACT.handle}
             </a>

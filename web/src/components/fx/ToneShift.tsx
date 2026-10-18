@@ -20,8 +20,8 @@ export function ToneBand({ tone, children }: { tone: Tone; children: ReactNode }
 }
 
 /**
- * The page colour follows the scroll: as the next band rises from the lower part of the screen to
- * its upper third, the background slides from one tone to the other (--page-bg on <html>).
+ * The page colour follows the scroll: as the next band rises past the middle of the screen, the
+ * background turns from one tone to the other over a short stretch (--page-bg on <html>).
  */
 export function ToneShift() {
   useEffect(() => {
@@ -38,8 +38,10 @@ export function ToneShift() {
       for (let i = 0; i < list.length; i++) {
         const r = list[i].getBoundingClientRect();
         const c = TONES[list[i].dataset.tone as Tone];
-        if (r.top > vh * 0.85) break;
-        const t = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.5)));
+        // a short blend around the middle of the screen: text colours flip at the band edge, so a long
+        // grey in-between would leave both bands' text on a mid-grey ground (unreadable)
+        if (r.top > vh * 0.6) break;
+        const t = Math.min(1, Math.max(0, (vh * 0.6 - r.top) / (vh * 0.16)));
         const e = t * t * (3 - 2 * t);
         rgb = rgb.map((v, k) => v + (c[k] - v) * e);
       }

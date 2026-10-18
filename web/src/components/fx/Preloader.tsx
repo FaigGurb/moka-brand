@@ -65,7 +65,7 @@ export function Preloader() {
       <div className="pl-bottom absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-espresso">
         <div className="absolute inset-x-0 bottom-0 h-[100svh]">{mark}</div>
       </div>
-      <div className="pl-line absolute top-1/2 left-0 h-[3px] w-full origin-left -translate-y-1/2 bg-glow shadow-[0_0_24px_#ffe2a6]" />
+      <div className="pl-line absolute top-1/2 left-0 h-[3px] w-full origin-left -translate-y-1/2 bg-glow shadow-[0_0_24px_#FFFFFF]" />
     </div>
   );
 }
