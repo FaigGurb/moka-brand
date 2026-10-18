@@ -7,6 +7,12 @@
 <xhtml:link rel="alternate" hreflang="ru" href="https://faiggurb.github.io/moka-brand/ru/" />
 </url>
 <url>
+<loc>https://faiggurb.github.io/moka-brand/system/</loc>
+<xhtml:link rel="alternate" hreflang="az" href="https://faiggurb.github.io/moka-brand/system/" />
+<xhtml:link rel="alternate" hreflang="en" href="https://faiggurb.github.io/moka-brand/en/system/" />
+<xhtml:link rel="alternate" hreflang="ru" href="https://faiggurb.github.io/moka-brand/ru/system/" />
+</url>
+<url>
 <loc>https://faiggurb.github.io/moka-brand/menu/</loc>
 <xhtml:link rel="alternate" hreflang="az" href="https://faiggurb.github.io/moka-brand/menu/" />
 <xhtml:link rel="alternate" hreflang="en" href="https://faiggurb.github.io/moka-brand/en/menu/" />
