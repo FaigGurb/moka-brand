@@ -152,13 +152,24 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
         if (a && !stops[k].caption && k < n - 1) {
           const fade = (a.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0;
           segs.push([from, Math.max(ry, y(a) + fade - 72)]);
-        } else segs.push([from, ry]);
+        } else {
+          segs.push([from, ry]);
+          // a titled chapter with content after it (Qovurma → Roast, the cup → packaging): the next gesture
+          // carries on to the content's top. Scrolled by hand, the content's transparent fade-in would pass
+          // first over the held frame and the pinned title, and the page would look stuck for a swipe or two.
+          if (a && k < n - 1) {
+            const fade = (a.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0;
+            const top = y(a) + fade - 72;
+            if (top > ry + vh * 0.2) segs.push([ry, top]);
+          }
+        }
         from = ry;
         if (a && k < n - 1) {
           from = y(a) + a.offsetHeight - vh;
           keys.push([from, k]);
         }
       });
+      (window as Window & { __mokaSegs?: [number, number][] }).__mokaSegs = segs;
     };
     const at = (sy: number) => {
       if (!keys.length || sy <= keys[0][0]) return 0;
@@ -401,6 +412,14 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
       for (const [a0, b0] of segs) {
         if (dir > 0 && from >= a0 - TOL && from < b0 - TOL) return b0;
         if (dir < 0 && from > a0 + TOL && from <= b0 + TOL) return a0;
+      }
+      // the last half screen of a content section: a gesture toward the film goes straight to its next
+      // stop (down) or back to the chapter it left (up), instead of first scrolling the rest of the
+      // content by hand and then stopping dead at the film's edge (iPhone: "it won't scroll")
+      const near = window.innerHeight * 0.5;
+      for (const [a0, b0] of segs) {
+        if (dir > 0 && from >= a0 - near && from < a0 - TOL) return b0;
+        if (dir < 0 && from > b0 + TOL && from <= b0 + near) return b0;
       }
       return null;
     };

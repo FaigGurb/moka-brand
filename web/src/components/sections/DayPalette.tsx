@@ -77,12 +77,12 @@ export function DayPalette() {
           {DAY.map((d) => (
             <div
               key={d.name}
-              className="d-slide relative flex min-h-[56svh] flex-col justify-between overflow-hidden bg-black px-5 pt-24 pb-16 text-paper md:px-10 md:py-24 scene:absolute scene:inset-0 scene:min-h-0"
+              className="d-slide relative flex min-h-[44svh] flex-col justify-between gap-10 overflow-hidden bg-black px-5 pt-16 pb-12 noscene:min-h-0 noscene:justify-start text-paper md:px-10 md:py-24 scene:absolute scene:inset-0 scene:min-h-0"
             >
               {/* black and white, as MOKA is: the hour's colour is only the lit line at the signature height */}
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-[46%] h-[6px]"
+                className="pointer-events-none absolute inset-x-0 top-[46%] h-[6px] noscene:hidden"
                 style={{ background: d.hex, boxShadow: `0 0 48px 6px ${d.hex}` }}
               />
               <div className="mx-auto flex w-full max-w-[1320px] items-start justify-between gap-8">
@@ -92,6 +92,8 @@ export function DayPalette() {
                 </p>
               </div>
               <div className="mx-auto w-full max-w-[1320px]">
+                {/* touch screens (plain panels): the line sits above the name, not through it */}
+                <span aria-hidden="true" className="mb-6 block h-[4px] w-full scene:hidden" style={{ background: d.hex, boxShadow: `0 0 28px 3px ${d.hex}` }} />
                 <h2 className="d-name text-[clamp(72px,19vw,260px)] leading-[0.85] font-medium tracking-[-0.03em]">
                   {d.name}
                 </h2>
