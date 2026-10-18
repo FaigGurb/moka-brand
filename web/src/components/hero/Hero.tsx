@@ -105,7 +105,7 @@ export function Hero() {
             ))}
           </h1>
           <div className="flex flex-col gap-7 md:pb-3">
-            <p className="hero-lead max-w-[44ch] text-[16px] leading-relaxed text-paper/80 [text-shadow:0_1px_14px_rgb(0_0_0/0.9)] sm:text-[17px]">{t.hero.text}</p>
+            <p className="hero-lead max-w-[44ch] text-[17px] leading-relaxed text-paper/85 [text-shadow:0_1px_14px_rgb(0_0_0/0.9)] md:text-[19px]">{t.hero.text}</p>
             <div className="hero-fade flex flex-wrap gap-3">
               <MagneticButton
                 href="#proses"

@@ -18,7 +18,7 @@
   --color-paper: #f6f6f4;
   --color-paper-2: #e6e6e3;
   --color-muted: #5a5a5a;
-  --color-muted-dark: #b0b0ae;
+  --color-muted-dark: #c4c4c1;
   --color-seher: #c89b6d;
   --color-gunorta: #d9b56a;
   --color-axsam: #a8643a;
@@ -83,7 +83,7 @@ h1, h2, h3 {
    (unlayered, so it wins over the colour utilities sections still pass) */
 .eyebrow {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0;
   color: var(--color-muted-dark);
@@ -191,7 +191,7 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   --color-espresso: #000;
   --color-espresso-2: #141414;
   --color-espresso-3: #2a2a2a;
-  --color-muted-dark: #a9a9a5;
+  --color-muted-dark: #bebebb;
 }
 /* paper: the dark-ground tokens turn over, so sections written for black read black on white */
 .tone-paper {

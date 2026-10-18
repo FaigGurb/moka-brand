@@ -2,31 +2,40 @@
 
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { LETTERS, halves, pts } from "@/lib/logo";
+import { CUT_BOTTOM, CUT_TOP, HANDLE_PATH, LETTERS, VIEW_W, halves, pts } from "@/lib/logo";
 import { useI18n } from "@/i18n/context";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Concept view of the café's main wall, drawn like an architect's elevation in MOKA's black and
- * white: the wordmark, the counter and the shelves in fine lines, and one lit LED line at the
- * signature height running through all of them.
+ * Concept view of the café's main wall: the MOKA wordmark across the whole wall in MOKA's black and
+ * white, and one lit LED line at the signature height running through every letter (the logo's own
+ * cut, y 74.5–79.5), reflected faintly in a polished floor. The real café photos follow below.
  */
 function Wall({ alt }: { alt: string }) {
-  const line = "#5c5c5c";
+  // wordmark units (viewBox 675 × 155) placed across the 1000 × 620 wall
+  const k = 1.3;
+  const tx = (1000 - VIEW_W * k) / 2;
+  const ty = 150;
+  const cut = ((CUT_TOP + CUT_BOTTOM) / 2) * k + ty;
   return (
     <svg viewBox="0 0 1000 620" className="block h-auto w-full" role="img" aria-label={alt}>
       <defs>
         <filter id="store-glow" x="-10%" y="-400%" width="120%" height="900%">
-          <feGaussianBlur stdDeviation="10" />
+          <feGaussianBlur stdDeviation="12" />
         </filter>
+        <linearGradient id="store-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.16" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="store-wash" cx="0.5" cy="0.45" r="0.6">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.07" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
       </defs>
       <rect width="1000" height="620" fill="#0b0b0b" />
-      {/* wall panels */}
-      {[180, 360, 540, 720, 880].map((x) => (
-        <line key={x} x1={x} y1="0" x2={x} y2="540" stroke="#1d1d1d" strokeWidth="1" />
-      ))}
-      <g fill="#F6F6F4" transform="translate(70,150) scale(0.86)">
+      <rect width="1000" height="470" fill="url(#store-wash)" />
+      <g fill="#F6F6F4" transform={`translate(${tx},${ty}) scale(${k})`}>
         {LETTERS.map((l) => {
           const h = halves(l.poly);
           return (
@@ -36,35 +45,22 @@ function Wall({ alt }: { alt: string }) {
             </g>
           );
         })}
+        <path d={HANDLE_PATH} fill="none" stroke="#F6F6F4" strokeWidth={8} />
       </g>
-      {/* shelves: outlines only, the packs as MOKA prints them (black bag, white cup, grey paper bag) */}
-      <g fill="none" stroke={line} strokeWidth="1.5">
-        <line x1="712" y1="219" x2="968" y2="219" />
-        <line x1="712" y1="372" x2="968" y2="372" />
+      {/* the lit line at the signature height, through every letter */}
+      <g className="s-led" style={{ transformOrigin: `0 ${cut}px` }}>
+        <rect x="0" y={cut - 8} width="1000" height="16" fill="#FFFFFF" filter="url(#store-glow)" opacity=".6" />
+        <rect x="0" y={cut - 2.5} width="1000" height="5" fill="#FFFFFF" />
       </g>
-      <g strokeWidth="1.5">
-        <rect x="724" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
-        <rect x="776" y="162" width="30" height="50" fill="#F6F6F4" />
-        <rect x="776" y="158" width="30" height="7" fill="#000" stroke="#8a8a8a" />
-        <rect x="818" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
-        <rect x="870" y="160" width="40" height="52" fill="#878787" />
-        <rect x="922" y="150" width="40" height="62" fill="#000" stroke="#8a8a8a" />
-        <rect x="724" y="318" width="30" height="50" fill="#F6F6F4" />
-        <rect x="724" y="314" width="30" height="7" fill="#000" stroke="#8a8a8a" />
-        <rect x="766" y="306" width="40" height="62" fill="#000" stroke="#8a8a8a" />
-        <rect x="818" y="316" width="40" height="52" fill="#878787" />
+      {/* floor and a faint reflection of the letters */}
+      <line x1="0" y1="470" x2="1000" y2="470" stroke="#3a3a3a" strokeWidth="1.5" />
+      <g opacity="0.12" transform={`translate(${tx},${470 + (470 - ty)}) scale(${k},${-k})`}>
+        {LETTERS.map((l) => (
+          <polygon key={l.id} points={pts(l.poly)} fill="#F6F6F4" />
+        ))}
       </g>
-      {/* counter */}
-      <rect x="60" y="400" width="600" height="140" fill="#000" stroke={line} strokeWidth="1.5" />
-      <line x1="60" y1="414" x2="660" y2="414" stroke="#2a2a2a" />
-      <polygon points="344,446 376,446 366,464 376,482 345,482 351,464" fill="#F6F6F4" />
-      <path d="M344,450 C336,450 334,456 334,459 C334,465 339,468 345,468" fill="none" stroke="#F6F6F4" strokeWidth="3" />
-      <line x1="0" y1="540" x2="1000" y2="540" stroke={line} strokeWidth="1.5" />
-      {/* the lit line at the signature height */}
-      <g className="s-led" style={{ transformOrigin: "0 216px" }}>
-        <rect x="0" y="210" width="1000" height="12" fill="#FFFFFF" filter="url(#store-glow)" opacity=".55" />
-        <rect x="0" y="214" width="1000" height="4" fill="#FFFFFF" />
-      </g>
+      <rect y="470" width="1000" height="150" fill="url(#store-floor)" opacity="0.5" />
+      <rect y="470" width="1000" height="150" fill="#0b0b0b" opacity="0.55" />
     </svg>
   );
 }
