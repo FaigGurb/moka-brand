@@ -45,8 +45,17 @@ export function LoopVideo({
 
     let visible = false;
     let timer = 0;
+    // play only once enough is buffered to run through: a loop that starts on a thin buffer stutters on
+    // its first seconds (iPhone, first visit), and the still below covers until then
+    let ready = false;
+    let fallback = 0;
+    const canRun = () => {
+      ready = true;
+      sync();
+    };
+    v.addEventListener("canplaythrough", canRun);
     const sync = () => {
-      const on = visible && !document.hidden && (activeRef.current ? activeRef.current() : true);
+      const on = ready && visible && !document.hidden && (activeRef.current ? activeRef.current() : true);
       if (on && v.paused) v.play().catch(() => {});
       else if (!on && !v.paused) v.pause();
     };
@@ -60,7 +69,16 @@ export function LoopVideo({
     let idle = 0;
     let wait = 0;
     const start = () => {
-      const go = () => setSrc((s) => s ?? loopSrc(loop, perfTier() === "low"));
+      const go = () => {
+        setSrc((s) => s ?? loopSrc(loop, perfTier() === "low"));
+        // iOS may not buffer before play() (data saver, low power): don't wait for canplaythrough forever
+        fallback = window.setTimeout(canRun, 3000);
+      };
+      // phones: give the film's first frames the line first (both at once made both stutter on a first visit)
+      if (perfTier() === "low") {
+        wait = window.setTimeout(go, 2500);
+        return;
+      }
       const ric = window.requestIdleCallback;
       if (ric) idle = ric(go, { timeout: 1500 });
       else wait = window.setTimeout(go, 300);
@@ -93,6 +111,8 @@ export function LoopVideo({
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", sync);
       v.removeEventListener("playing", playing);
+      v.removeEventListener("canplaythrough", canRun);
+      window.clearTimeout(fallback);
       v.pause();
     };
   }, [loop, sharpOnly]);
