@@ -52,7 +52,7 @@ export function Roast() {
     <section id="qovurma" ref={root} className="day-glow overflow-hidden bg-espresso text-paper">
       <div className="mx-auto grid max-w-[1320px] items-center gap-14 px-5 py-24 md:grid-cols-2 md:gap-20 md:px-10 md:py-32">
         {/* the bean card: given with every bag, so the official bag itself stays unchanged */}
-        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(0,0,0,0.55)]">
+        <div className="r-bag relative mx-auto aspect-[3/5] w-full max-w-[320px] md:sticky md:top-28 md:self-start overflow-hidden rounded-[10px] bg-white text-espresso shadow-[0_40px_80px_-40px_rgba(0,0,0,0.55)]">
           <span className="absolute top-[4.5%] right-[8%] block h-4 w-4 rounded-full bg-paper-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.25)]" aria-hidden="true" />
           <div className="flex flex-col gap-2 p-[9%] pt-[11%]">
             <span className="text-[10px] font-bold tracking-[0.28em] text-muted">{t.roast.house.card}</span>
@@ -86,7 +86,7 @@ export function Roast() {
           <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">
             {t.roast.title}
           </h2>
-          <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">
+          <p className="max-w-[48ch] text-[18px] leading-relaxed text-paper/80">
             {t.roast.text}
           </p>
           <div className="grid max-w-[64ch] gap-4 border-l-[3px] border-paper bg-paper/[0.05] px-5 py-4 sm:grid-cols-[minmax(0,1fr)_168px] sm:items-center">

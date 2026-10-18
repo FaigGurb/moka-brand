@@ -117,7 +117,7 @@ export function BrewGuide() {
             <p className="eyebrow text-seher">{b.eyebrow}</p>
             <h2 className="mt-4 text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{b.title}</h2>
           </div>
-          <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">{b.text}</p>
+          <p className="max-w-[52ch] text-[18px] leading-relaxed text-paper/80">{b.text}</p>
         </div>
 
         {/* tool picker: the four letters */}

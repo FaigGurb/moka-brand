@@ -117,7 +117,7 @@ export function DayPalette() {
             <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium">
               {t.day.title}
             </h2>
-            <p className="max-w-[46ch] text-[17px] leading-relaxed text-muted-dark">
+            <p className="max-w-[46ch] text-[18px] leading-relaxed text-paper/80">
               {t.day.text}
             </p>
           </div>

@@ -71,7 +71,7 @@ export function Bar() {
             <h2 id="bar-title" className="max-w-[14ch] text-[clamp(44px,6.4vw,104px)] leading-[0.95] font-medium tracking-[-0.03em]">
               {b.title}
             </h2>
-            <p className="max-w-[46ch] text-[17px] leading-relaxed text-muted-dark md:text-[19px]">{b.text}</p>
+            <p className="max-w-[46ch] text-[18px] leading-relaxed text-paper/80 md:text-[19px]">{b.text}</p>
           </div>
           <ul className="b-shots grid grid-cols-2 gap-3 md:gap-4">
             {b.shots.map((s, i) => (

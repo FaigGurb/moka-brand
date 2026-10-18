@@ -161,7 +161,7 @@ export function FinalCta() {
         <div className="h-[3px] w-full bg-gradient-to-r from-glow via-paper/30 to-transparent md:w-[56%]" aria-hidden="true" />
         {/* text and buttons stay in the left half: the slogan ring turns in the right one */}
         <div className="flex flex-col items-start gap-8 md:max-w-[52%]">
-          <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">
+          <p className="max-w-[52ch] text-[18px] leading-relaxed text-paper/80">
             {t.final.text}
           </p>
           <div className="flex flex-wrap gap-3">

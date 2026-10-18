@@ -40,6 +40,7 @@ export function Footer() {
         </div>
         <nav aria-label={t.footer.links} className="flex flex-col gap-3 text-sm">
           <a className="hover:text-paper" href={L.menu}>{t.footer.menu}</a>
+          <a className="hover:text-paper" href={L.system}>{t.nav.system}</a>
           <a className="hover:text-paper" href={L.brand}>{t.footer.brand}</a>
           <a className="hover:text-paper" href={L.partners}>{t.footer.partners}</a>
           <a className="hover:text-paper" href={L.ar}>{t.footer.ar}</a>

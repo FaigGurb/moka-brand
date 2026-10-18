@@ -22,6 +22,7 @@ export function links(locale: Locale) {
     privacy: `${HOME_OF(locale)}privacy/`,
     brand: `${HOME_OF(locale)}brand/`,
     partners: `${HOME_OF(locale)}partners/`,
+    system: `${HOME_OF(locale)}system/`,
     v1: `${base}/v1/`,
     repo: "https://github.com/FaigGurb/moka-brand",
   };
@@ -34,7 +35,7 @@ export const HOME: Record<Locale, string> = {
   ru: `${base}/ru/`,
 };
 
-export const NAV_IDS = ["#qovurma", "#demleme", "#paket", "#konsepsiya", "#reng", "#terefdas", "#tetbiq", "#tecrube"] as const;
+export const NAV_IDS = ["#proses", "#bar", "#konsepsiya", "#terefdas"] as const;
 
 /** Public contact data (Google Business profile, checked October 2026). Address text lives in the dictionary. */
 export const CONTACT = {

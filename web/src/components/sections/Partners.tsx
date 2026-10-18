@@ -103,7 +103,7 @@ export function Partners() {
             <h2 className="p-reveal text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{p.title}</h2>
           </div>
           <div className="p-reveal flex flex-col items-start gap-5">
-            <p className="max-w-[48ch] text-[17px] leading-relaxed text-muted-dark">{p.text}</p>
+            <p className="max-w-[48ch] text-[18px] leading-relaxed text-paper/80">{p.text}</p>
             <a
               href={L.partners}
               className="inline-flex items-center gap-2 border-b border-glow/60 pb-1 text-[13px] font-semibold text-glow transition-colors hover:border-glow hover:text-paper"

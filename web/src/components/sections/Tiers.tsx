@@ -65,7 +65,7 @@ export function Tiers() {
           <div className="flex w-[78vw] max-w-[440px] flex-none snap-start flex-col justify-center gap-6 lg:w-[36vw]">
             <p className="eyebrow text-seher">{t.tiers.eyebrow}</p>
             <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.tiers.title}</h2>
-            <p className="max-w-[40ch] text-[17px] leading-relaxed text-muted-dark">
+            <p className="max-w-[40ch] text-[18px] leading-relaxed text-paper/80">
               {t.tiers.text}
             </p>
             <button
