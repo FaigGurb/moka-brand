@@ -762,11 +762,11 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
                       </span>
                     ))}
                   </h3>
-                  <p className="film-cap-fade mt-4 max-w-[44ch] text-[15px] leading-relaxed text-paper/75 sm:text-[17px]">{s.caption.text}</p>
+                  <p className="film-cap-fade mt-4 max-w-[44ch] text-[16px] leading-relaxed text-paper/85 sm:text-[18px]">{s.caption.text}</p>
                   {s.caption.tags && (
                     <ul className={`film-cap-fade mt-5 flex flex-wrap gap-2 ${side[k] > 0 ? "md:justify-end" : ""}`}>
                       {s.caption.tags.map((t) => (
-                        <li key={t} className="rounded-full border border-paper/25 bg-black/25 px-3.5 py-1.5 font-[family-name:var(--font-display)] text-[13px] text-paper/85 backdrop-blur-[2px]">
+                        <li key={t} className="rounded-full border border-paper/25 bg-black/25 px-3.5 py-1.5 font-[family-name:var(--font-display)] text-[14px] text-paper/90 backdrop-blur-[2px]">
                           {t}
                         </li>
                       ))}

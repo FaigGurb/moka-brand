@@ -50,11 +50,11 @@ export function Partners() {
         if (ctx.conditions?.wide) {
           const tl = gsap.timeline({
             defaults: { ease: "power2.out" },
-            scrollTrigger: { trigger: ".p-track", start: "top 78%", once: true },
+            scrollTrigger: { trigger: ".p-track", start: "top 96%", once: true },
           });
-          tl.to(".p-line", { "--p": 1, duration: 1.8, ease: "power1.inOut" }, 0);
+          tl.to(".p-line", { "--p": 1, duration: 1.1, ease: "power1.inOut" }, 0);
           items.forEach((it, i) => {
-            const at = (i / Math.max(1, n - 1)) * 1.5 + 0.1;
+            const at = (i / Math.max(1, n - 1)) * 0.8;
             tl.add(() => stations[i].classList.add("is-on"), at);
             tl.to(it, { autoAlpha: 1, y: 0, duration: 0.7 }, at);
           });
@@ -90,7 +90,7 @@ export function Partners() {
 
   return (
     <section id="terefdas" ref={root} className="day-glow overflow-hidden bg-espresso text-paper">
-      <div className="relative mx-auto max-w-[1320px] px-5 py-24 md:px-10 md:py-32">
+      <div className="relative mx-auto max-w-[1320px] px-5 pt-12 pb-24 md:px-10 md:pt-16 md:pb-32">
         {/* a still, warm band of light behind the line (desktop); no blur filter, no animation */}
         <div
           aria-hidden="true"
@@ -139,10 +139,10 @@ export function Partners() {
                     <span className="sr-only"> — {p.more}</span>
                   </a>
                   <div className="flex flex-col gap-2">
-                    <span className="text-[12px] font-semibold text-muted-dark transition-colors duration-500 group-[.is-on]:text-paper">
+                    <span className="text-[14px] font-semibold text-muted-dark transition-colors duration-500 group-[.is-on]:text-paper">
                       {String(i + 1).padStart(2, "0")} · {it.step}
                     </span>
-                    <p className="text-[15px] leading-snug text-paper/85">{it.role}</p>
+                    <p className="text-[16px] leading-snug text-paper/85">{it.role}</p>
                     <p className="text-[13px] text-muted-dark">{it.fact}</p>
                     {it.bar && <p className="text-[13px] font-bold text-glow/90">{it.bar}</p>}
                     <a
