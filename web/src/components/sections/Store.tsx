@@ -116,7 +116,7 @@ export function Store() {
             <p className="eyebrow text-gunorta">{t.store.eyebrow}</p>
             <h2 className="text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.store.title}</h2>
           </div>
-          <p className="max-w-[50ch] text-[17px] leading-relaxed text-muted-dark">
+          <p className="max-w-[50ch] text-[18px] leading-relaxed text-paper/80">
             {t.store.text}
           </p>
         </div>

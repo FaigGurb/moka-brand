@@ -5,13 +5,12 @@ import { Concept } from "@/components/sections/Concept";
 import { Bar } from "@/components/sections/Bar";
 import { BeanStory } from "@/components/sections/BeanStory";
 import { BrewGuide } from "@/components/sections/BrewGuide";
-import { Apps } from "@/components/sections/Apps";
-import { DayPalette } from "@/components/sections/DayPalette";
 import { Roast } from "@/components/sections/Roast";
 import { Tiers } from "@/components/sections/Tiers";
 import { Partners } from "@/components/sections/Partners";
 import { Store } from "@/components/sections/Store";
-import { Experience, FinalCta } from "@/components/sections/Experience";
+import { FinalCta } from "@/components/sections/Experience";
+import { SystemTeaser } from "@/components/sections/SystemTeaser";
 import { ScrollRefresh } from "@/components/ScrollRefresh";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Preloader } from "@/components/fx/Preloader";
@@ -20,7 +19,6 @@ import { DayAmbient } from "@/components/fx/DayAmbient";
 import { ScrollLine } from "@/components/fx/ScrollLine";
 import { BackToTop } from "@/components/fx/BackToTop";
 import { HeadingReveal } from "@/components/fx/HeadingReveal";
-import { Marquee } from "@/components/fx/Marquee";
 import { ToneBand } from "@/components/fx/ToneShift";
 import { LocaleProvider } from "@/i18n/context";
 import { DICTS, type Locale } from "@/i18n/dict";
@@ -46,22 +44,11 @@ export function Site({ locale }: { locale: Locale }) {
         </ToneBand>
         <ToneBand tone="paper">
           <Concept />
-        </ToneBand>
-        <ToneBand tone="ink">
-          <DayPalette />
-        </ToneBand>
-        <ToneBand tone="paper">
           <Partners />
         </ToneBand>
         <ToneBand tone="ink">
           <Store />
-          <Marquee />
-        </ToneBand>
-        <ToneBand tone="paper">
-          <Apps />
-        </ToneBand>
-        <ToneBand tone="ink">
-          <Experience />
+          <SystemTeaser />
           <FinalCta />
         </ToneBand>
       </main>

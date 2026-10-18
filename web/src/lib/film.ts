@@ -110,8 +110,21 @@ export class FrameStore {
     let i = nearest((k) => k % 16 === 0 || k === n - 1);
     // the next two stops, coarse to fine: a gesture outruns a dense sequential fetch on a slow line
     for (const step of [8, 4, 2, 1]) if (i < 0) i = nearest((k) => k % step === 0, 180, 24);
+    // the rest of the film waits until the visitor moves (or the page has been idle a while): fetching
+    // and decoding all ~540 frames at load kept the main thread busy for seconds on a first visit
+    if (i < 0 && !this.open) return -2;
     for (const step of [4, 2, 1]) if (i < 0) i = nearest((k) => k % step === 0);
     return i;
+  }
+
+  private open = false;
+  private wake: (() => void) | null = null;
+  /** lets the rest of the film load (first scroll, gesture, or an idle timeout) */
+  openAll() {
+    if (this.open) return;
+    this.open = true;
+    this.wake?.();
+    this.wake = null;
   }
 
   /** Fetches every frame, in the order nextToFetch picks, a few requests at a time. */
@@ -120,6 +133,16 @@ export class FrameStore {
     const worker = async () => {
       while (!this.disposed) {
         const i = this.nextToFetch();
+        if (i === -2) {
+          await new Promise<void>((r) => {
+            const prev = this.wake;
+            this.wake = () => {
+              prev?.();
+              r();
+            };
+          });
+          continue;
+        }
         if (i < 0) return;
         this.requested[i] = true;
         try {
@@ -212,6 +235,7 @@ export class FrameStore {
 
   dispose() {
     this.disposed = true;
+    this.openAll();
     this.aborter.abort();
     this.ready.forEach(release);
     this.ready.clear();

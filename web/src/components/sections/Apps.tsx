@@ -297,7 +297,7 @@ export function Apps() {
             <h2 className="mt-4 text-[clamp(40px,6vw,96px)] leading-[0.98] font-medium tracking-[-0.025em]">{t.apps.title}</h2>
           </div>
           <div className="flex flex-col items-start gap-5">
-            <p className="max-w-[52ch] text-[17px] leading-relaxed text-muted-dark">{t.apps.text}</p>
+            <p className="max-w-[52ch] text-[18px] leading-relaxed text-paper/80">{t.apps.text}</p>
             <a
               href={links(locale).brand}
               className="inline-flex items-center gap-3 border-b-2 border-paper pb-1 text-[13px] font-semibold transition-colors hover:border-glow hover:text-glow"

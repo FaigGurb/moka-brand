@@ -91,13 +91,13 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <span className="hidden border border-paper/30 px-2.5 py-1 text-[13px] whitespace-nowrap text-paper/75 2xl:inline">
           {t.nav.badge}
         </span>
-        <ul className="ml-auto hidden items-center gap-5 xl:flex">
+        <ul className="ml-auto hidden items-center gap-6 lg:flex">
           {NAV_IDS.map((id, i) => (
             <li key={id}>
               <a
                 href={home + id}
                 aria-current={active === id ? "true" : undefined}
-                className="relative py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper"
+                className="relative py-2 text-[14px] font-semibold whitespace-nowrap text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper"
               >
                 {t.nav.items[i]}
                 <span
@@ -109,15 +109,26 @@ export function Nav({ sub = "" }: { sub?: string }) {
               </a>
             </li>
           ))}
+          <li>
+            <a
+              href={L.system}
+              aria-current={sub === "system/" ? "page" : undefined}
+              className="py-2 text-[14px] font-semibold whitespace-nowrap text-paper/75 transition-colors hover:text-paper aria-[current]:text-paper aria-[current]:underline aria-[current]:underline-offset-8"
+            >
+              {t.nav.system}
+            </a>
+          </li>
+          <li>
+            <a
+              href={home + "#kafeler"}
+              onClick={(e) => !home && jumpTo("#kafeler") && e.preventDefault()}
+              className="py-2 text-[14px] font-semibold whitespace-nowrap text-paper/75 transition-colors hover:text-paper"
+            >
+              {t.contact.title}
+            </a>
+          </li>
         </ul>
-        <LangSwitch className="ml-auto -mr-1 flex xl:ml-0" sub={sub} />
-        <a
-          href={home + "#kafeler"}
-          onClick={(e) => !home && jumpTo("#kafeler") && e.preventDefault()}
-          className="hidden py-2 text-[13px] font-bold tracking-[0.04em] whitespace-nowrap text-paper/75 transition-colors hover:text-paper lg:inline-block"
-        >
-          {t.contact.title}
-        </a>
+        <LangSwitch className="ml-auto -mr-1 flex lg:ml-0" sub={sub} />
         <a
           href={L.menu}
           aria-current={sub === "menu/" ? "page" : undefined}
@@ -128,7 +139,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
         <SoundToggle labelOn={t.nav.soundOn} labelOff={t.nav.soundOff} className="-mr-2 sm:-mr-0" />
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center text-paper xl:hidden"
+          className="flex h-11 w-11 items-center justify-center text-paper lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? t.nav.close : t.nav.open}
@@ -140,7 +151,7 @@ export function Nav({ sub = "" }: { sub?: string }) {
           </span>
         </button>
       </nav>
-      <div id="mobile-menu" data-lenis-prevent hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-black px-5 pb-10 xl:hidden">
+      <div id="mobile-menu" data-lenis-prevent hidden={!open} className="h-[calc(100svh-4rem)] overflow-y-auto bg-black px-5 pb-10 lg:hidden">
         <p className="pt-2 pb-3 text-[15px] text-muted-dark">{t.contact.title}</p>
         <Cafes />
         <a href={L.menu} className="mt-3 block border border-glow px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-glow">
@@ -157,6 +168,11 @@ export function Nav({ sub = "" }: { sub?: string }) {
               </a>
             </li>
           ))}
+          <li className="border-b border-paper/15">
+            <a href={L.system} className="flex items-baseline py-4 font-[family-name:var(--font-display)] text-2xl text-paper sm:text-3xl">
+              {t.nav.system}
+            </a>
+          </li>
         </ul>
         <div className="mt-6 flex flex-col gap-3">
           <a href={L.brand} className="border border-paper/40 px-5 py-4 text-center font-[family-name:var(--font-display)] text-[16px] font-medium text-paper">

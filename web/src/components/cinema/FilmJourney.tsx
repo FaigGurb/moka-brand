@@ -598,7 +598,16 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
       started = true;
       window.removeEventListener("scroll", start);
       void store.load();
+      // the rest of the film follows the first move, or a quiet while later
+      openTimer = window.setTimeout(openAll, 8000);
     };
+    let openTimer = 0;
+    const openAll = () => {
+      store.openAll();
+      window.clearTimeout(openTimer);
+      for (const ev of ["scroll", "wheel", "touchstart", "keydown"]) window.removeEventListener(ev, openAll);
+    };
+    for (const ev of ["scroll", "wheel", "touchstart", "keydown"]) window.addEventListener(ev, openAll, { passive: true, once: true });
     window.addEventListener("scroll", start, { passive: true });
     // …or as soon as the page has loaded: on a real connection the first stretch must be in before the first gesture
     // (in the first idle moment after load, so it doesn't add to the page's startup work)
@@ -625,6 +634,8 @@ export function FilmJourney({ lead, id, eyebrow, heading, stops, film, mark, ski
       window.removeEventListener("scroll", start);
       ro.disconnect();
       io.disconnect();
+      window.clearTimeout(openTimer);
+      for (const ev of ["scroll", "wheel", "touchstart", "keydown"]) window.removeEventListener(ev, openAll);
       store.dispose();
     };
     // stops and film are static for the page's life

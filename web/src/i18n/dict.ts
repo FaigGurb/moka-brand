@@ -14,7 +14,8 @@ const az = {
   nav: {
     label: "Əsas menyu",
     badge: "Konsept · test işi",
-    items: ["Qovurma", "Dəmləmə", "Paketlər", "Konsepsiya", "Rəng", "Tərəfdaşlar", "Tətbiqlər", "AR və oyun"],
+    items: ["Film", "Bar", "Konsepsiya", "Tərəfdaşlar"],
+    system: "Sistem",
     ar: "AR demo",
     open: "Menyunu aç",
     close: "Menyunu bağla",
@@ -23,6 +24,14 @@ const az = {
     mobileAr: "AR demonu aç",
     mobileGame: "Xətti tut — oyna",
     lang: "Dil",
+  },
+  system: {
+    meta: { title: "Sistem — rəng, tətbiqlər, AR və oyunlar · MOKA", description: "MOKA konseptinin sistemi: gün rəngləri, stəkandan Instagram-a tətbiqlər, AR təcrübələri, oyunlar və MOKA Club." },
+    eyebrow: "Sistem",
+    title: "Bir xətt, bütün sistem",
+    text: "Loqodakı xətt rənglərə, stəkanlara, Instagram-a, AR-a və oyunlara qədər uzanır. Konseptin hamısı bir yerdədir.",
+    items: ["Rəng", "Tətbiqlər", "AR və oyunlar"],
+    cta: "Sistemi aç",
   },
   hero: {
     eyebrow: "Roastery & Eatery · Bakı · Korporativ kimlik konsepti",
@@ -346,7 +355,8 @@ const en: Dict = {
   nav: {
     label: "Main menu",
     badge: "Concept · test project",
-    items: ["Roast", "Brew", "Packaging", "Concept", "Colour", "Partners", "Applications", "AR & game"],
+    items: ["Film", "Bar", "Concept", "Partners"],
+    system: "System",
     ar: "AR demo",
     open: "Open menu",
     close: "Close menu",
@@ -355,6 +365,14 @@ const en: Dict = {
     mobileAr: "Open the AR demo",
     mobileGame: "Hit the line — play",
     lang: "Language",
+  },
+  system: {
+    meta: { title: "System — colour, applications, AR and games · MOKA", description: "The MOKA concept system: day colours, applications from the cup to Instagram, AR experiences, games and MOKA Club." },
+    eyebrow: "System",
+    title: "One line, the whole system",
+    text: "The line in the logo runs on into colours, cups, Instagram, AR and games. The whole concept, in one place.",
+    items: ["Colour", "Applications", "AR & games"],
+    cta: "Open the system",
   },
   hero: {
     eyebrow: "Roastery & Eatery · Baku · Brand identity concept",
@@ -675,7 +693,8 @@ const ru: Dict = {
   nav: {
     label: "Главное меню",
     badge: "Концепт · тестовая работа",
-    items: ["Обжарка", "Заваривание", "Упаковка", "Концепция", "Цвет", "Партнёры", "Применение", "AR и игра"],
+    items: ["Фильм", "Бар", "Концепция", "Партнёры"],
+    system: "Система",
     ar: "AR-демо",
     open: "Открыть меню",
     close: "Закрыть меню",
@@ -684,6 +703,14 @@ const ru: Dict = {
     mobileAr: "Открыть AR-демо",
     mobileGame: "Поймай линию — играть",
     lang: "Язык",
+  },
+  system: {
+    meta: { title: "Система — цвет, применение, AR и игры · MOKA", description: "Система концепта MOKA: цвета дня, применение от стакана до Instagram, AR, игры и MOKA Club." },
+    eyebrow: "Система",
+    title: "Одна линия — вся система",
+    text: "Линия логотипа продолжается в цветах, стаканах, Instagram, AR и играх. Весь концепт — в одном месте.",
+    items: ["Цвет", "Применение", "AR и игры"],
+    cta: "Открыть систему",
   },
   hero: {
     eyebrow: "Roastery & Eatery · Баку · Концепт фирменного стиля",
